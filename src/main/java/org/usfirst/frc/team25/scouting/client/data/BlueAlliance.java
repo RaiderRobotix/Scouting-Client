@@ -57,7 +57,7 @@ public class BlueAlliance {
 	    		teamList+=team.team_number + ",";
 			StringBuilder output = new StringBuilder(teamList);
 			output.setCharAt(output.length()-1, ' ');
-			System.out.println(output.toString());
+			
 			outputFile.write(output.toString());
 			outputFile.close();
 	    	

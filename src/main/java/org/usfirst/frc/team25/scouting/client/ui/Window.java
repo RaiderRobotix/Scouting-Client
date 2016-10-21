@@ -9,47 +9,58 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.usfirst.frc.team25.scouting.client.data.BlueAlliance;
+import org.usfirst.frc.team25.scouting.client.data.EventReport;
+import org.usfirst.frc.team25.scouting.client.data.FileManager;
 
 public class Window {
 	
 	static File dataDirectory;
 	
-	public static File selectFolder(JFrame frame, String dialogTitle){
-		JFileChooser chooser = new JFileChooser(); 
-	    chooser.setCurrentDirectory(new java.io.File("."));
-	    chooser.setDialogTitle(dialogTitle);
-	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	    chooser.setAcceptAllFileFilterUsed(false);
-	    if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) { 
-	        System.out.println("getCurrentDirectory(): " 
-	           +  chooser.getCurrentDirectory());
-	        System.out.println("getSelectedFile() : " 
-	           +  chooser.getSelectedFile());
-	        
-	        return chooser.getSelectedFile();
-	        }
-	      else {
-	        System.out.println("No Selection ");
-	        return null;
-	      }
-	 }
+	public static final String FILE_EXTENSION_REGEX = "\\.(?=[^\\.]+$)";
+	
+
 	
 	public static void processData(JFrame frame){
-		JLabel introText = new JLabel("<html><h1>Processing data</h1><br>Press start to select data folder</html>");
+		JLabel introText = new JLabel("<html><h1>Processing data</h1><br>Processing...</html>");
 		introText.setHorizontalAlignment(JLabel.CENTER);
 		introText.setFont(new Font("Arial", Font.PLAIN, 16));
 		frame.setContentPane(introText);
 		frame.setVisible(true);
+		
+		String eventName = dataDirectory.getName();
+		
+		
+		ArrayList<File> jsonFileList = new ArrayList<File>();
+		File teamNameList = null;
+		
+		for(File file : FileManager.getFilesFromDirectory(dataDirectory)){
+			String fileName = file.getName();
+			
+			if(fileName.split(FILE_EXTENSION_REGEX)[1].equals("json")&&fileName.contains(eventName)&&fileName.contains("Data"))
+				jsonFileList.add(file);
+			if(fileName.split(FILE_EXTENSION_REGEX)[1].equals("csv")&&fileName.contains(eventName)&&fileName.contains("TeamNames"))
+				teamNameList = file;
+		}
+		
+		
+		System.out.println(teamNameList.getAbsolutePath());
+		
+		EventReport report = new EventReport(FileManager.deserializeData(jsonFileList));
+		if(teamNameList!=null)
+			report.setTeamNameList(teamNameList);
+		report.generateReports();
+		introText.setText("<html><h1>Processing data</h1><br>Done!</html>");
+		
 	}
 	
 	public static JFrame addIcon(JFrame frame){
@@ -95,7 +106,7 @@ public class Window {
 		startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				
-				dataDirectory = selectFolder(frame, "Select data folder");
+				dataDirectory = FileManager.selectFolder(frame, "Select data folder");
 				if(dataDirectory!=null){
 					frame.setVisible(false);
 					processData(frame);
@@ -108,7 +119,7 @@ public class Window {
 		downloadButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				JFrame eventCodePrompt = addIcon(new JFrame());
-				File outputDirectory = selectFolder(eventCodePrompt, "Select output folder");
+				File outputDirectory = FileManager.selectFolder(eventCodePrompt, "Select output folder");
 				if(outputDirectory==null)
 					return;
 				eventCodePrompt.setIconImage(null);
