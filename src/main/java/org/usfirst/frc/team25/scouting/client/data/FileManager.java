@@ -18,6 +18,14 @@ import com.google.gson.reflect.TypeToken;
 
 public class FileManager {
 	
+	public static void outputFile(File file, String fileContents){
+		
+	}
+	
+	public static void outputFile(String fileName, String extension, String fileContents){
+		
+	}
+	
 	public static File selectFolder(JFrame frame, String dialogTitle){
 		JFileChooser chooser = new JFileChooser(); 
 	    chooser.setCurrentDirectory(new java.io.File("."));
@@ -51,12 +59,11 @@ public class FileManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return contents;
 	}
 	
-	public static void writeFile(String fileContents, String fileName){
-		
-	}
+	
 	
 	public static ArrayList<ScoutEntry> deserializeData(ArrayList<File> fileNames){
 		ArrayList<ScoutEntry> allEntries =  new ArrayList<ScoutEntry>();

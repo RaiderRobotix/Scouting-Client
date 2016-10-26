@@ -2,8 +2,8 @@ package org.usfirst.frc.team25.scouting.client.models;
 
 
 
-/**
- * Created by sng on 6/30/2016.
+/** PostMatch object model to deserialize JSON data. 
+ *  Modify as necessary for each season.
  */
 public class PostMatch {
 

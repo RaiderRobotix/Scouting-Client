@@ -3,6 +3,9 @@ package org.usfirst.frc.team25.scouting.client.models;
 
 import java.io.Serializable;
 
+/** ScoutEntry object model to deserialize JSON data. 
+ *  Probably doesn't need to be modified
+ */
 
 public class ScoutEntry implements Serializable {
 

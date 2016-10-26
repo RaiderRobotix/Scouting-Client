@@ -22,14 +22,28 @@ import org.usfirst.frc.team25.scouting.client.data.BlueAlliance;
 import org.usfirst.frc.team25.scouting.client.data.EventReport;
 import org.usfirst.frc.team25.scouting.client.data.FileManager;
 
+/** Main class; used to initialize the GUI
+ * 
+ * @author sng
+ *
+ */
+
 public class Window {
 	
+	/** When processing data, dataDirectory must have the qualified <code>short_name</code> for the event
+	 *  Downloaded data from TBA should be in same folder as well
+	 *  Output spreadsheets/summary reports to be written to same folder
+	 */
 	static File dataDirectory;
 	
+	//Regular expression to split filename into name and extension
 	public static final String FILE_EXTENSION_REGEX = "\\.(?=[^\\.]+$)";
 	
 
-	
+	/** Processes data
+	 * TODO: Make a better GUI with user feedback
+	 * @param frame JFrame to be modified
+	 */
 	public static void processData(JFrame frame){
 		JLabel introText = new JLabel("<html><h1>Processing data</h1><br>Processing...</html>");
 		introText.setHorizontalAlignment(JLabel.CENTER);
@@ -43,6 +57,7 @@ public class Window {
 		ArrayList<File> jsonFileList = new ArrayList<File>();
 		File teamNameList = null;
 		
+		//Gets a list of data files in directory. JSON is required, csv is optional
 		for(File file : FileManager.getFilesFromDirectory(dataDirectory)){
 			String fileName = file.getName();
 			
@@ -59,10 +74,16 @@ public class Window {
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
 		report.generateReports();
-		introText.setText("<html><h1>Processing data</h1><br>Done!</html>");
+		
+		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); //TODO Change this
 		
 	}
 	
+	/**
+	 * Adds the Team 25 logo to the window
+	 * @param frame JFrame to be modified
+	 * @return Modified JFrame
+	 */
 	public static JFrame addIcon(JFrame frame){
 		try {
 		    frame.setIconImage(ImageIO.read(new File("res/logo.png")));
@@ -91,12 +112,13 @@ public class Window {
 		JButton downloadButton = new JButton("Download");
 		JPanel panel = new JPanel(new GridLayout(1,2,1,1));
 		panel.add(startButton);
-		panel.add(downloadButton);
+		panel.add(downloadButton); //Elements are added to the JFrame. TODO Improve readability?
 		startButton.setSize(100,70);
 		frame.getContentPane().add(panel, BorderLayout.SOUTH);
 		
 		frame.setSize(500, 200);
 		
+		//Sets window to launch at the center of screen
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
 		
@@ -127,7 +149,7 @@ public class Window {
 				
 				String userInput = JOptionPane.showInputDialog(eventCodePrompt,
 						"Enter the event code or \"25\" to download data for all events", "Enter event code",JOptionPane.PLAIN_MESSAGE);
-				if(userInput.contains("25"))
+				if(userInput.contains("25")) // Gonna be a problem in 2025...
 					BlueAlliance.downloadRaiderEvents(outputDirectory);
 				else if(userInput==null)
 					return;
