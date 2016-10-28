@@ -73,7 +73,7 @@ public class Window {
 		EventReport report = new EventReport(FileManager.deserializeData(jsonFileList));
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
-		report.generateReports();
+		report.generateReports(dataDirectory);
 		
 		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); //TODO Change this
 		
@@ -149,8 +149,14 @@ public class Window {
 				
 				String userInput = JOptionPane.showInputDialog(eventCodePrompt,
 						"Enter the event code or \"25\" to download data for all events", "Enter event code",JOptionPane.PLAIN_MESSAGE);
-				if(userInput.contains("25")) // Gonna be a problem in 2025...
-					BlueAlliance.downloadRaiderEvents(outputDirectory);
+				
+				if(userInput.contains("25")){ // Gonna be a problem in 2025...
+					String[] splitInput = userInput.split("\\+");
+					if(splitInput.length==1)
+						BlueAlliance.downloadRaiderEvents(outputDirectory);
+					else BlueAlliance.downloadRaiderEvents(outputDirectory, Integer.parseInt(splitInput[1]));
+					
+				}
 				else if(userInput==null)
 					return;
 				else if(!BlueAlliance.downloadEventData(outputDirectory, userInput)) //Invalid event code

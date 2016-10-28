@@ -8,10 +8,22 @@ import java.util.Map;
 
 import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
 
+/** Object model holding all data for an event
+ * 
+ * @author sng
+ *
+ */
 public class EventReport {
 	
+	/** Unsorted list of ScoutEntrys TODO create method to sort them
+	 * 
+	 */
 	ArrayList<ScoutEntry> scoutEntries;
 	File teamNameList;
+	
+	/** Dictionary of TeamReports, based on team number
+	 * 
+	 */
 	HashMap<Integer, TeamReport> teamReports = new HashMap<Integer, TeamReport>(); 
 	
 	public EventReport(ArrayList<ScoutEntry> entries){
@@ -31,14 +43,24 @@ public class EventReport {
 		teamNameList = list;
 	}
 	
-	public void generateReports(){
+	/** Generates all LaTeX-based PDF summary reports for the current event
+	 * TODO finish this
+	 * @param outputDirectory Output directory for generated files
+	 */
+	public void generateReports(File outputDirectory){
 		//Iterates through the HashMap
-				for (TeamReport report : teamReports.values()) {
-				    report.autoGetTeamName(teamNameList);
-				    
-				}
-				
+		for (TeamReport report : teamReports.values()) {
+		    report.autoGetTeamName(teamNameList);
+		    report.generateReport(outputDirectory);
+		}
 		
+	}
+	
+	/** Serializes the ArrayList of all ScoutEntrys into a JSON file
+	 * TODO finish this
+	 * @param outputDirectory
+	 */
+	public void generateCombineJson(File outputDirectory){
 		
 	}
 

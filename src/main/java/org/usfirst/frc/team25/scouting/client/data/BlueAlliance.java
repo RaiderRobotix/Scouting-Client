@@ -19,7 +19,6 @@ import com.adithyasairam.tba4j.models.Team;
 /** Class of static methods used to interface with online data from The Blue Alliance
  *  Utilizes TBA Java API written by Adithya Sairam
  *  @author sng
- *
  */
 public class BlueAlliance {
 	
@@ -27,11 +26,11 @@ public class BlueAlliance {
 	/** Exports a simple comma delimited sorted file of teams playing at an event.
 	 *  Output file intended to be read by Scouting App
 	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
-	 * @param fileName File name of output file. Should be a csv.
+	 * @param fileName File name of output file, without extension
 	 */
 	 static void exportSimpleTeamList(String eventCode, String fileName){
-		try {
-			PrintWriter outputFile = new PrintWriter(fileName);
+		
+		
 			String teamList = "";
 			ArrayList<Team> teams = Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(Events.getEventTeamsList(eventCode))));
 			for(Team team : teams)
@@ -39,76 +38,51 @@ public class BlueAlliance {
 			StringBuilder output = new StringBuilder(teamList);
 			output.setCharAt(output.length()-1, ' ');
 			
-			outputFile.write(output.toString());
-			outputFile.close();
-	    	
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+			FileManager.outputFile(fileName, "csv", teamList);
+		
 		
 	}
 	
 	/** Exports a comma and line break delimited file of team numbers and names at an event. 
 	 * Each line contains a comma delimited pair of team number and team nickname.
 	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
-	 * @param fileName File name of output file. Should be a csv.
+	 * @param fileName File name of output file, without extension
 	 */
 	
 	 static void exportTeamList(String eventCode, String fileName){
-		try {
-			PrintWriter outputFile = new PrintWriter(fileName);
-			String teamList = "";
+		
+		String teamList = "";
 			
 			for(Team team : Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(Events.getEventTeamsList(eventCode)))))
 	    		teamList+=team.team_number + ","+team.nickname+",\n";
-			
-			
-			
-			outputFile.write(teamList);
-			outputFile.close();
-	    	
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FileManager.outputFile(fileName, "csv", teamList);
 		
 	}
 	
 	/** Generates a file with list of teams playing in each match
-	 * Line number is equal to match number
-	 * Each line contains comma delimited team numbers for red alliance, then blue alliance.
+	 * Each line contains comma delimited match number, then team numbers for red alliance, then blue alliance.
 	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
-	 * @param fileName File name of output. Should be csv.
+	 * @param fileName File name of output, without extension
 	 */
 	 static void exportMatchList(String eventCode, String fileName){
-		try {
-			PrintWriter outputFile = new PrintWriter(fileName);
-			String matchList = "";
-			for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(Events.getEventMatches(eventCode)))))){
-				
-					matchList+=match.match_number+",";
-					for(int i = 0; i < 2; i++)
-						for(int j = 0; j < 3; j++)
-							//A ternary operator is used here for convenience. TODO fix this unreadable mess 
-							matchList+= i==0 ? match.alliances.red.teams[j].split("frc")[1]+",": match.alliances.blue.teams[j].split("frc")[1]+",";
-					matchList+=",\n";
-				
-				
-			}
-	    	
-			outputFile.write(matchList);
-			outputFile.close();
-	    	
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String matchList = "";
+		for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(Events.getEventMatches(eventCode)))))){
+			
+				matchList+=match.match_number+",";
+				for(int i = 0; i < 2; i++)
+					for(int j = 0; j < 3; j++)
+						//A ternary operator is used here for convenience. TODO fix this unreadable mess 
+						matchList+= i==0 ? match.alliances.red.teams[j].split("frc")[1]+",": match.alliances.blue.teams[j].split("frc")[1]+",";
+				matchList+=",\n";
+			
+			
 		}
+		FileManager.outputFile(fileName, "csv", matchList);
 		
 	}
 
-	/** Gets all 
-	 * 
-	 * @param outputFolder
+	/** Downloads all data from events that Team 25 is playing in for the current calendar year  
+	 * @param outputFolder Output folder for downloaded files
 	 */
 	public static void downloadRaiderEvents(File outputFolder){
 		
@@ -117,14 +91,30 @@ public class BlueAlliance {
 		
 	}
 	
+	/** Downloads all data from events that Team 25 is playing in for the specified year
+	 * @param outputFolder Output folder for downloaded files
+	 */
+	public static void downloadRaiderEvents(File outputFolder, int year){
+		
+		for(Event event : Teams.getTeamEvents("frc25", year))
+			downloadEventData(outputFolder, event.key);
+		
+	}
+	
+	/** Downloads the team lists and match lists for an FRC event
+	 * Generates appropriate file names from TBA based on the short_name of the event
+	 * @param outputFolder Output folder for downloaded files
+	 * @param eventCode Fully qualified event key
+	 * @return True if download of team list is successful, false otherwise
+	 */
 	public static boolean downloadEventData(File outputFolder, String eventCode){
 		try{
-			exportSimpleTeamList(eventCode, outputFolder.getAbsolutePath()+"\\Teams - " + Events.getEvent(eventCode).short_name + ".csv");
-			exportTeamList(eventCode, outputFolder.getAbsolutePath()+"\\TeamNames - " + Events.getEvent(eventCode).short_name + ".csv");
+			exportSimpleTeamList(eventCode, outputFolder.getAbsolutePath()+"\\Teams - " + Events.getEvent(eventCode).short_name);
+			exportTeamList(eventCode, outputFolder.getAbsolutePath()+"\\TeamNames - " + Events.getEvent(eventCode).short_name);
 		}catch(Exception e){
 			return false;
 		}
-		exportMatchList(eventCode, outputFolder.getAbsolutePath()+"\\Matches - " + Events.getEvent(eventCode).short_name + ".csv");
+		exportMatchList(eventCode, outputFolder.getAbsolutePath()+"\\Matches - " + Events.getEvent(eventCode).short_name);
 		return true;
 	}
 	
