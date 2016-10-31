@@ -74,6 +74,8 @@ public class Window {
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
 		report.generateReports(dataDirectory);
+		report.generateCombineJson(dataDirectory);
+		report.generateSpreadsheet(dataDirectory);
 		
 		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); //TODO Change this
 		

@@ -32,10 +32,7 @@ public class TeamReport {
 			if(values[i].split(",")[0].equals(Integer.toString(teamNum))){
 				teamName = values[i].split(",")[1];
 				return; //Terminates the method
-			}
-		
-		
-			
+			}	
 	}
 	
 	/**

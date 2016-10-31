@@ -3,10 +3,13 @@ package org.usfirst.frc.team25.scouting.client.data;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
+import org.usfirst.frc.team25.scouting.client.models.Autonomous;
+import org.usfirst.frc.team25.scouting.client.models.PreMatch;
 import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
+import org.usfirst.frc.team25.scouting.client.models.TeleOp;
+
+import com.google.gson.Gson;
 
 /** Object model holding all data for an event
  * 
@@ -20,9 +23,9 @@ public class EventReport {
 	 */
 	ArrayList<ScoutEntry> scoutEntries;
 	File teamNameList;
+	String event;
 	
 	/** Dictionary of TeamReports, based on team number
-	 * 
 	 */
 	HashMap<Integer, TeamReport> teamReports = new HashMap<Integer, TeamReport>(); 
 	
@@ -35,9 +38,12 @@ public class EventReport {
 			
 			teamReports.get(entry.getPreMatch().getTeamNum()).addEntry(entry);
 		}
+		event = scoutEntries.get(0).getPreMatch().getCurrentEvent();
 		
 		
 	}
+	
+	
 	
 	public void setTeamNameList(File list){
 		teamNameList = list;
@@ -56,12 +62,33 @@ public class EventReport {
 		
 	}
 	
+	/** Generates summary and team Excel spreadsheets 
+	 * 
+	 * @param outputDirectory Output directory for generated fiels
+	 */
+	public void generateSpreadsheet(File outputDirectory){
+		final String COMMA = ",";
+		String fileContents = "";
+		for(ScoutEntry entry : scoutEntries){
+			PreMatch pm = entry.getPreMatch();
+			Autonomous auto = entry.getAuto();
+			TeleOp tele = entry.getTeleOp();
+			
+			fileContents+=pm.getMatchNum()+COMMA+pm.getTeamNum();
+			fileContents+=entry.getPostMatch().comment;
+		}
+				
+		
+		FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\Data - All - " + event , "csv", fileContents);
+	}
+	
 	/** Serializes the ArrayList of all ScoutEntrys into a JSON file
-	 * TODO finish this
 	 * @param outputDirectory
 	 */
 	public void generateCombineJson(File outputDirectory){
-		
+		Gson gson = new Gson();
+		String jsonString = gson.toJson(scoutEntries);
+		FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\Data - All - " + event , "json", jsonString);
 	}
 
 }
