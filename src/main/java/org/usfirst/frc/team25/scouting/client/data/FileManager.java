@@ -1,14 +1,13 @@
 package org.usfirst.frc.team25.scouting.client.data;
 
-import java.awt.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -64,7 +63,7 @@ public class FileManager {
 	 */
 	public static File selectFolder(JFrame frame, String dialogTitle){
 		JFileChooser chooser = new JFileChooser(); 
-	    chooser.setCurrentDirectory(new File(".")); //GUI dialog opens at current location of application. Change?
+	    chooser.setCurrentDirectory(new File(System.getProperty("user.home")+"\\Documents\\FRC Data")); //GUI dialog opens at user path, documents, at a folder called FRC Data
 	    chooser.setDialogTitle(dialogTitle);
 	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 	    chooser.setAcceptAllFileFilterUsed(false);
@@ -101,6 +100,29 @@ public class FileManager {
 		}
 		
 		return contents;
+	}
+	
+	public static void deleteFile(String filePath){
+		try{
+			new File(filePath).delete();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	/** Executes a command line statement to generate a LaTeX file
+	 * 
+	 * @param outputDirectory Directory for the output PDF file
+	 * @param filePath Path to TeX source file
+	 */
+	public static void compilePdfLatex(String outputDirectory, String filePath){
+		try {
+			Runtime.getRuntime().exec("pdflatex -output-directory=" + outputDirectory + " " + filePath);
+			deleteFile(filePath);
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
 	}
 	
 	

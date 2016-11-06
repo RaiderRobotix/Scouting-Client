@@ -49,8 +49,8 @@ public class EventReport {
 		teamNameList = list;
 	}
 	
+	
 	/** Generates all LaTeX-based PDF summary reports for the current event
-	 * TODO finish this
 	 * @param outputDirectory Output directory for generated files
 	 */
 	public void generateReports(File outputDirectory){
@@ -64,18 +64,23 @@ public class EventReport {
 	
 	/** Generates summary and team Excel spreadsheets 
 	 * 
-	 * @param outputDirectory Output directory for generated fiels
+	 * @param outputDirectory Output directory for generated fields
 	 */
 	public void generateSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
-		String fileContents = "";
+		String header = "";
+		String fileContents = header + "\n";
 		for(ScoutEntry entry : scoutEntries){
 			PreMatch pm = entry.getPreMatch();
 			Autonomous auto = entry.getAuto();
 			TeleOp tele = entry.getTeleOp();
 			
-			fileContents+=pm.getMatchNum()+COMMA+pm.getTeamNum();
-			fileContents+=entry.getPostMatch().comment;
+			fileContents+=pm.getMatchNum()+COMMA+pm.getTeamNum()+COMMA;
+			fileContents+=auto.getHighShots()+COMMA+auto.getLowShots()+COMMA;
+			fileContents+=tele.getHighShots()+COMMA+tele.getLowShots()+COMMA+tele.isTowerBreached()+COMMA+tele.isTowerScaled()+COMMA;
+			fileContents+=entry.getPostMatch().comment+COMMA+'\n';
+			
+			
 		}
 				
 		
