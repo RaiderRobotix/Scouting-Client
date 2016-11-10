@@ -1,6 +1,6 @@
 ##FRC Scouting Client
 
-A Java-based desktop client that processes scouting data from JSON files and pulls data from The Blue Alliance
+A Java-based desktop client that processes scouting data from JSON files and pulls data from The Blue Alliance. To be used with the [Android scouting app](https://github.com/spencerng/Scouting-App)
 
 Features:
  
