@@ -129,11 +129,11 @@ public class Window {
 		
 		startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
-				dataDirectory = FileManager.selectFolder(frame, "Select data folder");
+				final JFrame dataFrame = frame;
+				dataDirectory = FileManager.selectFolder(dataFrame, "Select data folder");
 				if(dataDirectory!=null){
-					frame.setVisible(false);
-					processData(frame);
+					dataFrame.setVisible(false);
+					processData(dataFrame);
 				}
 				
 					
