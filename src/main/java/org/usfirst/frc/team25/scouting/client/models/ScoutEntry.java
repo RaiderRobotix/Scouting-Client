@@ -13,6 +13,7 @@ public class ScoutEntry implements Serializable {
     Autonomous auto;
     TeleOp teleOp;
     PostMatch postMatch;
+    int score;
 
     //Actual member variables will be set using setters as data is filled in
     public ScoutEntry() {}
@@ -48,6 +49,14 @@ public class ScoutEntry implements Serializable {
     public void setPostMatch(PostMatch postMatch) {
         this.postMatch = postMatch;
     }
+    
+    public int getScore(){
+    	return score;
+    }
 
+    public void approximateScore(){
+    	score = (auto.reached ? 1:0)*5+(auto.crossed ? 1:0)*10+auto.lowShots*5+auto.highShots*10
+    			+teleOp.highShots*5+teleOp.lowShots*5+(teleOp.towerBreached?1:0)*5+(teleOp.towerScaled?1:0)*15;
+    }
 
 }

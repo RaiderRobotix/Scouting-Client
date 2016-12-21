@@ -32,6 +32,7 @@ public class EventReport {
 	public EventReport(ArrayList<ScoutEntry> entries){
 		scoutEntries = entries;
 		for(ScoutEntry entry : scoutEntries){
+			entry.approximateScore();
 			int teamNum = entry.getPreMatch().getTeamNum();
 			if(!teamReports.containsKey(teamNum))
 				teamReports.put(teamNum, new TeamReport(teamNum));

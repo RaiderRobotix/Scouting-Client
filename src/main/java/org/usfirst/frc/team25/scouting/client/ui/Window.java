@@ -68,11 +68,11 @@ public class Window {
 		}
 		
 		
-		System.out.println(teamNameList.getAbsolutePath());
-		
 		EventReport report = new EventReport(FileManager.deserializeData(jsonFileList));
+		
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
+		
 		report.generateReports(dataDirectory);
 		report.generateCombineJson(dataDirectory);
 		report.generateSpreadsheet(dataDirectory);
@@ -170,6 +170,7 @@ public class Window {
 	}
 	
 	public static void main(String[] args){
+		
 		
 		initialize();
 	}

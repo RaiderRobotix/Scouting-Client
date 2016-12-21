@@ -24,6 +24,8 @@ import com.google.gson.reflect.TypeToken;
  */
 public class FileManager {
 	
+	public static final String FILE_EXTENSION_REGEX = "\\.(?=[^\\.]+$)";
+	
 	/** Writes a string to a output target file
 	 * 
 	 * @param file File object containing the output filename and directory
@@ -104,22 +106,32 @@ public class FileManager {
 	
 	public static void deleteFile(String filePath){
 		try{
-			new File(filePath).delete();
+			File file = new File(filePath);
+			System.out.println(file.delete());
+			
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
 	/** Executes a command line statement to generate a LaTeX file
-	 * 
+	 * Deletes excess files as well
 	 * @param outputDirectory Directory for the output PDF file
 	 * @param filePath Path to TeX source file
 	 */
 	public static void compilePdfLatex(String outputDirectory, String filePath){
 		try {
 			Runtime.getRuntime().exec("pdflatex -output-directory=" + outputDirectory + " " + filePath);
-			deleteFile(filePath);
-		} catch (IOException e) {
+			String[] directories = filePath.split("\\\\");
+			String fileName = directories[directories.length-1].split(FILE_EXTENSION_REGEX)[0];
+			
+			Thread.sleep(500); //Needed to register files into filesystem
+			
+			deleteFile(outputDirectory+"\\"+fileName+".aux");
+			deleteFile(outputDirectory+"\\"+fileName+".log");
+			
+		} catch (Exception e) {
 			
 			e.printStackTrace();
 		}
