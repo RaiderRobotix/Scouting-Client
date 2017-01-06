@@ -69,8 +69,8 @@ public class BlueAlliance {
 		for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(Events.getEventMatches(eventCode)))))){
 			
 				matchList+=match.match_number+",";
-				for(int i = 0; i < 2; i++)
-					for(int j = 0; j < 3; j++)
+				for(int i = 0; i < 2; i++) //iterate through two alliances
+					for(int j = 0; j < 3; j++) //iterate through teams in alliance
 						//A ternary operator is used here for convenience. TODO fix this unreadable mess 
 						matchList+= i==0 ? match.alliances.red.teams[j].split("frc")[1]+",": match.alliances.blue.teams[j].split("frc")[1]+",";
 				matchList+=",\n";

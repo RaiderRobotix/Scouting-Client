@@ -18,7 +18,7 @@ public class Sorters {
 	 * @param events ArrayList of Match objects
 	 * @return Same list, sorted by ascending match number
 	 */
-	public static ArrayList<Match> sortByMatchNum(ArrayList<Match> matches){
+	static ArrayList<Match> sortByMatchNum(ArrayList<Match> matches){
 		
 		Collections.sort(matches, new Comparator<Match>(){
 			public int compare(Match m1, Match m2){
@@ -32,7 +32,7 @@ public class Sorters {
 	 * @param events List of Team objects
 	 * @return Same list, sorted by ascending team number
 	 */
-	public static ArrayList<Team> sortByTeamNum(ArrayList<Team> events){
+	static ArrayList<Team> sortByTeamNum(ArrayList<Team> events){
 		
 		Collections.sort(events, new Comparator<Team>(){
 			public int compare(Team t1, Team t2){
