@@ -1,6 +1,6 @@
-##FRC Scouting Client
+##FRC Scouting Client [![Build Status](https://travis-ci.org/spencerng/Scouting-Client.svg?branch=master)](https://travis-ci.org/spencerng/Scouting-Client)
 
-A Java-based desktop client that processes scouting data from JSON files and pulls data from The Blue Alliance
+A Java-based desktop client that processes scouting data from JSON files and pulls data from The Blue Alliance. To be used with the [Android scouting app](https://github.com/spencerng/Scouting-App)
 
 Features:
  

@@ -35,20 +35,30 @@ public class TeamReport {
 			}	
 	}
 	
-	/**
-	 * 
-	 * @return Team number of the team
-	 */
+
 	public int getTeamNum(){
 		return teamNum;
 	}
 	
-	/** Adds a ScoutEntry to the list of entries
-	 * 
-	 * @param entry ScoutEntry to be added
-	 */
+
 	public void addEntry(ScoutEntry entry){
 		entries.add(entry);
+	}
+	
+	public void firstPickAbility(){
+		//Calculate ability as alliance parter - change this every season
+	}
+	
+	public void secondPickAbility(){
+		//Calculate ability as alliance parter - change this every season
+	}
+	
+	public void autoAbility(){
+		
+	}
+	
+	public void teleAbility(){
+		
 	}
 	
 	

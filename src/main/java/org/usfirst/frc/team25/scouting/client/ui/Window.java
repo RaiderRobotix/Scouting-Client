@@ -68,11 +68,11 @@ public class Window {
 		}
 		
 		
-		System.out.println(teamNameList.getAbsolutePath());
-		
 		EventReport report = new EventReport(FileManager.deserializeData(jsonFileList));
+		
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
+		
 		report.generateReports(dataDirectory);
 		report.generateCombineJson(dataDirectory);
 		report.generateSpreadsheet(dataDirectory);
@@ -129,11 +129,11 @@ public class Window {
 		
 		startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
-				dataDirectory = FileManager.selectFolder(frame, "Select data folder");
+				final JFrame dataFrame = frame;
+				dataDirectory = FileManager.selectFolder(dataFrame, "Select data folder");
 				if(dataDirectory!=null){
-					frame.setVisible(false);
-					processData(frame);
+					dataFrame.setVisible(false);
+					processData(dataFrame);
 				}
 				
 					
