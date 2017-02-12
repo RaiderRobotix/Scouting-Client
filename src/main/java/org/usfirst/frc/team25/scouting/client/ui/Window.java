@@ -37,7 +37,7 @@ public class Window {
 	static File dataDirectory;
 	
 	//Regular expression to split filename into name and extension
-	public static final String FILE_EXTENSION_REGEX = "\\.(?=[^\\.]+$)";
+	public static final String FILE_EXTENSION_REGEX = "\\.";
 	
 
 	/** Processes data
@@ -57,15 +57,24 @@ public class Window {
 		ArrayList<File> jsonFileList = new ArrayList<File>();
 		File teamNameList = null;
 		
+		
 		//Gets a list of data files in directory. JSON is required, csv is optional
 		for(File file : FileManager.getFilesFromDirectory(dataDirectory)){
 			String fileName = file.getName();
 			
-			if(fileName.split(FILE_EXTENSION_REGEX)[1].equals("json")&&fileName.contains(eventName)&&fileName.contains("Data"))
+			
+			try{
+			if(fileName.split(FILE_EXTENSION_REGEX)[1].equals("json")&&fileName.contains(eventName)&&fileName.contains("Data")){
 				jsonFileList.add(file);
+				
+			}
 			if(fileName.split(FILE_EXTENSION_REGEX)[1].equals("csv")&&fileName.contains(eventName)&&fileName.contains("TeamNames"))
 				teamNameList = file;
+			}catch(ArrayIndexOutOfBoundsException e){
+				
+			}//Caused when there is only a directory, no file
 		}
+		
 		
 		
 		EventReport report = new EventReport(FileManager.deserializeData(jsonFileList));
@@ -73,7 +82,6 @@ public class Window {
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
 		
-		report.generateReports(dataDirectory);
 		report.generateCombineJson(dataDirectory);
 		report.generateSpreadsheet(dataDirectory);
 		

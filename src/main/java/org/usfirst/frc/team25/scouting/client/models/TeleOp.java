@@ -63,26 +63,23 @@ public class TeleOp {
         this.readyTakeoff = readyTakeoff;
     }
 
-    public boolean isUseReturnLoading() {
-        return useReturnLoading;
-    }
 
-    public void setUseReturnLoading(boolean useReturnLoading) {
-        this.useReturnLoading = useReturnLoading;
-    }
 
-    public boolean isUseOverflowLoading() {
-        return useOverflowLoading;
-    }
+    int lowGoals, highGoals, gearsDelivered, hopppersUsed,  rotorsStarted, numCycles;
+    public int getNumCycles() {
+		return numCycles;
+	}
 
-    public void setUseOverflowLoading(boolean useOverflowLoading) {
-        this.useOverflowLoading = useOverflowLoading;
-    }
+	public void setNumCycles(int numCycles) {
+		this.numCycles = numCycles;
+	}
 
-    int lowGoals, highGoals, gearsDelivered, hopppersUsed,  rotorsStarted;
-    boolean attemptTakeoff, readyTakeoff, useReturnLoading, useOverflowLoading;
 
-    public TeleOp(int lowGoals, int highGoals, int gearsDelivered, int hopppersUsed, int rotorsStarted, boolean attemptTakeoff, boolean readyTakeoff, boolean useReturnLoading, boolean useOverflowLoading) {
+
+	boolean attemptTakeoff, readyTakeoff;
+
+    public TeleOp(int lowGoals, int highGoals, int gearsDelivered, int hopppersUsed, int rotorsStarted, 
+    		boolean attemptTakeoff, boolean readyTakeoff, int numCycles) {
         this.lowGoals = lowGoals;
         this.highGoals = highGoals;
         this.gearsDelivered = gearsDelivered;
@@ -90,7 +87,6 @@ public class TeleOp {
         this.rotorsStarted = rotorsStarted;
         this.attemptTakeoff = attemptTakeoff;
         this.readyTakeoff = readyTakeoff;
-        this.useReturnLoading = useReturnLoading;
-        this.useOverflowLoading = useOverflowLoading;
+        this.numCycles = numCycles;
     }
 }

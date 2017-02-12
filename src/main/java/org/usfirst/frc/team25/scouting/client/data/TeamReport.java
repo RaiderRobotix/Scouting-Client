@@ -12,7 +12,7 @@ import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
  */
 public class TeamReport {
 	
-	private int teamNum;
+	private transient int teamNum;
 	private ArrayList<ScoutEntry> entries;
 	String teamName;
 	
@@ -61,13 +61,5 @@ public class TeamReport {
 		
 	}
 	
-	
-	/** Generates a LaTeX-based PDF summary report based on the team's performance, with charts and graphs 
-	 * 
-	 * @param outputDirectory Directory that report is written to
-	 */
-	public void generateReport(File outputDirectory){
-		
-	}
 
 }

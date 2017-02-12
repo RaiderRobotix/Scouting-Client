@@ -3,15 +3,12 @@ package org.usfirst.frc.team25.scouting.client.models;
 
 import java.io.Serializable;
 
-/** Container object for all parts of a match
- *  To be serialized into JSON
- */
 public class ScoutEntry implements Serializable {
 
-    private PreMatch preMatch;
-    private Autonomous auto;
-    private TeleOp teleOp;
-    private PostMatch postMatch;
+    public PreMatch preMatch;
+    public Autonomous auto;
+    public TeleOp teleOp;
+    public PostMatch postMatch;
 
     //Actual member variables will be set using setters as data is filled in
     public ScoutEntry() {}
@@ -47,6 +44,13 @@ public class ScoutEntry implements Serializable {
     public void setPostMatch(PostMatch postMatch) {
         this.postMatch = postMatch;
     }
+
+	
+
+	public void approximateScore() {
+		
+		
+	}
 
 
 }

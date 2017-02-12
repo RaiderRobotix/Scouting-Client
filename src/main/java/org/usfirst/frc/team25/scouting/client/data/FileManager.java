@@ -145,13 +145,16 @@ public class FileManager {
 	 */
 	public static ArrayList<ScoutEntry> deserializeData(ArrayList<File> fileNames){
 		ArrayList<ScoutEntry> allEntries =  new ArrayList<ScoutEntry>();
+		
 		for(File file : fileNames){
+			
 			ArrayList<ScoutEntry> fileEntries = new Gson().fromJson(getFileString(file), 
 					new TypeToken<ArrayList<ScoutEntry>>(){}.getType());
 			for(ScoutEntry entry: fileEntries)
 				allEntries.add(entry);
 		
 		}
+		
 		return allEntries;
 		
 	}
