@@ -82,8 +82,12 @@ public class Window {
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
 		
+		
+		report.generateRawSpreadsheet(dataDirectory);
+		report.processTeamReports();
 		report.generateCombineJson(dataDirectory);
-		report.generateSpreadsheet(dataDirectory);
+		report.generateTeamReportJson(dataDirectory);
+		report.generateTeamReportSpreadsheet(dataDirectory);
 		
 		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); //TODO Change this
 		
