@@ -18,16 +18,18 @@ public class TeamReport {
 	String teamName;
 	
 	//TODO calculate these values and update EventReport
-		double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage;
+		double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage, avgHighGoals, avgLowGoals;
 		boolean autoShootsKey;
-		double autoAbility, teleOpAbility, driveTeamAbility, robotQualities;
+		double autoAbility, teleOpAbility, driveTeamAbility, robotQualities, sdHighGoals, sdLowGoals;
 		double firstPickAbility, secondPickAbility;
 	
 	double avgAutoScore, avgTeleOpScore, avgMatchScore, avgAutoKpa, avgTeleOpGears, avgTotalFuel, avgHoppers;
 	
 	
 	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdTeleOpGears, sdTotalFuel;
-	double takeoffAttemptPercentage, takeoffSuccessPercentage;// attempt is out of all matches; success is for each attempt
+	
+	//TODO fix this
+	double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffSuccessPercentage;// attempt is out of all matches; success is for each attempt
 	double pilotPlayPercentage;
 	
 	ArrayList<String> frequentRobotComment = new ArrayList<>(), frequentPilotComment = new ArrayList<>();
