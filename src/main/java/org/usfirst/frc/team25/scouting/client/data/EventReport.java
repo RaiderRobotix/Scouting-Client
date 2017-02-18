@@ -47,12 +47,16 @@ public class EventReport {
 	}
 	
 	public void processTeamReports(){
-		int i = 0;
+		
 		for(Integer key : teamReports.keySet()){
-			i++;
+		
 			TeamReport report = teamReports.get(key);
-			report.autoGetTeamName(teamNameList);
+			if(teamNameList!=null){
+				report.autoGetTeamName(teamNameList);
+				System.out.println(key);
+			}
 			report.calculateStats();
+			
 			
 			teamReports.put(key, report);
 		}
@@ -75,7 +79,7 @@ public class EventReport {
 				+ "driveTeamAbility,robotQualities,firstPickAbility,secondPickAbility,frequentRobotCommentStr,frequentPilotCommentStr,\n";
 		
 		
-		String fileContents = header + "\n";
+		String fileContents = header;
 		for(int key : teamReports.keySet()){
 			TeamReport report = teamReports.get(key);
 			fileContents += report.teamNum+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+report.avgTeleOpScore+COMMA+report.avgMatchScore+
@@ -176,11 +180,14 @@ public class EventReport {
 	 */
 	public void generateTeamReportJson(File outputDirectory){
 
-			
 		Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
 		
+		ArrayList<TeamReport> teamReportList = new ArrayList<>();
 		
-		String jsonString = gson.toJson(teamReports);
+		for(int key : teamReports.keySet())
+			teamReportList.add(teamReports.get(key));
+		
+		String jsonString = gson.toJson(teamReportList);
 		try {
 			FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\TeamReports - " + event , "json", jsonString);
 		} catch (FileNotFoundException e) {

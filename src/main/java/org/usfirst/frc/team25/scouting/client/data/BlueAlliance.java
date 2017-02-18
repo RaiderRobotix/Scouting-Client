@@ -28,7 +28,7 @@ public class BlueAlliance {
 	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
 	 * @param fileName File name of output file, without extension
 	 */
-	 static void exportSimpleTeamList(String eventCode, String fileName){
+	 static void exportSimpleTeamList(String eventCode, String fileName) throws FileNotFoundException{
 		
 		
 			String teamList = "";
@@ -49,7 +49,7 @@ public class BlueAlliance {
 	 * @param fileName File name of output file, without extension
 	 */
 	
-	 static void exportTeamList(String eventCode, String fileName){
+	 static void exportTeamList(String eventCode, String fileName)throws FileNotFoundException{
 		
 		String teamList = "";
 			
@@ -64,7 +64,7 @@ public class BlueAlliance {
 	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
 	 * @param fileName File name of output, without extension
 	 */
-	 static void exportMatchList(String eventCode, String fileName){
+	 static void exportMatchList(String eventCode, String fileName) throws FileNotFoundException{
 		String matchList = "";
 		for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(Events.getEventMatches(eventCode)))))){
 			
@@ -111,10 +111,11 @@ public class BlueAlliance {
 		try{
 			exportSimpleTeamList(eventCode, outputFolder.getAbsolutePath()+"\\Teams - " + Events.getEvent(eventCode).short_name);
 			exportTeamList(eventCode, outputFolder.getAbsolutePath()+"\\TeamNames - " + Events.getEvent(eventCode).short_name);
+			exportMatchList(eventCode, outputFolder.getAbsolutePath()+"\\Matches - " + Events.getEvent(eventCode).short_name);
 		}catch(Exception e){
 			return false;
 		}
-		exportMatchList(eventCode, outputFolder.getAbsolutePath()+"\\Matches - " + Events.getEvent(eventCode).short_name);
+		
 		return true;
 	}
 	

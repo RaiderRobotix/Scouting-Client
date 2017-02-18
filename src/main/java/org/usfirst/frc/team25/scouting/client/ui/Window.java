@@ -94,9 +94,10 @@ public class Window {
 		report.generateRawSpreadsheet(dataDirectory);
 		report.processTeamReports();
 		
-		if(report.generateCombineJson(dataDirectory)&&jsonFileList.size()!=1) //combined JSON file successfully generated
+		if(report.generateCombineJson(dataDirectory)) //combined JSON file successfully generated
 			for(File file : jsonFileList)
-				file.delete();
+				if(!file.getName().contains("All"))
+					file.delete();
 		
 		report.generateTeamReportJson(dataDirectory);
 		report.generateTeamReportSpreadsheet(dataDirectory);
@@ -183,8 +184,7 @@ public class Window {
 					else BlueAlliance.downloadRaiderEvents(outputDirectory, Integer.parseInt(splitInput[1]));
 					
 				}
-				else if(userInput==null)
-					return;
+				
 				else if(!BlueAlliance.downloadEventData(outputDirectory, userInput)) //Invalid event code
 					JOptionPane.showMessageDialog(eventCodePrompt, "Invalid event code. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
 				

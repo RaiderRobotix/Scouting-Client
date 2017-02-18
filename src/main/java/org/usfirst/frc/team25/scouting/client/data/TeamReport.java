@@ -13,9 +13,9 @@ import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
  */
 public class TeamReport {
 	
-	private ArrayList<ScoutEntry> entries;
+	transient private ArrayList<ScoutEntry> entries;
 	
-	transient int teamNum; //transient because it's the key of the HashMap in EventReport
+	int teamNum; //transient because it's the key of the HashMap in EventReport
 	String teamName;
 
 	double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage, 
@@ -39,11 +39,11 @@ public class TeamReport {
 	//Instance variables below should not be serialized but may be accessed by EventReports for analysis
 	
 	transient String frequentRobotCommentStr = "", frequentPilotCommentStr = "";
-	transient int totalTakeoffAttempts, totalTakeoffSuccesses, totalPilotPlaying, 
+	int totalTakeoffAttempts, totalTakeoffSuccesses, totalPilotPlaying, 
 		totalReachBaseline, totalAutoShootsKey;
-	transient int[] totalHoppers, totalFuel, teleOpGears, autoKpas, autoScores, teleOpScores, matchScores,
+	int[] totalHoppers, totalFuel, teleOpGears, autoKpas, autoScores, teleOpScores, matchScores,
 		totalCycles, totalHighGoals, totalLowGoals, autoGears, teleOpKpa;
-	transient double[] totalPointsPerCycle;
+	double[] totalPointsPerCycle;
 	
 	public TeamReport(int teamNum){
 		this.teamNum = teamNum;
@@ -56,11 +56,11 @@ public class TeamReport {
 	 */
 	public void autoGetTeamName(File dataLocation){
 		String data = FileManager.getFileString(dataLocation);
-		String[] values = data.split(",\r\n");
+		String[] values = data.split(",\n");
 		
 		for(int i = 0; i < values.length; i++){	
 			if(values[i].split(",")[0].equals(Integer.toString(teamNum))){
-
+				
 				teamName = values[i].split(",")[1];
 				return; //Terminates the method
 			}	
@@ -211,7 +211,7 @@ public class TeamReport {
 		for(String comment : frequentRobotComment)
 			frequentRobotCommentStr+=comment+';';
 		for(String comment : frequentPilotComment)
-			frequentPilotCommentStr+=comment+';';
+			frequentPilotCommentStr+=comment+"; ";
 		
 		computeRankingMetrics();
 				
