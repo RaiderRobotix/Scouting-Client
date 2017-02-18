@@ -1,9 +1,13 @@
 fields = ['teamNum','teamName','avgAutoScore', 'avgTeleOpScore','avgMatchScore',
-          'avgAutoKpa','avgTeleOpGears', 'avgTotalFuel',
+          'avgAutoKpa', 'avgTeleOpKpa', 'avgAutoGears','avgTeleOpGears', 'avgTotalFuel',
           'avgHoppers', 'sdAutoScore', 'sdTeleOpScore',
+          'sdAutoScore','sdTeleOpScore', 'sdAutoKpa','sdTeleOpKpa','sdAutoGears',
           'sdMatchScore','sdTeleOpGears','sdTotalFuel',
-          'takeoffAttemptPercentage','takeoffSuccessPercentage',
-          'pilotPlayPercentage','autoAbility', 'teleOpAbility', 'driveTeamAbility',
+          'takeoffAttemptPercentage','takeoffSuccessPercentage','takeoffAttemptSuccessPercentage',
+          'pilotPlayPercentage', 'avgPointsPerCycle','sdPointsPerCycle','avgCycles',
+          'sdCycles','reachBaselinePercentage','avgHighGoals','sdHighGoals','avgLowGoals',
+          'sdLowGoals','autoShootsKey',
+          'autoAbility', 'teleOpAbility', 'driveTeamAbility',
           'robotQualities', 'firstPickAbility','secondPickAbility',
           'frequentRobotCommentStr','frequentPilotCommentStr']
 

@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import org.usfirst.frc.team25.scouting.client.data.BlueAlliance;
 import org.usfirst.frc.team25.scouting.client.data.EventReport;
 import org.usfirst.frc.team25.scouting.client.data.FileManager;
+import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
 
 /** Main class; used to initialize the GUI
  * 
@@ -75,9 +76,16 @@ public class Window {
 			}//Caused when there is only a directory, no file
 		}
 		
+		ArrayList<ScoutEntry> scoutEntries = FileManager.deserializeData(jsonFileList);
 		
+			
 		
-		EventReport report = new EventReport(FileManager.deserializeData(jsonFileList));
+		if(scoutEntries.size()==0){
+			JOptionPane.showMessageDialog(addIcon(new JFrame()), "No JSON data files found", "Error", JOptionPane.PLAIN_MESSAGE);
+			introText.setText("<html><h1>Processing data</h1><br>Error!</html>"); 
+			return;
+		}
+		EventReport report = new EventReport(scoutEntries);
 		
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
@@ -85,11 +93,15 @@ public class Window {
 		
 		report.generateRawSpreadsheet(dataDirectory);
 		report.processTeamReports();
-		report.generateCombineJson(dataDirectory);
+		
+		if(report.generateCombineJson(dataDirectory)&&jsonFileList.size()!=1) //combined JSON file successfully generated
+			for(File file : jsonFileList)
+				file.delete();
+		
 		report.generateTeamReportJson(dataDirectory);
 		report.generateTeamReportSpreadsheet(dataDirectory);
 		
-		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); //TODO Change this
+		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); 
 		
 	}
 	

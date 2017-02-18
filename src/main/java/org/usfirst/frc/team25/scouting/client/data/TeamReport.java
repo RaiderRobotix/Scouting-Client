@@ -13,34 +13,41 @@ import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
  */
 public class TeamReport {
 	
-	transient int teamNum;
 	private ArrayList<ScoutEntry> entries;
+	
+	transient int teamNum; //transient because it's the key of the HashMap in EventReport
 	String teamName;
-	
-	//TODO calculate these values and update EventReport
-		double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage, avgHighGoals, avgLowGoals;
-		boolean autoShootsKey;
-		double autoAbility, teleOpAbility, driveTeamAbility, robotQualities, sdHighGoals, sdLowGoals;
-		double firstPickAbility, secondPickAbility;
-	
-	double avgAutoScore, avgTeleOpScore, avgMatchScore, avgAutoKpa, avgTeleOpGears, avgTotalFuel, avgHoppers;
+
+	double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage, 
+		avgHighGoals, avgLowGoals,sdHighGoals, sdLowGoals, sdPointsPerCycle;
+	boolean autoShootsKey;
+	double avgAutoScore, avgTeleOpScore, avgMatchScore, avgAutoKpa, avgTeleOpKpa, avgAutoGears, avgTeleOpGears, avgTotalFuel, avgHoppers;
 	
 	
-	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdTeleOpGears, sdTotalFuel;
+	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdAutoKpa, sdTeleOpKpa, sdAutoGears, sdTeleOpGears, sdTotalFuel;
 	
-	//TODO fix this
-	double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffSuccessPercentage;// attempt is out of all matches; success is for each attempt
+	
+	double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffPercentage;// attempt is out of all matches; success is for each attempt
 	double pilotPlayPercentage;
 	
-	ArrayList<String> frequentRobotComment = new ArrayList<>(), frequentPilotComment = new ArrayList<>();
-	
-	
+	ArrayList<String> frequentRobotComment, frequentPilotComment;
+
+	//TODO calculate these values and update EventReport
+	double autoAbility, teleOpAbility, driveTeamAbility, robotQualities;
+	double firstPickAbility, secondPickAbility;
+
+	//Instance variables below should not be serialized but may be accessed by EventReports for analysis
 	
 	transient String frequentRobotCommentStr = "", frequentPilotCommentStr = "";
+	transient int totalTakeoffAttempts, totalTakeoffSuccesses, totalPilotPlaying, 
+		totalReachBaseline, totalAutoShootsKey;
+	transient int[] totalHoppers, totalFuel, teleOpGears, autoKpas, autoScores, teleOpScores, matchScores,
+		totalCycles, totalHighGoals, totalLowGoals, autoGears, teleOpKpa;
+	transient double[] totalPointsPerCycle;
 	
 	public TeamReport(int teamNum){
 		this.teamNum = teamNum;
-		entries = new ArrayList<ScoutEntry>(); //initialize ArrayList
+		entries = new ArrayList<ScoutEntry>(); 
 	}
 	
 	/** Method to fetch the nickname of a team from a file 
@@ -49,18 +56,26 @@ public class TeamReport {
 	 */
 	public void autoGetTeamName(File dataLocation){
 		String data = FileManager.getFileString(dataLocation);
-		String[] values = data.split(",\n");
-		for(int i = 0; i < values.length; i++)	
+		String[] values = data.split(",\r\n");
+		
+		for(int i = 0; i < values.length; i++){	
 			if(values[i].split(",")[0].equals(Integer.toString(teamNum))){
+
 				teamName = values[i].split(",")[1];
 				return; //Terminates the method
 			}	
+		}
 	}
 	
-	public void calculateStats(){
+	void calculateTotals(){
 		
-		
-		int totalTakeoffAttempts = 0, totalTakeoffSuccesses = 0;
+		totalTakeoffAttempts = totalTakeoffSuccesses = 0;
+		totalPilotPlaying = totalReachBaseline = totalAutoShootsKey = 0;
+		totalHoppers = totalFuel = teleOpGears = autoKpas =  new int[entries.size()];
+		matchScores = autoScores = teleOpScores = new int[entries.size()];
+		totalCycles = totalHighGoals = totalLowGoals = new int[entries.size()];
+		autoGears = teleOpKpa = new int[entries.size()];
+		totalPointsPerCycle  = new double[entries.size()];
 		
 		
 		for(int i = 0; i < entries.size(); i++){
@@ -68,54 +83,98 @@ public class TeamReport {
 				totalTakeoffAttempts++;
 			if(entries.get(i).getTeleOp().isReadyTakeoff())
 				totalTakeoffSuccesses++;
+			
+			if(entries.get(i).getPreMatch().isPilotPlaying())
+				totalPilotPlaying++;
+			if(entries.get(i).getAuto().isBaselineCrossed())
+				totalReachBaseline++;
+			if(entries.get(i).getAuto().isShootsFromKey())
+				totalAutoShootsKey++;
+			
+			totalHoppers[i] = (entries.get(i).getAuto().isUseHoppers() ? 1 : 0) 
+					+ entries.get(i).getTeleOp().getHopppersUsed();
+			totalFuel[i] = entries.get(i).getAuto().getHighGoals()+entries.get(i).getAuto().getLowGoals()
+					+entries.get(i).getTeleOp().getHighGoals()+entries.get(i).getTeleOp().getLowGoals();
+			autoGears[i] = entries.get(i).getAuto().getGearsDelivered();
+			teleOpGears[i] = entries.get(i).getTeleOp().getGearsDelivered();
+			teleOpKpa[i] = entries.get(i).teleOpKpa;
+			autoKpas[i] = entries.get(i).autoKpa;
+			autoScores[i]=entries.get(i).autoScore;
+			teleOpScores[i] = entries.get(i).teleScore;
+			matchScores[i] = entries.get(i).totalScore;
+			totalPointsPerCycle[i] = entries.get(i).pointsPerCycle;
+			totalCycles[i] = entries.get(i).getTeleOp().getNumCycles();
+			totalHighGoals[i] = entries.get(i).getAuto().getHighGoals()+entries.get(i).getTeleOp().getHighGoals();
+			totalLowGoals[i] = entries.get(i).getAuto().getLowGoals()+entries.get(i).getTeleOp().getLowGoals();
 		}
+			
 		
-		takeoffAttemptPercentage = ((double) totalTakeoffAttempts)/entries.size();
-		takeoffSuccessPercentage = totalTakeoffAttempts/((double) totalTakeoffSuccesses);
+	}
+	
+	public void calculateStats(){
 		
+		calculateTotals();
 		
+		takeoffAttemptPercentage = ((double) totalTakeoffAttempts)/entries.size(); //how often they attempt
+		takeoffAttemptSuccessPercentage = ((double) totalTakeoffSuccesses)/totalTakeoffAttempts; //percentage for all attempts, "consistency"
+		
+		if(totalTakeoffAttempts ==0)
+			takeoffAttemptSuccessPercentage = 0;
+		
+		takeoffPercentage = ((double) totalTakeoffSuccesses)/entries.size(); //percentage for all matches
 				
-		int[] totalHoppers = new int[entries.size()];
-		for(int i = 0; i < entries.size(); i++)
-			totalHoppers[i] = (entries.get(i).getAuto().isUseHoppers() ? 1 : 0) + entries.get(i).getTeleOp().getHopppersUsed();
+		
 		avgHoppers = Statistics.average(totalHoppers);
 		
-		int[] totalFuel = new int[entries.size()];
-		for(int i = 0; i < entries.size(); i++)
-			totalFuel[i] = entries.get(i).getAuto().getHighGoals()+entries.get(i).getAuto().getLowGoals()
-			+entries.get(i).getTeleOp().getHighGoals()+entries.get(i).getTeleOp().getLowGoals();
+		
 		avgTotalFuel = Statistics.average(totalFuel);
 		sdTotalFuel = Statistics.popStandardDeviation(totalFuel);
 		
-		int[] teleOpGears = new int[entries.size()];
-		for(int i = 0; i < entries.size(); i++)
-			teleOpGears[i] = entries.get(i).teleOp.getGearsDelivered();
+		
 		avgTeleOpGears = Statistics.average(teleOpGears);
 		sdTeleOpGears = Statistics.popStandardDeviation(teleOpGears);
 		
-		int[] autoKpas = new int[entries.size()];
-		for(int i = 0; i < entries.size(); i++)
-			autoKpas[i] = entries.get(i).autoKpa;
+		
 		avgAutoKpa = Statistics.average(autoKpas);
+		sdAutoKpa = Statistics.popStandardDeviation(autoKpas);
+		
+		avgTeleOpKpa = Statistics.average(teleOpKpa);
+		sdTeleOpKpa = Statistics.popStandardDeviation(teleOpKpa);
+		
+		avgAutoGears = Statistics.average(autoGears);
+		sdAutoGears = Statistics.popStandardDeviation(autoGears);
 		
 		
-		int[] autoScores = new int[entries.size()];
-		for(int i = 0; i < entries.size(); i++)
-			autoScores[i]=entries.get(i).autoScore;
 		avgAutoScore = Statistics.average(autoScores);
 		sdAutoScore = Statistics.popStandardDeviation(autoScores);
 		
-		int[] teleOpScores = new int[entries.size()];
-		for(int i = 0; i < entries.size(); i++)
-			teleOpScores[i] = entries.get(i).teleScore;
+		
 		avgTeleOpScore = Statistics.average(teleOpScores);
 		sdTeleOpScore = Statistics.popStandardDeviation(teleOpScores);
 		
-		int[] matchScores = new int[entries.size()];
-		for(int i = 0; i < entries.size(); i++)
-			matchScores[i] = entries.get(i).totalScore;
+		
 		avgMatchScore = Statistics.average(matchScores);
 		sdTeleOpScore = Statistics.popStandardDeviation(matchScores);
+		
+		pilotPlayPercentage = ((double) totalPilotPlaying)/entries.size();
+		
+		avgPointsPerCycle = Statistics.average(totalPointsPerCycle);
+		sdPointsPerCycle = Statistics.popStandardDeviation(totalPointsPerCycle);
+		
+		avgCycles = Statistics.average(totalPointsPerCycle);
+		sdCycles = Statistics.popStandardDeviation(totalPointsPerCycle);
+				
+		reachBaselinePercentage = totalReachBaseline/((double) entries.size());
+		
+		avgHighGoals = Statistics.average(totalHighGoals);
+		sdHighGoals = Statistics.popStandardDeviation(totalHighGoals);
+		
+		avgLowGoals = Statistics.average(totalLowGoals);
+		sdLowGoals = Statistics.popStandardDeviation(totalLowGoals);
+		
+		if(totalAutoShootsKey/((double)entries.size())>=0.50)
+			autoShootsKey = true;
+		else autoShootsKey = false;
 		
 		HashMap<String, Integer> commentFrequencies = new HashMap<>();
 		
@@ -127,20 +186,13 @@ public class TeamReport {
 					commentFrequencies.put(key, 1+commentFrequencies.get(key));
 		}
 		
+		frequentRobotComment = new ArrayList<>();
+		
 		for(String key : commentFrequencies.keySet())
 			if(commentFrequencies.get(key)>=entries.size()/4.0)
 				frequentRobotComment.add(key);
 		
 		commentFrequencies = new HashMap<>();
-		
-		int totalPilotPlaying = 0;
-		
-		for(int i = 0; i < entries.size(); i++)
-			if(entries.get(i).getPreMatch().isPilotPlaying())
-				totalPilotPlaying++;
-			
-		pilotPlayPercentage = ((double) totalPilotPlaying)/entries.size();
-		
 		
 		for(String key : entries.get(0).getPostMatch().getPilotQuickCommentSelections().keySet()){
 			commentFrequencies.put(key, 0);
@@ -149,6 +201,8 @@ public class TeamReport {
 					if(entry.getPostMatch().getPilotQuickCommentSelections().get(key))
 						commentFrequencies.put(key, 1+commentFrequencies.get(key));
 		}
+		
+		frequentPilotComment = new ArrayList<>();
 		
 		for(String key : commentFrequencies.keySet())
 			if(commentFrequencies.get(key)>=totalPilotPlaying/4.0)
@@ -180,8 +234,6 @@ public class TeamReport {
 	public void addEntry(ScoutEntry entry){
 		entries.add(entry);
 	}
-	
-
 	
 
 }

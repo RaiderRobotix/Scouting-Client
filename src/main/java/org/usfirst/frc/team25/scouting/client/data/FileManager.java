@@ -47,14 +47,11 @@ public class FileManager {
 	 * @param extension File extension, without the dot ('.')
 	 * @param fileContents String contents of output file
 	 */
-	public static void outputFile(String fileName, String extension, String fileContents){
-		try {
+	public static void outputFile(String fileName, String extension, String fileContents) throws FileNotFoundException{
 			PrintWriter outputFile = new PrintWriter(fileName+"."+extension);
 			outputFile.write(fileContents);
 			outputFile.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+
 	}
 	
 	/** Launches a GUI file explorer to select an output folder
@@ -107,7 +104,7 @@ public class FileManager {
 	public static void deleteFile(String filePath){
 		try{
 			File file = new File(filePath);
-			System.out.println(file.delete());
+			
 			
 			
 		}catch(Exception e){

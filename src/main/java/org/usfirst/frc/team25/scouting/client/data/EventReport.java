@@ -1,8 +1,10 @@
 package org.usfirst.frc.team25.scouting.client.data;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.usfirst.frc.team25.scouting.client.models.Autonomous;
 import org.usfirst.frc.team25.scouting.client.models.PostMatch;
@@ -11,6 +13,7 @@ import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
 import org.usfirst.frc.team25.scouting.client.models.TeleOp;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /** Object model holding all data for an event
  * 
@@ -30,7 +33,7 @@ public class EventReport {
 	public EventReport(ArrayList<ScoutEntry> entries){
 		scoutEntries = entries;
 		for(ScoutEntry entry : scoutEntries){
-			entry.calculateDerivedStats();;
+			entry.calculateDerivedStats();
 			
 			int teamNum = entry.getPreMatch().getTeamNum();
 			if(!teamReports.containsKey(teamNum))
@@ -44,12 +47,16 @@ public class EventReport {
 	}
 	
 	public void processTeamReports(){
-		for(int key : teamReports.keySet()){
+		int i = 0;
+		for(Integer key : teamReports.keySet()){
+			i++;
 			TeamReport report = teamReports.get(key);
 			report.autoGetTeamName(teamNameList);
 			report.calculateStats();
+			
 			teamReports.put(key, report);
 		}
+		
 		
 	}
 	
@@ -61,30 +68,35 @@ public class EventReport {
 	
 	public void generateTeamReportSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
-		String header = "teamNum,teamName,avgAutoScore,avgTeleOpScore,avgMatchScore,avgAutoKpa,avgTeleOpGears,"
-				+ "avgTotalFuel,avgHoppers,sdAutoScore,sdTeleOpScore,sdMatchScore,sdTeleOpGears,sdTotalFuel,"
-				+ "takeoffAttemptPercentage,takeoffSuccessPercentage,pilotPlayPercentage,autoAbility,teleOpAbility,"
-				+ "driveTeamAbility,robotQualities,firstPickAbility,secondPickAbility,frequentRobotCommentStr,"
-				+ "frequentPilotCommentStr,\n";
+		String header = "teamNum,teamName,avgAutoScore,avgTeleOpScore,avgMatchScore,avgAutoKpa,avgTeleOpKpa,avgAutoGears,avgTeleOpGears,avgTotalFuel,"
+				+ "avgHoppers,sdAutoScore,sdTeleOpScore,sdAutoScore,sdTeleOpScore,sdAutoKpa,sdTeleOpKpa,sdAutoGears,sdMatchScore,sdTeleOpGears,sdTotalFuel,"
+				+ "takeoffAttemptPercentage,takeoffPercentage,takeoffAttemptSuccessPercentage,pilotPlayPercentage,avgPointsPerCycle,sdPointsPerCycle,"
+				+ "avgCycles,sdCycles,reachBaselinePercentage,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,autoShootsKey,autoAbility,teleOpAbility,"
+				+ "driveTeamAbility,robotQualities,firstPickAbility,secondPickAbility,frequentRobotCommentStr,frequentPilotCommentStr,\n";
 		
 		
 		String fileContents = header + "\n";
 		for(int key : teamReports.keySet()){
 			TeamReport report = teamReports.get(key);
-			fileContents += key+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+
-					report.avgTeleOpScore+COMMA+report.avgMatchScore+COMMA+report.avgAutoKpa+
-					COMMA+report.avgTeleOpGears+COMMA+report.avgTotalFuel+COMMA+report.avgHoppers+
-					COMMA+report.sdAutoScore+COMMA+report.sdTeleOpScore+COMMA+report.sdMatchScore+
-					COMMA+report.sdTeleOpGears+COMMA+report.sdTotalFuel+COMMA+report.takeoffAttemptPercentage+
-					COMMA+report.takeoffSuccessPercentage+COMMA+report.pilotPlayPercentage+COMMA+report.autoAbility+
-					COMMA+report.teleOpAbility+COMMA+report.driveTeamAbility+COMMA+report.robotQualities+COMMA+
-					report.firstPickAbility+COMMA+report.secondPickAbility+COMMA+report.frequentRobotCommentStr+COMMA+
-					report.frequentPilotCommentStr+COMMA+'\n';		
+			fileContents += report.teamNum+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+report.avgTeleOpScore+COMMA+report.avgMatchScore+
+					COMMA+report.avgAutoKpa+COMMA+report.avgTeleOpKpa+COMMA+report.avgAutoGears+COMMA+report.avgTeleOpGears+COMMA+report.avgTotalFuel+
+					COMMA+report.avgHoppers+COMMA+report.sdAutoScore+COMMA+report.sdTeleOpScore+COMMA+report.sdAutoScore+COMMA+report.sdTeleOpScore+COMMA+
+					report.sdAutoKpa+COMMA+report.sdTeleOpKpa+COMMA+report.sdAutoGears+COMMA+report.sdMatchScore+COMMA+report.sdTeleOpGears+COMMA+
+					report.sdTotalFuel+COMMA+report.takeoffAttemptPercentage+COMMA+report.takeoffPercentage+COMMA+report.takeoffAttemptSuccessPercentage+
+					COMMA+report.pilotPlayPercentage+COMMA+report.avgPointsPerCycle+COMMA+report.sdPointsPerCycle+COMMA+report.avgCycles+COMMA+report.sdCycles+
+					COMMA+report.reachBaselinePercentage+COMMA+report.avgHighGoals+COMMA+report.sdHighGoals+COMMA+report.avgLowGoals+COMMA+report.sdLowGoals+COMMA+
+					report.autoShootsKey+COMMA+report.autoAbility+COMMA+report.teleOpAbility+COMMA+report.driveTeamAbility+COMMA+report.robotQualities+
+					COMMA+report.firstPickAbility+COMMA+report.secondPickAbility+COMMA+report.frequentRobotCommentStr+COMMA+report.frequentPilotCommentStr+COMMA+'\n';		
 			
 		}
 				
 		
-		FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\TeamReports - " + event , "csv", fileContents);
+		try {
+			FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\TeamReports - " + event , "csv", fileContents);
+		} catch (FileNotFoundException e) {
+			// 
+			e.printStackTrace();
+		}
 	}
 	
 	/** Generates summary and team Excel spreadsheets 
@@ -134,27 +146,46 @@ public class EventReport {
 		}
 				
 		
-		FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\Data - All - " + event , "csv", fileContents);
+		try {
+			FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\Data - All - " + event , "csv", fileContents);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
 	
 	/** Serializes the ArrayList of all ScoutEntrys into a JSON file
 	 * @param outputDirectory
+	 * @return true if operation is successful, false otherwise
 	 */
-	public void generateCombineJson(File outputDirectory){
+	public boolean generateCombineJson(File outputDirectory){
 		Gson gson = new Gson();
 		String jsonString = gson.toJson(scoutEntries);
-		FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\Data - All - " + event , "json", jsonString);
+		try {
+			FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\Data - All - " + event , "json", jsonString);
+		} catch (FileNotFoundException e) {
+			
+			return false;
+		}
+		return true;
 	}
 	
 	/** Serializes the HashMap of all TeamReports
 	 * @param outputDirectory
 	 */
 	public void generateTeamReportJson(File outputDirectory){
-		Gson gson = new Gson();
+
+			
+		Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+		
+		
 		String jsonString = gson.toJson(teamReports);
-		FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\TeamReports - " + event , "json", jsonString);
+		try {
+			FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\TeamReports - " + event , "json", jsonString);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
