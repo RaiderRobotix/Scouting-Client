@@ -33,12 +33,14 @@ public class TeamReport {
 	ArrayList<String> frequentRobotComment, frequentPilotComment;
 
 	//TODO calculate these values and update EventReport
-	double autoAbility, teleOpAbility, driveTeamAbility, robotQualities;
-	double firstPickAbility, secondPickAbility;
+	transient double autoAbility, teleOpAbility, driveTeamAbility, robotQualities;
+	transient double firstPickAbility, secondPickAbility;
 
 	//Instance variables below should not be serialized but may be accessed by EventReports for analysis
 	
 	transient String frequentRobotCommentStr = "", frequentPilotCommentStr = "";
+	transient String allComments;
+	
 	int totalTakeoffAttempts, totalTakeoffSuccesses, totalPilotPlaying, 
 		totalReachBaseline, totalAutoShootsKey;
 	int[] totalHoppers, totalFuel, teleOpGears, autoKpas, autoScores, teleOpScores, matchScores,
@@ -115,13 +117,14 @@ public class TeamReport {
 		
 		calculateTotals();
 		
-		takeoffAttemptPercentage = ((double) totalTakeoffAttempts)/entries.size(); //how often they attempt
-		takeoffAttemptSuccessPercentage = ((double) totalTakeoffSuccesses)/totalTakeoffAttempts; //percentage for all attempts, "consistency"
-		
+		takeoffAttemptPercentage = ((double) totalTakeoffAttempts)/entries.size()*100; //how often they attempt
 		if(totalTakeoffAttempts ==0)
 			takeoffAttemptSuccessPercentage = 0;
+		else takeoffAttemptSuccessPercentage = ((double) totalTakeoffSuccesses)/totalTakeoffAttempts*100; //percentage for all attempts, "consistency"
 		
-		takeoffPercentage = ((double) totalTakeoffSuccesses)/entries.size(); //percentage for all matches
+		
+		
+		takeoffPercentage = ((double) totalTakeoffSuccesses)/entries.size()*100; //percentage for all matches
 				
 		
 		avgHoppers = Statistics.average(totalHoppers);
@@ -156,7 +159,7 @@ public class TeamReport {
 		avgMatchScore = Statistics.average(matchScores);
 		sdTeleOpScore = Statistics.popStandardDeviation(matchScores);
 		
-		pilotPlayPercentage = ((double) totalPilotPlaying)/entries.size();
+		pilotPlayPercentage = ((double) totalPilotPlaying)/entries.size()*100;
 		
 		avgPointsPerCycle = Statistics.average(totalPointsPerCycle);
 		sdPointsPerCycle = Statistics.popStandardDeviation(totalPointsPerCycle);
@@ -214,6 +217,15 @@ public class TeamReport {
 			frequentPilotCommentStr+=comment+"; ";
 		
 		computeRankingMetrics();
+		
+		allComments = "";
+		for(ScoutEntry entry : entries){
+			if(!entry.getPostMatch().getRobotComment().equals(""))
+				allComments+=entry.getPostMatch().getRobotComment() + "; ";
+			if(!entry.getPostMatch().getPilotComment().equals(""))
+				allComments+=entry.getPostMatch().getPilotComment()+"; ";
+		}
+			
 				
 	}	
 	

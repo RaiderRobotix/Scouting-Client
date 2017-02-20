@@ -1,15 +1,15 @@
-fields = ['teamNum','teamName','avgAutoScore', 'sdAutoScore','avgTeleOpScore','avgMatchScore',
-          'avgAutoKpa', 'avgTeleOpKpa', 'avgAutoGears','avgTeleOpGears', 'avgTotalFuel',
-          'avgHoppers', 'sdAutoScore', 'sdTeleOpScore',
-          'sdTeleOpScore', 'sdAutoKpa','sdTeleOpKpa','sdAutoGears',
-          'sdMatchScore','sdTeleOpGears','sdTotalFuel',
-          'takeoffAttemptPercentage','takeoffSuccessPercentage','takeoffAttemptSuccessPercentage',
-          'pilotPlayPercentage', 'avgPointsPerCycle','sdPointsPerCycle','avgCycles',
-          'sdCycles','reachBaselinePercentage','avgHighGoals','sdHighGoals','avgLowGoals',
-          'sdLowGoals','autoShootsKey',
-          'autoAbility', 'teleOpAbility', 'driveTeamAbility',
-          'robotQualities', 'firstPickAbility','secondPickAbility',
-          'frequentRobotCommentStr','frequentPilotCommentStr']
+fields = ['teamNum','teamName','avgAutoScore', 'sdAutoScore','avgTeleOpScore',
+           'sdTeleOpScore','avgMatchScore','sdMatchScore',
+          'reachBaselinePercentage','avgAutoKpa', 'sdAutoKpa','avgTeleOpKpa', 'sdTeleOpKpa',
+          'avgAutoGears','sdAutoGears','avgTeleOpGears', 'sdTeleOpGears',
+          'avgHighGoals','sdHighGoals','avgLowGoals',
+          'sdLowGoals',
+          'avgHoppers','avgPointsPerCycle','sdPointsPerCycle','avgCycles',
+          'sdCycles',
+          'takeoffPercentage','takeoffAttemptPercentage','takeoffAttemptSuccessPercentage',
+          'pilotPlayPercentage', 'autoShootsKey',
+            'frequentRobotCommentStr','frequentPilotCommentStr',
+          'allComments']
 
 header = 'String header = \"'
 for field in fields:

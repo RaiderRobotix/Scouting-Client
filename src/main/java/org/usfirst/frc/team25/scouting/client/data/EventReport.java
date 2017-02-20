@@ -72,25 +72,24 @@ public class EventReport {
 	
 	public void generateTeamReportSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
-		String header = "teamNum,teamName,avgAutoScore,avgTeleOpScore,avgMatchScore,avgAutoKpa,avgTeleOpKpa,avgAutoGears,avgTeleOpGears,avgTotalFuel,"
-				+ "avgHoppers,sdAutoScore,sdTeleOpScore,sdAutoScore,sdTeleOpScore,sdAutoKpa,sdTeleOpKpa,sdAutoGears,sdMatchScore,sdTeleOpGears,sdTotalFuel,"
-				+ "takeoffAttemptPercentage,takeoffPercentage,takeoffAttemptSuccessPercentage,pilotPlayPercentage,avgPointsPerCycle,sdPointsPerCycle,"
-				+ "avgCycles,sdCycles,reachBaselinePercentage,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,autoShootsKey,autoAbility,teleOpAbility,"
-				+ "driveTeamAbility,robotQualities,firstPickAbility,secondPickAbility,frequentRobotCommentStr,frequentPilotCommentStr,\n";
-		
+		String header = "teamNum,teamName,avgAutoScore,sdAutoScore,avgTeleOpScore,sdTeleOpScore,avgMatchScore,"
+				+ "sdMatchScore,reachBaselinePercentage,avgAutoKpa,sdAutoKpa,avgTeleOpKpa,sdTeleOpKpa,avgAutoGears,"
+				+ "sdAutoGears,avgTeleOpGears,sdTeleOpGears,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,avgHoppers,"
+				+ "avgPointsPerCycle,sdPointsPerCycle,avgCycles,sdCycles,takeoffPercentage,takeoffAttemptPercentage,"
+				+ "takeoffAttemptSuccessPercentage,pilotPlayPercentage,autoShootsKey,frequentRobotCommentStr,frequentPilotCommentStr,allComments,\n";
 		
 		String fileContents = header;
 		for(int key : teamReports.keySet()){
 			TeamReport report = teamReports.get(key);
-			fileContents += report.teamNum+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+report.avgTeleOpScore+COMMA+report.avgMatchScore+
-					COMMA+report.avgAutoKpa+COMMA+report.avgTeleOpKpa+COMMA+report.avgAutoGears+COMMA+report.avgTeleOpGears+COMMA+report.avgTotalFuel+
-					COMMA+report.avgHoppers+COMMA+report.sdAutoScore+COMMA+report.sdTeleOpScore+COMMA+report.sdAutoScore+COMMA+report.sdTeleOpScore+COMMA+
-					report.sdAutoKpa+COMMA+report.sdTeleOpKpa+COMMA+report.sdAutoGears+COMMA+report.sdMatchScore+COMMA+report.sdTeleOpGears+COMMA+
-					report.sdTotalFuel+COMMA+report.takeoffAttemptPercentage+COMMA+report.takeoffPercentage+COMMA+report.takeoffAttemptSuccessPercentage+
-					COMMA+report.pilotPlayPercentage+COMMA+report.avgPointsPerCycle+COMMA+report.sdPointsPerCycle+COMMA+report.avgCycles+COMMA+report.sdCycles+
-					COMMA+report.reachBaselinePercentage+COMMA+report.avgHighGoals+COMMA+report.sdHighGoals+COMMA+report.avgLowGoals+COMMA+report.sdLowGoals+COMMA+
-					report.autoShootsKey+COMMA+report.autoAbility+COMMA+report.teleOpAbility+COMMA+report.driveTeamAbility+COMMA+report.robotQualities+
-					COMMA+report.firstPickAbility+COMMA+report.secondPickAbility+COMMA+report.frequentRobotCommentStr+COMMA+report.frequentPilotCommentStr+COMMA+'\n';		
+			fileContents += report.teamNum+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+report.sdAutoScore+COMMA+
+					report.avgTeleOpScore+COMMA+report.sdTeleOpScore+COMMA+report.avgMatchScore+COMMA+report.sdMatchScore+
+					COMMA+report.reachBaselinePercentage+COMMA+report.avgAutoKpa+COMMA+report.sdAutoKpa+COMMA+report.avgTeleOpKpa
+					+COMMA+report.sdTeleOpKpa+COMMA+report.avgAutoGears+COMMA+report.sdAutoGears+COMMA+report.avgTeleOpGears+COMMA+
+					report.sdTeleOpGears+COMMA+report.avgHighGoals+COMMA+report.sdHighGoals+COMMA+report.avgLowGoals+COMMA+
+					report.sdLowGoals+COMMA+report.avgHoppers+COMMA+report.avgPointsPerCycle+COMMA+report.sdPointsPerCycle+COMMA+
+					report.avgCycles+COMMA+report.sdCycles+COMMA+report.takeoffPercentage+COMMA+report.takeoffAttemptPercentage+
+					COMMA+report.takeoffAttemptSuccessPercentage+COMMA+report.pilotPlayPercentage+COMMA+report.autoShootsKey+COMMA
+					+report.frequentRobotCommentStr+COMMA+report.frequentPilotCommentStr+COMMA+report.allComments+COMMA+'\n';	
 			
 		}
 				
