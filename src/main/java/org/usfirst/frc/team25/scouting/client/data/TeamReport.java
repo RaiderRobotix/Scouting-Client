@@ -164,10 +164,10 @@ public class TeamReport {
 		avgPointsPerCycle = Statistics.average(totalPointsPerCycle);
 		sdPointsPerCycle = Statistics.popStandardDeviation(totalPointsPerCycle);
 		
-		avgCycles = Statistics.average(totalPointsPerCycle);
-		sdCycles = Statistics.popStandardDeviation(totalPointsPerCycle);
+		avgCycles = Statistics.average(totalCycles);
+		sdCycles = Statistics.popStandardDeviation(totalCycles);
 				
-		reachBaselinePercentage = totalReachBaseline/((double) entries.size());
+		reachBaselinePercentage = totalReachBaseline/((double) entries.size())*100;
 		
 		avgHighGoals = Statistics.average(totalHighGoals);
 		sdHighGoals = Statistics.popStandardDeviation(totalHighGoals);
