@@ -22,6 +22,16 @@ import com.google.gson.GsonBuilder;
  */
 public class EventReport {
 	
+	String removeCommas(String s){
+		String newString = "";
+	     for(int i = 0; i < s.length(); i++) {
+	            if(s.charAt(i)!=',')
+	                newString += s.charAt(i);
+	            else newString+="; ";
+	     }
+	     return newString;
+	}
+	
 	/** Unsorted list of ScoutEntrys TODO create method to sort them
 	 * 
 	 */
@@ -109,17 +119,26 @@ public class EventReport {
 	 */
 	public void generateRawSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
-		String header = "Scout Name, Match Num, Scouting Pos, Team Num, Pilot Playing, High goals auto, "
-				+ "Low goals auto, Gears auto, Rotors auto, Reached baseline, Hopper used auto, Shoots from key auto,"
-				+ "High goals tele, Low goals tele, Gears tele, Rotors tele, Hoppers tele, Cycles, Takeoff attempt,"
-				+ "Takeoff success, Robot comment, Pilot comment,";
+		String header = "Scout Name,Match Num,Scouting Pos,Team Num,Pilot Playing,High goals auto, "
+				+ "Low goals auto,Gears auto,Rotors auto,Reached baseline,Hopper used auto,Shoots from key auto,"
+				+ "High goals tele,Low goals tele,Gears tele,Rotors tele,Hoppers tele,Cycles,Takeoff attempt,"
+				+ "Takeoff success,Robot comment,Pilot comment,";
 		ArrayList<String> keys = new ArrayList<>();
-		
-		
+		ArrayList<String> pilotKeys = new ArrayList<>();
+			
 
 		for(String key : scoutEntries.get(0).getPostMatch().getRobotQuickCommentSelections().keySet()){
-			header+=key+",";
+			header+=removeCommas(key)+",";
 			keys.add(key);
+		}
+		for(ScoutEntry entry : scoutEntries){
+			if(entry.getPreMatch().isPilotPlaying()){
+				for(String key : entry.getPostMatch().getPilotQuickCommentSelections().keySet()){
+					header+=removeCommas(key)+",";
+					pilotKeys.add(key);
+				}
+				break;
+			}
 		}
 		
 		
@@ -143,10 +162,11 @@ public class EventReport {
 			for(String key : keys)
 				fileContents+=post.getRobotQuickCommentSelections().get(key)+COMMA;
 			
+			if(pre.isPilotPlaying())
+				for(String key : pilotKeys)
+					fileContents+=post.getPilotQuickCommentSelections().get(key)+COMMA;
 			
-			fileContents+='\n';
-			
-			
+			fileContents+='\n';	
 		}
 				
 		
