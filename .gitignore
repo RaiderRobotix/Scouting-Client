@@ -13,9 +13,13 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.class
 
 # Windows shortcuts
 *.lnk
+
+# Java
+./bin/*
 
 # =========================
 # Operating System Files
@@ -37,7 +41,7 @@ $RECYCLE.BIN/
 .Spotlight-V100
 .TemporaryItems
 .Trashes
-.VolumeIcon.icns
+.VolumeIcon.icn
 
 # Directories potentially created on remote AFP share
 .AppleDB

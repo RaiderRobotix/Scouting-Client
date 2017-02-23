@@ -50,8 +50,8 @@ public class ScoutEntry implements Serializable {
 	
 
 	public void calculateDerivedStats() {
-		autoScore = (auto.baselineCrossed ? 5 : 0)+auto.gearsDelivered*40+auto.highGoals+auto.lowGoals/3;
-		teleScore = teleOp.gearsDelivered*18+teleOp.highGoals/3+teleOp.lowGoals/3+(teleOp.readyTakeoff ? 50 : 0);
+		autoScore = (auto.baselineCrossed ? 5 : 0)+auto.gearsDelivered*40+autoKpa;
+		teleScore = teleOp.gearsDelivered*18+teleOpKpa+(teleOp.readyTakeoff ? 50 : 0);
 		totalScore = autoScore+teleScore;
 		autoKpa = auto.highGoals+auto.lowGoals/3;
 		teleOpKpa = teleOp.highGoals/3+teleOp.lowGoals/9;
