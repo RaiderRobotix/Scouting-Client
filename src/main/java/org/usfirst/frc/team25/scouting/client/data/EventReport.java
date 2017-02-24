@@ -63,13 +63,13 @@ public class EventReport {
 			TeamReport report = teamReports.get(key);
 			if(teamNameList!=null){
 				report.autoGetTeamName(teamNameList);
-				System.out.println(key);
+				
 			}
 			report.calculateStats();
 			
 			
 			teamReports.put(key, report);
-			System.out.println(report.totalCycles.get(0));
+			
 		}
 		
 		

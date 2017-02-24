@@ -240,8 +240,21 @@ public class TeamReport {
 		return teamNum;
 	}
 	
+	String removeCommasAndBreaks(String s){
+		String newString = "";
+	     for(int i = 0; i < s.length(); i++) {
+	            if(s.charAt(i)!=','&&s.charAt(i)!='\n')
+	                newString += s.charAt(i);
+	            else newString+="; ";
+	     }
+	     return newString;
+	}
+	
 
 	public void addEntry(ScoutEntry entry){
+		entry.getPostMatch().setRobotComment(removeCommasAndBreaks(entry.getPostMatch().getRobotComment()));
+		
+		entry.getPostMatch().setPilotComment(removeCommasAndBreaks(entry.getPostMatch().getPilotComment()));
 		entries.add(entry);
 	}
 	
