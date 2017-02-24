@@ -72,8 +72,8 @@ public class Autonomous {
 		this.shootsFromKey = shootsFromKey;
 	}
 	
-	boolean baselineCrossed, useHoppers, shootsFromKey;
-	int highGoals, lowGoals, rotorsStarted, gearsDelivered;
+	public boolean baselineCrossed, useHoppers, shootsFromKey;
+	public int highGoals, lowGoals, rotorsStarted, gearsDelivered;
 
 
 

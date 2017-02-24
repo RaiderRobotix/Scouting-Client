@@ -43,9 +43,10 @@ public class TeamReport {
 	
 	int totalTakeoffAttempts, totalTakeoffSuccesses, totalPilotPlaying, 
 		totalReachBaseline, totalAutoShootsKey;
-	int[] totalHoppers, totalFuel, teleOpGears, autoKpas, autoScores, teleOpScores, matchScores,
-		totalCycles, totalHighGoals, totalLowGoals, autoGears, teleOpKpa;
-	double[] totalPointsPerCycle;
+	ArrayList<Integer> totalHoppers= new ArrayList<>(), totalFuel= new ArrayList<>(), teleOpGears= new ArrayList<>(), 
+			autoKpas= new ArrayList<>(), autoScores= new ArrayList<>(), teleOpScores= new ArrayList<>(), matchScores= new ArrayList<>(),
+		totalCycles= new ArrayList<>(), totalHighGoals= new ArrayList<>(), totalLowGoals= new ArrayList<>(), autoGears= new ArrayList<>(), teleOpKpa= new ArrayList<>();
+	ArrayList<Double> totalPointsPerCycle = new ArrayList<>();
 	
 	public TeamReport(int teamNum){
 		this.teamNum = teamNum;
@@ -73,11 +74,7 @@ public class TeamReport {
 		
 		totalTakeoffAttempts = totalTakeoffSuccesses = 0;
 		totalPilotPlaying = totalReachBaseline = totalAutoShootsKey = 0;
-		totalHoppers = totalFuel = teleOpGears = autoKpas =  new int[entries.size()];
-		matchScores = autoScores = teleOpScores = new int[entries.size()];
-		totalCycles = totalHighGoals = totalLowGoals = new int[entries.size()];
-		autoGears = teleOpKpa = new int[entries.size()];
-		totalPointsPerCycle  = new double[entries.size()];
+		
 		
 		
 		for(int i = 0; i < entries.size(); i++){
@@ -88,26 +85,27 @@ public class TeamReport {
 			
 			if(entries.get(i).getPreMatch().isPilotPlaying())
 				totalPilotPlaying++;
-			if(entries.get(i).getAuto().isBaselineCrossed())
+			if(entries.get(i).auto.baselineCrossed)
 				totalReachBaseline++;
 			if(entries.get(i).getAuto().isShootsFromKey())
 				totalAutoShootsKey++;
 			
-			totalHoppers[i] = (entries.get(i).getAuto().isUseHoppers() ? 1 : 0) 
-					+ entries.get(i).getTeleOp().getHopppersUsed();
-			totalFuel[i] = entries.get(i).getAuto().getHighGoals()+entries.get(i).getAuto().getLowGoals()
-					+entries.get(i).getTeleOp().getHighGoals()+entries.get(i).getTeleOp().getLowGoals();
-			autoGears[i] = entries.get(i).getAuto().getGearsDelivered();
-			teleOpGears[i] = entries.get(i).getTeleOp().getGearsDelivered();
-			teleOpKpa[i] = entries.get(i).teleOpKpa;
-			autoKpas[i] = entries.get(i).autoKpa;
-			autoScores[i]=entries.get(i).autoScore;
-			teleOpScores[i] = entries.get(i).teleScore;
-			matchScores[i] = entries.get(i).totalScore;
-			totalPointsPerCycle[i] = entries.get(i).pointsPerCycle;
-			totalCycles[i] = entries.get(i).getTeleOp().getNumCycles();
-			totalHighGoals[i] = entries.get(i).getAuto().getHighGoals()+entries.get(i).getTeleOp().getHighGoals();
-			totalLowGoals[i] = entries.get(i).getAuto().getLowGoals()+entries.get(i).getTeleOp().getLowGoals();
+			totalHoppers.add((entries.get(i).auto.useHoppers ? 1 : 0) 
+					+ entries.get(i).teleOp.hopppersUsed);
+			totalFuel.add(entries.get(i).auto.highGoals+entries.get(i).auto.lowGoals
+					+entries.get(i).teleOp.highGoals+entries.get(i).teleOp.lowGoals);
+			autoGears.add(entries.get(i).getAuto().getGearsDelivered());
+			teleOpGears.add(entries.get(i).getTeleOp().getGearsDelivered());
+			teleOpKpa.add(entries.get(i).teleOpKpa);
+			autoKpas.add(entries.get(i).autoKpa);
+			autoScores.add(entries.get(i).autoScore);
+			teleOpScores.add( entries.get(i).teleScore);
+			matchScores.add(entries.get(i).totalScore);
+			totalPointsPerCycle.add(entries.get(i).pointsPerCycle);
+			totalCycles.add(entries.get(i).teleOp.numCycles);
+			System.out.println(entries.get(i).getTeleOp().getNumCycles());
+			totalHighGoals.add( entries.get(i).getAuto().getHighGoals()+entries.get(i).getTeleOp().getHighGoals());
+			totalLowGoals.add(entries.get(i).getAuto().getLowGoals()+entries.get(i).getTeleOp().getLowGoals());
 		}
 			
 		
@@ -127,53 +125,53 @@ public class TeamReport {
 		takeoffPercentage = ((double) totalTakeoffSuccesses)/entries.size()*100; //percentage for all matches
 				
 		
-		avgHoppers = Statistics.average(totalHoppers);
+		avgHoppers = Statistics.average(Statistics.toDoubleArrayList(totalHoppers));
 		
 		
-		avgTotalFuel = Statistics.average(totalFuel);
-		sdTotalFuel = Statistics.popStandardDeviation(totalFuel);
+		avgTotalFuel = Statistics.average(Statistics.toDoubleArrayList(totalFuel));
+		sdTotalFuel = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalFuel));
 		
 		
-		avgTeleOpGears = Statistics.average(teleOpGears);
-		sdTeleOpGears = Statistics.popStandardDeviation(teleOpGears);
+		avgTeleOpGears = Statistics.average(Statistics.toDoubleArrayList(teleOpGears));
+		sdTeleOpGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpGears));
 		
 		
-		avgAutoKpa = Statistics.average(autoKpas);
-		sdAutoKpa = Statistics.popStandardDeviation(autoKpas);
+		avgAutoKpa = Statistics.average(Statistics.toDoubleArrayList(autoKpas));
+		sdAutoKpa = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoKpas));
 		
-		avgTeleOpKpa = Statistics.average(teleOpKpa);
-		sdTeleOpKpa = Statistics.popStandardDeviation(teleOpKpa);
+		avgTeleOpKpa = Statistics.average(Statistics.toDoubleArrayList(teleOpKpa));
+		sdTeleOpKpa = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpKpa));
 		
-		avgAutoGears = Statistics.average(autoGears);
-		sdAutoGears = Statistics.popStandardDeviation(autoGears);
-		
-		
-		avgAutoScore = Statistics.average(autoScores);
-		sdAutoScore = Statistics.popStandardDeviation(autoScores);
+		avgAutoGears = Statistics.average(Statistics.toDoubleArrayList(autoGears));
+		sdAutoGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoGears));
 		
 		
-		avgTeleOpScore = Statistics.average(teleOpScores);
-		sdTeleOpScore = Statistics.popStandardDeviation(teleOpScores);
+		avgAutoScore = Statistics.average(Statistics.toDoubleArrayList(autoScores));
+		sdAutoScore = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoScores));
 		
 		
-		avgMatchScore = Statistics.average(matchScores);
-		sdTeleOpScore = Statistics.popStandardDeviation(matchScores);
+		avgTeleOpScore = Statistics.average(Statistics.toDoubleArrayList(teleOpScores));
+		sdTeleOpScore = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpScores));
+		
+		
+		avgMatchScore = Statistics.average(Statistics.toDoubleArrayList(matchScores));
+		sdMatchScore = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(matchScores));
 		
 		pilotPlayPercentage = ((double) totalPilotPlaying)/entries.size()*100;
 		
 		avgPointsPerCycle = Statistics.average(totalPointsPerCycle);
 		sdPointsPerCycle = Statistics.popStandardDeviation(totalPointsPerCycle);
 		
-		avgCycles = Statistics.average(totalCycles);
-		sdCycles = Statistics.popStandardDeviation(totalCycles);
+		avgCycles = Statistics.average(Statistics.toDoubleArrayList(totalCycles));
+		sdCycles = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalCycles));
 				
 		reachBaselinePercentage = totalReachBaseline/((double) entries.size())*100;
 		
-		avgHighGoals = Statistics.average(totalHighGoals);
-		sdHighGoals = Statistics.popStandardDeviation(totalHighGoals);
+		avgHighGoals = Statistics.average(Statistics.toDoubleArrayList(totalHighGoals));
+		sdHighGoals = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalHighGoals));
 		
-		avgLowGoals = Statistics.average(totalLowGoals);
-		sdLowGoals = Statistics.popStandardDeviation(totalLowGoals);
+		avgLowGoals = Statistics.average(Statistics.toDoubleArrayList(totalLowGoals));
+		sdLowGoals = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalLowGoals));
 		
 		if(totalAutoShootsKey/((double)entries.size())>=0.50)
 			autoShootsKey = true;

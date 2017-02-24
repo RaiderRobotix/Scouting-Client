@@ -2,13 +2,17 @@ package org.usfirst.frc.team25.scouting.client.models;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.usfirst.frc.team25.scouting.client.data.Statistics;
 
 public class ScoutEntry implements Serializable {
 
-    PreMatch preMatch;
-    Autonomous auto;
-    TeleOp teleOp;
-    PostMatch postMatch;
+    public PreMatch preMatch;
+    public Autonomous auto;
+    public TeleOp teleOp;
+    public PostMatch postMatch;
     public transient int autoScore, teleScore, totalScore, autoKpa, teleOpKpa;
     public transient double pointsPerCycle;
 
@@ -50,11 +54,11 @@ public class ScoutEntry implements Serializable {
 	
 
 	public void calculateDerivedStats() {
+		autoKpa = auto.highGoals+auto.lowGoals/3;
+		teleOpKpa = teleOp.highGoals/3+teleOp.lowGoals/9;
 		autoScore = (auto.baselineCrossed ? 5 : 0)+auto.gearsDelivered*40+autoKpa;
 		teleScore = teleOp.gearsDelivered*18+teleOpKpa+(teleOp.readyTakeoff ? 50 : 0);
 		totalScore = autoScore+teleScore;
-		autoKpa = auto.highGoals+auto.lowGoals/3;
-		teleOpKpa = teleOp.highGoals/3+teleOp.lowGoals/9;
 		if(teleOp.readyTakeoff)
 			pointsPerCycle = ((double) teleScore-50)/teleOp.numCycles;
 		else pointsPerCycle = ((double) teleScore)/teleOp.numCycles;

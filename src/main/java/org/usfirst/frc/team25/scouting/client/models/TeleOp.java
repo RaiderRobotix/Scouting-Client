@@ -65,7 +65,7 @@ public class TeleOp {
 
 
 
-    int lowGoals, highGoals, gearsDelivered, hopppersUsed,  rotorsStarted, numCycles;
+    public int lowGoals, highGoals, gearsDelivered, hopppersUsed,  rotorsStarted, numCycles;
     public int getNumCycles() {
 		return numCycles;
 	}
@@ -76,7 +76,7 @@ public class TeleOp {
 
 
 
-	boolean attemptTakeoff, readyTakeoff;
+	public boolean attemptTakeoff, readyTakeoff;
 
     public TeleOp(int lowGoals, int highGoals, int gearsDelivered, int hopppersUsed, int rotorsStarted, 
     		boolean attemptTakeoff, boolean readyTakeoff, int numCycles) {

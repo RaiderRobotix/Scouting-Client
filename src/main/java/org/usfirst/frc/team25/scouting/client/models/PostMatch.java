@@ -39,7 +39,7 @@ public class PostMatch {
 
     }
 
-    String robotComment, pilotComment;
+    public String robotComment, pilotComment;
 
 
     

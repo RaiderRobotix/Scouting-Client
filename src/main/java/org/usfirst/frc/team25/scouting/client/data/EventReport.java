@@ -69,6 +69,7 @@ public class EventReport {
 			
 			
 			teamReports.put(key, report);
+			System.out.println(report.totalCycles.get(0));
 		}
 		
 		

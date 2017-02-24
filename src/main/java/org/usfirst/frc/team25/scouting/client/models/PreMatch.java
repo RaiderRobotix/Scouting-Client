@@ -15,9 +15,9 @@ public class PreMatch {
         this.pilotPlaying = pilotPlaying;
     }
 
-    String scoutName, currentEvent, scoutPos;
-    int matchNum, teamNum;
-    boolean pilotPlaying;
+    public String scoutName, currentEvent, scoutPos;
+    public int matchNum, teamNum;
+    public boolean pilotPlaying;
 
     public boolean isPilotPlaying() {
         return pilotPlaying;
