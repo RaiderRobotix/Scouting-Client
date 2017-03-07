@@ -210,9 +210,9 @@ public class TeamReport {
 				frequentPilotComment.add(key);
 		
 		for(String comment : frequentRobotComment)
-			frequentRobotCommentStr+=comment+';';
+			frequentRobotCommentStr+=removeCommas(comment)+';';
 		for(String comment : frequentPilotComment)
-			frequentPilotCommentStr+=comment+"; ";
+			frequentPilotCommentStr+=removeCommas(comment)+"; ";
 		
 		computeRankingMetrics();
 		
@@ -225,6 +225,16 @@ public class TeamReport {
 		}
 			
 				
+	}
+
+	String removeCommas(String s){
+		String newString = "";
+	     for(int i = 0; i < s.length(); i++) {
+	            if(s.charAt(i)!=',')
+	                newString += s.charAt(i);
+	            else newString+="; ";
+	     }
+	     return newString;
 	}	
 	
 	void computeRankingMetrics(){

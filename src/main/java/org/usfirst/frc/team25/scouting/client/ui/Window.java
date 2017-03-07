@@ -124,7 +124,7 @@ public class Window {
 	
 	public static void initialize(){
 		
-		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v1.11</h1><br>Press start to select data folder</html>");
+		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v1.12</h1><br>Press start to select data folder</html>");
 		introText.setHorizontalAlignment(JLabel.CENTER);
 		introText.setFont(new Font("Arial", Font.PLAIN, 16));
 		
