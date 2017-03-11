@@ -13,7 +13,8 @@ public class ScoutEntry implements Serializable {
     public Autonomous auto;
     public TeleOp teleOp;
     public PostMatch postMatch;
-    public transient int autoScore, teleScore, totalScore, autoKpa, teleOpKpa;
+    public transient int autoScore, teleScore, totalScore;
+    public transient double autoKpa, teleOpKpa;
     public transient double pointsPerCycle;
 
     //Actual member variables will be set using setters as data is filled in
@@ -54,11 +55,11 @@ public class ScoutEntry implements Serializable {
 	
 
 	public void calculateDerivedStats() {
-		autoKpa = auto.highGoals+auto.lowGoals/3;
-		teleOpKpa = teleOp.highGoals/3+teleOp.lowGoals/9;
-		autoScore = (auto.baselineCrossed ? 5 : 0)+auto.gearsDelivered*40+autoKpa;
-		teleScore = teleOp.gearsDelivered*18+teleOpKpa+(teleOp.readyTakeoff ? 50 : 0);
-		totalScore = autoScore+teleScore;
+		autoKpa = auto.highGoals+auto.lowGoals/3.0;
+		teleOpKpa = teleOp.highGoals/3.0+teleOp.lowGoals/9.0;
+		autoScore = (auto.baselineCrossed ? 5 : 0)+auto.gearsDelivered*40+ (int) Math.floor(autoKpa);
+		teleScore = teleOp.gearsDelivered*18+(int) Math.floor(teleOpKpa)+(teleOp.readyTakeoff ? 50 : 0);
+		totalScore = autoScore+teleScore-(int)Math.floor(autoKpa)-(int)Math.floor(teleOpKpa)+(int)Math.floor(autoKpa+teleOpKpa);
 		if(teleOp.readyTakeoff)
 			pointsPerCycle = ((double) teleScore-50)/teleOp.numCycles;
 		else pointsPerCycle = ((double) teleScore)/teleOp.numCycles;

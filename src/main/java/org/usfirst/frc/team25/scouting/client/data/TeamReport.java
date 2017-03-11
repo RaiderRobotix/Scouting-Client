@@ -44,9 +44,9 @@ public class TeamReport {
 	int totalTakeoffAttempts, totalTakeoffSuccesses, totalPilotPlaying, 
 		totalReachBaseline, totalAutoShootsKey;
 	ArrayList<Integer> totalHoppers= new ArrayList<>(), totalFuel= new ArrayList<>(), teleOpGears= new ArrayList<>(), 
-			autoKpas= new ArrayList<>(), autoScores= new ArrayList<>(), teleOpScores= new ArrayList<>(), matchScores= new ArrayList<>(),
-		totalCycles= new ArrayList<>(), totalHighGoals= new ArrayList<>(), totalLowGoals= new ArrayList<>(), autoGears= new ArrayList<>(), teleOpKpa= new ArrayList<>();
-	ArrayList<Double> totalPointsPerCycle = new ArrayList<>();
+			 autoScores= new ArrayList<>(), teleOpScores= new ArrayList<>(), matchScores= new ArrayList<>(),
+		totalCycles= new ArrayList<>(), totalHighGoals= new ArrayList<>(), totalLowGoals= new ArrayList<>(), autoGears= new ArrayList<>();
+	ArrayList<Double> totalPointsPerCycle = new ArrayList<>(), autoKpas= new ArrayList<>(), teleOpKpa= new ArrayList<>();
 	
 	public TeamReport(int teamNum){
 		this.teamNum = teamNum;
@@ -136,11 +136,11 @@ public class TeamReport {
 		sdTeleOpGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpGears));
 		
 		
-		avgAutoKpa = Statistics.average(Statistics.toDoubleArrayList(autoKpas));
-		sdAutoKpa = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoKpas));
+		avgAutoKpa = Statistics.average(autoKpas);
+		sdAutoKpa = Statistics.popStandardDeviation(autoKpas);
 		
-		avgTeleOpKpa = Statistics.average(Statistics.toDoubleArrayList(teleOpKpa));
-		sdTeleOpKpa = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpKpa));
+		avgTeleOpKpa = Statistics.average(teleOpKpa);
+		sdTeleOpKpa = Statistics.popStandardDeviation(teleOpKpa);
 		
 		avgAutoGears = Statistics.average(Statistics.toDoubleArrayList(autoGears));
 		sdAutoGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoGears));
