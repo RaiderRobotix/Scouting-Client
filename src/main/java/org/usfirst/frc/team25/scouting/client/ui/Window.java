@@ -123,7 +123,10 @@ public class Window {
 	
 	
 	public static void initialize(){
-		
+		double x, y;
+		x = 6/3.0;
+		y = 5/3.0;
+		System.out.println(Math.floor(x+y));
 		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v1.2</h1><br>Press start to select data folder</html>");
 		introText.setHorizontalAlignment(JLabel.CENTER);
 		introText.setFont(new Font("Arial", Font.PLAIN, 16));
