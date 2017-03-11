@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -17,10 +18,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import org.usfirst.frc.team25.scouting.client.data.BlueAlliance;
 import org.usfirst.frc.team25.scouting.client.data.EventReport;
 import org.usfirst.frc.team25.scouting.client.data.FileManager;
+import org.usfirst.frc.team25.scouting.client.data.Statistics;
 import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
 
 /** Main class; used to initialize the GUI
@@ -123,10 +124,6 @@ public class Window {
 	
 	
 	public static void initialize(){
-		double x, y;
-		x = 6/3.0;
-		y = 5/3.0;
-		System.out.println(Math.floor(x+y));
 		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v1.2</h1><br>Press start to select data folder</html>");
 		introText.setHorizontalAlignment(JLabel.CENTER);
 		introText.setFont(new Font("Arial", Font.PLAIN, 16));

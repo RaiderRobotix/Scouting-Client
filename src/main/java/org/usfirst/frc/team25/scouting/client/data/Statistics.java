@@ -15,7 +15,7 @@ public class Statistics {
 	 * @return Sum of the elements in <code>dataset</code>
 	 */
 	public static double sum(ArrayList<Double> dataset){
-		int sum = 0;
+		double sum = 0;
 
 		for(double i : dataset)
 			sum+=i;
