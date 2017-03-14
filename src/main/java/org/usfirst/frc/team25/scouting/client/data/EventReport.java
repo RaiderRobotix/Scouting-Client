@@ -2,7 +2,9 @@ package org.usfirst.frc.team25.scouting.client.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -30,6 +32,96 @@ public class EventReport {
 	            else newString+="; ";
 	     }
 	     return newString;
+	}
+	
+	public boolean isTeamPlaying(int teamNum){
+		for(int i : teamReports.keySet())
+			if(teamNum==i)
+				return true;
+		return false;
+	}
+	
+
+	
+	public String quickTeamReport(int teamNum){
+		String formatString = "<html>";
+		TeamReport report = teamReports.get(teamNum);
+		
+		formatString+="<h2>Team " + teamNum;
+		if(report.teamName!=null)
+			formatString+=" - " + report.teamName;
+		formatString+="</h2><h3>Auto</h3>";
+		
+		formatString+="Cross baseline: "+Statistics.round(report.reachBaselinePercentage,2)+"% ("
+				+report.totalReachBaseline+"/"+report.entries.size()+")"
+				+ "<br>";
+		formatString+="Place gear: "+Statistics.round(report.avgAutoGears*100,2)+"% ("
+				+Statistics.round(report.avgAutoGears*report.entries.size(),0)+"/"+report.entries.size()+")"
+				+"<br>";
+		formatString+="Avg. kPa: "+ Statistics.round(report.avgAutoKpa, 2)+"<br>";
+		
+		formatString+="<h3>Tele-Op</h3>";
+		formatString+="Avg. gears: "+Statistics.round(report.avgTeleOpGears,2)+"<br>";
+		formatString+="Gear counts: ";
+		for(int i : report.teleOpGears)
+			formatString+=i+", ";
+		formatString+="<br>";
+		formatString+="Avg. kPa: "+Statistics.round(report.avgTeleOpKpa,2)+"<br>";
+		formatString+="Takeoff success: " +Statistics.round(report.takeoffPercentage, 2)+"% ("
+				+ report.totalTakeoffSuccesses+"/"+report.entries.size()+")<br>";
+		formatString+="Takeoff attempt: " +Statistics.round(report.takeoffAttemptPercentage,2)+"% ("
+				+report.totalTakeoffAttempts+"/"+report.entries.size()+")<br>";
+		formatString+="<h3>Overall</h3>";
+		formatString+="Avg. score (modified OPR): " + Statistics.round(report.avgMatchScore,2)+"<br>";
+		formatString+="Total gears: "+Statistics.round(report.avgAutoGears+report.avgTeleOpGears,2)+"<br>";
+		formatString+="Total kPa: " + Statistics.round(report.avgAutoKpa+report.avgTeleOpKpa,2)+"<br>";
+		formatString+="Pilot play: "+Statistics.round(report.pilotPlayPercentage,2)+"%<br>";
+		formatString+="Frequent comments: " + report.frequentRobotCommentStr+" "+report.frequentPilotCommentStr;
+		formatString+="</html>";
+		return formatString;
+	}
+	
+	public String allianceReport(int t1, int t2, int t3){
+		String formatString = "<html>";
+		TeamReport r1 = teamReports.get(t1), r2=teamReports.get(t2),r3=teamReports.get(t3);
+		
+		Alliance a = new Alliance(r1, r2, r3);
+		a.calculateStats();
+		
+		formatString+="<h2>"+t1+", "+t2+", "+t3+"</h2><h3>Auto</h3>";
+		
+		formatString+="1+ BL cross: "
+				+Statistics.round(a.atLeastOneBaselinePercent,2)
+				+"%<br>";
+		formatString+="2+ BL cross: "
+				+Statistics.round(a.atLeastTwoBaselinePercent,2)
+				+"%<br>";
+		formatString+="3 BL cross: "
+				+Statistics.round(a.allBaselinePercent,2)
+				+"%<br>";
+		formatString+="Place gear: "
+				+ Statistics.round(a.autoGearPercent, 2)
+				+"%<br>";
+		formatString+="Avg. kPa: "+ Statistics.round(a.autoKpa, 2)+"<br>";
+		
+		formatString+="<h3>Tele-Op</h3>";
+		formatString+="Avg. kPa: "+Statistics.round(a.teleopKpa,2)+"<br>";
+		formatString+="1+ takeoff: "
+				+Statistics.round(a.atLeastOneTakeoffPercent,2)
+				+"%<br>";
+		formatString+="2+ takeoff: "
+				+Statistics.round(a.atLeastTwoTakeoffPercent,2)
+				+"%<br>";
+		formatString+="3 takeoff: "
+				+Statistics.round(a.allTakeoffPercent,2)
+				+"%<br>";
+		formatString+="<h3>Overall</h3>";
+		formatString+="Total gears: "+Statistics.round(a.totalGears,2)+"<br>";
+		formatString+="Total kPa: " + Statistics.round(a.totalKpa,2)+"<br>";
+		formatString+="Avg. score (predicted): " + Statistics.round(a.predictedScore,2)+"<br>";
+		formatString+="</html>";
+		return formatString;
+		
 	}
 	
 	/** Unsorted list of ScoutEntrys TODO create method to sort them
@@ -122,7 +214,7 @@ public class EventReport {
 		String header = "Scout Name,Match Num,Scouting Pos,Team Num,Pilot Playing,High goals auto, "
 				+ "Low goals auto,Gears auto,Rotors auto,Reached baseline,Hopper used auto,Shoots from key auto,"
 				+ "High goals tele,Low goals tele,Gears tele,Rotors tele,Hoppers tele,Cycles,Takeoff attempt,"
-				+ "Takeoff success,Robot comment,Pilot comment,";
+				+ "Takeoff success,Robot comment,Robot quick comment,Pilot comment,Pilot quick comment,";
 		ArrayList<String> keys = new ArrayList<>();
 		ArrayList<String> pilotKeys = new ArrayList<>();
 			
@@ -157,7 +249,7 @@ public class EventReport {
 			fileContents+=tele.getHighGoals()+COMMA+tele.getLowGoals()+COMMA+tele.getGearsDelivered()+COMMA+
 					tele.getRotorsStarted()+COMMA+tele.getHopppersUsed()+COMMA+tele.getNumCycles()+COMMA+tele.isAttemptTakeoff()+
 					COMMA+tele.isReadyTakeoff()+COMMA;
-			fileContents+=post.getRobotComment()+COMMA+post.getPilotComment()+COMMA;
+			fileContents+=post.getRobotComment()+COMMA+post.robotQuickCommentStr+COMMA+post.getPilotComment()+COMMA+post.pilotQuickCommentStr+COMMA;
 			
 			for(String key : keys)
 				fileContents+=post.getRobotQuickCommentSelections().get(key)+COMMA;
@@ -213,6 +305,10 @@ public class EventReport {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public TeamReport getTeamReport(int teamNum){
+		return teamReports.get(teamNum);
 	}
 
 }

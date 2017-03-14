@@ -13,16 +13,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.usfirst.frc.team25.scouting.client.data.Alliance;
 import org.usfirst.frc.team25.scouting.client.data.BlueAlliance;
 import org.usfirst.frc.team25.scouting.client.data.EventReport;
 import org.usfirst.frc.team25.scouting.client.data.FileManager;
 import org.usfirst.frc.team25.scouting.client.data.Statistics;
+import org.usfirst.frc.team25.scouting.client.data.TeamReport;
 import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
+
+import com.adithyasairam.tba4j.Events;
+import com.adithyasairam.tba4j.models.Match;
 
 /** Main class; used to initialize the GUI
  * 
@@ -78,11 +86,10 @@ public class Window {
 		}
 		
 		ArrayList<ScoutEntry> scoutEntries = FileManager.deserializeData(jsonFileList);
-		
 			
 		
 		if(scoutEntries.size()==0){
-			JOptionPane.showMessageDialog(addIcon(new JFrame()), "No JSON data files found", "Error", JOptionPane.PLAIN_MESSAGE);
+			JOptionPane.showMessageDialog(addIcon(new JFrame()), "No JSON data files found or root folder not named after event", "Error", JOptionPane.PLAIN_MESSAGE);
 			introText.setText("<html><h1>Processing data</h1><br>Error!</html>"); 
 			return;
 		}
@@ -105,6 +112,91 @@ public class Window {
 		
 		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); 
 		
+		frame.setVisible(false);
+		initializeAnalyzer(report);
+		
+	}
+	
+	public static boolean isValidTeamNum(EventReport report, String teamNumStr){
+		try{
+			int teamNum = Integer.parseInt(teamNumStr);
+			return report.isTeamPlaying(teamNum);
+				
+		}catch(NumberFormatException exc){
+			return false;
+		}
+	}
+	
+	public static void initializeAnalyzer(EventReport eventReport){
+		JLabel introText = new JLabel("<html><h1>Analyze data</h1><br>Retrieve alliance or team information</html>");
+		introText.setHorizontalAlignment(JLabel.CENTER);
+		introText.setFont(new Font("Arial", Font.PLAIN, 16));
+		
+		JFrame frame = addIcon(new JFrame("Team 25 Scouting Client"));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		
+		frame.getContentPane().add(introText, BorderLayout.CENTER);
+
+		
+		JButton teamButton = new JButton("Team report");
+		JButton allianceButton = new JButton("Alliance report");
+		JPanel panel = new JPanel(new GridLayout(1,2,1,1));
+		panel.add(teamButton);
+		panel.add(allianceButton);
+		
+		frame.getContentPane().add(panel, BorderLayout.SOUTH);
+		
+		frame.setSize(500, 200);
+		
+		//Sets window to launch at the center of screen
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+		
+		frame.setVisible(true);
+		
+		teamButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JFrame teamNumPrompt = addIcon(new JFrame());
+			
+				String userInput = JOptionPane.showInputDialog(teamNumPrompt,
+						"Enter the team number to retrieve stats", "Enter team number",JOptionPane.PLAIN_MESSAGE);
+				if(!isValidTeamNum(eventReport, userInput))
+					JOptionPane.showMessageDialog(teamNumPrompt, "Invalid team number for event. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
+				else JOptionPane.showMessageDialog(teamNumPrompt, eventReport.quickTeamReport(Integer.parseInt(userInput)), "Team "+userInput, JOptionPane.PLAIN_MESSAGE);
+					
+			}
+		});
+		
+		allianceButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JFrame teamNumPrompt = addIcon(new JFrame());
+				JTextField t1 = new JTextField(5);
+			    JTextField t2 = new JTextField(5);
+			    JTextField t3 = new JTextField(5);
+			    
+			    JPanel panel = new JPanel();
+			    panel.add(new JLabel("Team #1:"));
+			    panel.add(t1);
+			    
+			    panel.add(new JLabel("Team #2:"));
+			    
+			    panel.add(t2);
+			    panel.add(new JLabel("Team #3:"));
+			    panel.add(t3);
+				
+				int input = JOptionPane.showOptionDialog(teamNumPrompt, panel, "Enter alliance", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE
+						, null, null, null);
+				if(input == JOptionPane.OK_OPTION){
+					if(!isValidTeamNum(eventReport, t1.getText())||!isValidTeamNum(eventReport,t2.getText())||!isValidTeamNum(eventReport,t3.getText()))
+						JOptionPane.showMessageDialog(teamNumPrompt, "Invalid team number(s) for event. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
+					else JOptionPane.showMessageDialog(teamNumPrompt, eventReport.allianceReport(Integer.parseInt(t1.getText()), Integer.parseInt(t2.getText()), Integer.parseInt(t3.getText()))
+							, t1.getText()+", "+t2.getText()+", "+t3.getText()
+							, JOptionPane.PLAIN_MESSAGE);
+				}
+					
+			}
+		});
 	}
 	
 	/**
@@ -124,7 +216,8 @@ public class Window {
 	
 	
 	public static void initialize(){
-		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v1.2</h1><br>Press start to select data folder</html>");
+		
+		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v1.21</h1><br>Press start to select data folder</html>");
 		introText.setHorizontalAlignment(JLabel.CENTER);
 		introText.setFont(new Font("Arial", Font.PLAIN, 16));
 		

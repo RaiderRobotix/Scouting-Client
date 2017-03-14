@@ -40,6 +40,7 @@ public class PostMatch {
     }
 
     public String robotComment, pilotComment;
+    public transient String robotQuickCommentStr, pilotQuickCommentStr;
 
 
     
@@ -58,6 +59,16 @@ public class PostMatch {
 
     public void setPilotComment(String pilotComment) {
         this.pilotComment = pilotComment;
+    }
+    
+    void generateQuickCommentStr(){
+    	robotQuickCommentStr = pilotQuickCommentStr = "";
+    	for(String comment : robotQuickCommentSelections.keySet())
+    		if(robotQuickCommentSelections.get(comment))
+    			robotQuickCommentStr+=comment;
+    	for(String comment : pilotQuickCommentSelections.keySet())
+    		if(pilotQuickCommentSelections.get(comment))
+    			pilotQuickCommentStr+=comment;
     }
 
 

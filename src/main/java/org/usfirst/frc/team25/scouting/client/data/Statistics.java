@@ -1,5 +1,7 @@
 package org.usfirst.frc.team25.scouting.client.data;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 /**
@@ -8,6 +10,34 @@ import java.util.ArrayList;
  *
  */
 public class Statistics {
+	
+	public static double percentNone(double p1, double p2, double p3){
+		return 100*(1-p1)*(1-p2)*(1-p3);
+	}
+	
+	public static double percentAtLeastOne(double p1, double p2, double p3){
+		return 100-percentNone(p1,p2,p3);
+	}
+	
+	public static double percentExactlyOne(double p1, double p2, double p3){
+		return 100*(p1*(1-p2)*(1-p3)+p2*(1-p1)*(1-p3)+p3*(1-p1)*(1-p3));
+	}
+	public static double percentAtLeastTwo(double p1, double p2, double p3){
+		return 100-percentNone(p1,p2,p3)-percentExactlyOne(p1,p2,p3);
+	}
+	
+	public static double percentAll(double p1, double p2, double p3){
+		return 100*p1*p2*p3;
+	}
+	
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
+	}
 
 	/** Calculates the sum of an array of numbers
 	 * 

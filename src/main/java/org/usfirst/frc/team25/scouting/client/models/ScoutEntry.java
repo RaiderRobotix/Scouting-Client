@@ -58,11 +58,13 @@ public class ScoutEntry implements Serializable {
 		autoKpa = auto.highGoals+auto.lowGoals/3.0;
 		teleOpKpa = teleOp.highGoals/3.0+teleOp.lowGoals/9.0;
 		autoScore = (auto.baselineCrossed ? 5 : 0)+auto.gearsDelivered*40+ (int) Math.floor(autoKpa);
-		teleScore = teleOp.gearsDelivered*18+(int) Math.floor(teleOpKpa)+(teleOp.readyTakeoff ? 50 : 0);
+		teleScore = teleOp.gearsDelivered*20+(int) Math.floor(teleOpKpa)+(teleOp.readyTakeoff ? 50 : 0);
 		totalScore = autoScore+teleScore-(int)Math.floor(autoKpa)-(int)Math.floor(teleOpKpa)+(int)Math.floor(autoKpa+teleOpKpa);
 		if(teleOp.readyTakeoff)
 			pointsPerCycle = ((double) teleScore-50)/teleOp.numCycles;
 		else pointsPerCycle = ((double) teleScore)/teleOp.numCycles;
+		
+		postMatch.generateQuickCommentStr();
 		
 	}
 

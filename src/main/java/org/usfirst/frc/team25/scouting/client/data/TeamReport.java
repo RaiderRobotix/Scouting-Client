@@ -13,7 +13,7 @@ import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
  */
 public class TeamReport {
 	
-	transient private ArrayList<ScoutEntry> entries;
+	transient ArrayList<ScoutEntry> entries;
 	
 	int teamNum; //transient because it's the key of the HashMap in EventReport
 	String teamName;
@@ -21,10 +21,12 @@ public class TeamReport {
 	double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage, 
 		avgHighGoals, avgLowGoals,sdHighGoals, sdLowGoals, sdPointsPerCycle;
 	boolean autoShootsKey;
-	double avgAutoScore, avgTeleOpScore, avgMatchScore, avgAutoKpa, avgTeleOpKpa, avgAutoGears, avgTeleOpGears, avgTotalFuel, avgHoppers;
+	double avgAutoScore, avgTeleOpScore, avgMatchScore, avgAutoKpa, avgTeleOpKpa, avgAutoGears, 
+		avgTeleOpGears, avgTotalFuel, avgHoppers;
 	
 	
-	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdAutoKpa, sdTeleOpKpa, sdAutoGears, sdTeleOpGears, sdTotalFuel;
+	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdAutoKpa, sdTeleOpKpa, 
+		sdAutoGears, sdTeleOpGears, sdTotalFuel;
 	
 	
 	double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffPercentage;// attempt is out of all matches; success is for each attempt
@@ -103,7 +105,7 @@ public class TeamReport {
 			matchScores.add(entries.get(i).totalScore);
 			totalPointsPerCycle.add(entries.get(i).pointsPerCycle);
 			totalCycles.add(entries.get(i).teleOp.numCycles);
-			System.out.println(entries.get(i).getTeleOp().getNumCycles());
+			
 			totalHighGoals.add( entries.get(i).getAuto().getHighGoals()+entries.get(i).getTeleOp().getHighGoals());
 			totalLowGoals.add(entries.get(i).getAuto().getLowGoals()+entries.get(i).getTeleOp().getLowGoals());
 		}
