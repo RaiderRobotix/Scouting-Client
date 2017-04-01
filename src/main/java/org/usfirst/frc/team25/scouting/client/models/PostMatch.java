@@ -65,10 +65,10 @@ public class PostMatch {
     	robotQuickCommentStr = pilotQuickCommentStr = "";
     	for(String comment : robotQuickCommentSelections.keySet())
     		if(robotQuickCommentSelections.get(comment))
-    			robotQuickCommentStr+=comment;
+    			robotQuickCommentStr+=comment+"; ";
     	for(String comment : pilotQuickCommentSelections.keySet())
     		if(pilotQuickCommentSelections.get(comment))
-    			pilotQuickCommentStr+=comment;
+    			pilotQuickCommentStr+=comment+"; ";
     }
 
 
