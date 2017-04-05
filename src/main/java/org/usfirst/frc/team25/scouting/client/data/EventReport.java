@@ -177,7 +177,7 @@ public class EventReport {
 		final String COMMA = ",";
 		String header = "teamNum,teamName,avgAutoScore,sdAutoScore,avgTeleOpScore,sdTeleOpScore,avgMatchScore,"
 				+ "sdMatchScore,reachBaselinePercentage,avgAutoKpa,sdAutoKpa,avgTeleOpKpa,sdTeleOpKpa,avgAutoGears,"
-				+ "sdAutoGears,avgTeleOpGears,sdTeleOpGears,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,avgHoppers,"
+				+ "sdAutoGears,autoGearPeg,avgTeleOpGears,sdTeleOpGears,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,avgHoppers,"
 				+ "avgPointsPerCycle,sdPointsPerCycle,avgCycles,sdCycles,takeoffPercentage,takeoffAttemptPercentage,"
 				+ "takeoffAttemptSuccessPercentage,pilotPlayPercentage,autoShootsKey,frequentRobotCommentStr,frequentPilotCommentStr,allComments,\n";
 		
@@ -187,7 +187,7 @@ public class EventReport {
 			fileContents += report.teamNum+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+report.sdAutoScore+COMMA+
 					report.avgTeleOpScore+COMMA+report.sdTeleOpScore+COMMA+report.avgMatchScore+COMMA+report.sdMatchScore+
 					COMMA+report.reachBaselinePercentage+COMMA+report.avgAutoKpa+COMMA+report.sdAutoKpa+COMMA+report.avgTeleOpKpa
-					+COMMA+report.sdTeleOpKpa+COMMA+report.avgAutoGears+COMMA+report.sdAutoGears+COMMA+report.avgTeleOpGears+COMMA+
+					+COMMA+report.sdTeleOpKpa+COMMA+report.avgAutoGears+COMMA+report.sdAutoGears+COMMA+report.autoGearPeg+COMMA+report.avgTeleOpGears+COMMA+
 					report.sdTeleOpGears+COMMA+report.avgHighGoals+COMMA+report.sdHighGoals+COMMA+report.avgLowGoals+COMMA+
 					report.sdLowGoals+COMMA+report.avgHoppers+COMMA+report.avgPointsPerCycle+COMMA+report.sdPointsPerCycle+COMMA+
 					report.avgCycles+COMMA+report.sdCycles+COMMA+report.takeoffPercentage+COMMA+report.takeoffAttemptPercentage+
@@ -212,7 +212,7 @@ public class EventReport {
 	public void generateRawSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
 		String header = "Scout Name,Match Num,Scouting Pos,Team Num,Pilot Playing,High goals auto, "
-				+ "Low goals auto,Gears auto,Rotors auto,Reached baseline,Hopper used auto,Shoots from key auto,"
+				+ "Low goals auto,Gears auto,Auto gear peg,Rotors auto,Reached baseline,Hopper used auto,Shoots from key auto,"
 				+ "High goals tele,Low goals tele,Gears tele,Rotors tele,Hoppers tele,Cycles,Takeoff attempt,"
 				+ "Takeoff success,Robot comment,Robot quick comment,Pilot comment,Pilot quick comment,";
 		ArrayList<String> keys = new ArrayList<>();
@@ -243,7 +243,7 @@ public class EventReport {
 			
 			fileContents+=pre.getScoutName()+COMMA + pre.getMatchNum()+COMMA+pre.getScoutPos()+COMMA+
 					pre.getTeamNum()+COMMA+pre.isPilotPlaying()+COMMA;
-			fileContents+=auto.getHighGoals()+COMMA+auto.getLowGoals()+COMMA+auto.getGearsDelivered()+COMMA+
+			fileContents+=auto.getHighGoals()+COMMA+auto.getLowGoals()+COMMA+auto.getGearsDelivered()+COMMA+auto.getGearPeg()+COMMA+
 					auto.getRotorsStarted()+COMMA+auto.isBaselineCrossed()+COMMA+auto.isUseHoppers()+COMMA+
 					auto.isShootsFromKey()+COMMA;
 			fileContents+=tele.getHighGoals()+COMMA+tele.getLowGoals()+COMMA+tele.getGearsDelivered()+COMMA+

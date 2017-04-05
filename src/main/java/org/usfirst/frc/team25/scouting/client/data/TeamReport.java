@@ -28,6 +28,8 @@ public class TeamReport {
 	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdAutoKpa, sdTeleOpKpa, 
 		sdAutoGears, sdTeleOpGears, sdTotalFuel;
 	
+	String autoGearPeg = "";
+	
 	
 	double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffPercentage;// attempt is out of all matches; success is for each attempt
 	double pilotPlayPercentage;
@@ -224,6 +226,8 @@ public class TeamReport {
 				allComments+=entry.getPostMatch().getRobotComment() + "; ";
 			if(!entry.getPostMatch().getPilotComment().equals(""))
 				allComments+=entry.getPostMatch().getPilotComment()+"; ";
+			if(!autoGearPeg.contains(entry.getAuto().getGearPeg()))
+				autoGearPeg+=entry.getAuto().getGearPeg()+"; ";
 		}
 			
 				

@@ -1,18 +1,23 @@
 package org.usfirst.frc.team25.scouting.client.models;
 
 
+
+
+
 /** Object model for autonomous period of a match
  *
  */
 public class Autonomous {
 
-    public Autonomous(boolean baselineCrossed, boolean useHoppers, int highGoals, int lowGoals, int rotorsStarted, int gearsDelivered, boolean shootsFromKey) {
+    public Autonomous(boolean baselineCrossed, boolean useHoppers, int highGoals, int lowGoals, int rotorsStarted, int gearsDelivered, boolean shootsFromKey, String gearPeg) {
         this.baselineCrossed = baselineCrossed;
         this.useHoppers = useHoppers;
         this.highGoals = highGoals;
         this.lowGoals = lowGoals;
         this.rotorsStarted = rotorsStarted;
         this.gearsDelivered = gearsDelivered;
+        this.shootsFromKey = shootsFromKey;
+        this.gearPeg = gearPeg;
     }
 
     public boolean isBaselineCrossed() {
@@ -63,17 +68,29 @@ public class Autonomous {
         this.gearsDelivered = gearsDelivered;
     }
 
-    
-    public boolean isShootsFromKey() {
-		return shootsFromKey;
-	}
+    public boolean baselineCrossed;
+    public boolean useHoppers;
 
-	public void setShootsFromKey(boolean shootsFromKey) {
-		this.shootsFromKey = shootsFromKey;
-	}
-	
-	public boolean baselineCrossed, useHoppers, shootsFromKey;
-	public int highGoals, lowGoals, rotorsStarted, gearsDelivered;
+    public boolean isShootsFromKey() {
+        return shootsFromKey;
+    }
+
+    public void setShootsFromKey(boolean shootsFromKey) {
+        this.shootsFromKey = shootsFromKey;
+    }
+
+    public boolean shootsFromKey;
+    public int highGoals, lowGoals, rotorsStarted, gearsDelivered;
+
+    public String getGearPeg() {
+        return gearPeg;
+    }
+
+    public void setGearPeg(String gearPeg) {
+        this.gearPeg = gearPeg;
+    }
+
+    public String gearPeg;
 
 
 
