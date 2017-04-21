@@ -70,6 +70,8 @@ public class Statistics {
 		return sum(dataset)/dataset.size();
 	}
 	
+	
+	
 	/** Calculates the success rate of an event in all matches
 	 * 
 	 * @param success Array with number of successes 

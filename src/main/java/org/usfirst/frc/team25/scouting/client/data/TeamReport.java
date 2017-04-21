@@ -20,24 +20,26 @@ public class TeamReport {
 
 	double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage, 
 		avgHighGoals, avgLowGoals,sdHighGoals, sdLowGoals, sdPointsPerCycle;
-	boolean hasPickup, hasIntake, isActive;
+	
 	double avgAutoScore, avgTeleOpScore, avgMatchScore, avgAutoKpa, avgTeleOpKpa, avgAutoGears, 
-		avgTeleOpGears, avgTotalFuel, avgHoppers, avgDroppedGears;
+		avgTeleOpGears, avgTotalFuel, avgHoppers;
 	
 	
 	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdAutoKpa, sdTeleOpKpa, 
 		sdAutoGears, sdTeleOpGears, sdTotalFuel;
 	
-	String autoGearPeg = "";
+	String autoGearPegLoc = "";
 	
-	double autoGearPercent, autoGearAttemptSuccessPercent, leftPegPercent, centerPegPercent, rightPegPercent;
-	
-	double avgTeleOpKpaFuelFocus, avgTeleOpGearsGearFocus, fuelFocusPercent, gearFocusPercent;
 	
 	double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffPercentage;// attempt is out of all matches; success is for each attempt
 	double pilotPlayPercentage;
 	
 	ArrayList<String> frequentRobotComment, frequentPilotComment;
+	
+	double autoGearAttemptSuccessPercent, leftPegPercent, centerPegPercent, rightPegPercent, avgDroppedGears;
+	boolean hasPickup, hasIntake, isActive, doNotPick;
+	
+	double avgTeleOpKpaFuelFocus, avgTeleOpGearsGearFocus, fuelFocusPercent, gearFocusPercent;
 
 	//TODO calculate these values and update EventReport
 	transient double autoAbility, teleOpAbility, driveTeamAbility, robotQualities;
@@ -52,8 +54,12 @@ public class TeamReport {
 		totalReachBaseline, totalAutoShootsKey;
 	ArrayList<Integer> totalHoppers= new ArrayList<>(), totalFuel= new ArrayList<>(), teleOpGears= new ArrayList<>(), 
 			 autoScores= new ArrayList<>(), teleOpScores= new ArrayList<>(), matchScores= new ArrayList<>(),
-		totalCycles= new ArrayList<>(), totalHighGoals= new ArrayList<>(), totalLowGoals= new ArrayList<>(), autoGears= new ArrayList<>();
-	ArrayList<Double> totalPointsPerCycle = new ArrayList<>(), autoKpas= new ArrayList<>(), teleOpKpa= new ArrayList<>();
+		totalCycles= new ArrayList<>(), totalHighGoals= new ArrayList<>(), totalLowGoals= new ArrayList<>(), autoGears= new ArrayList<>(),
+		totalDroppedGears= new ArrayList<>(),  totalTeleOpGearsGearFocus = new ArrayList<>();
+	ArrayList<Double> totalPointsPerCycle = new ArrayList<>(), autoKpas= new ArrayList<>(), teleOpKpa= new ArrayList<>(),totalTeleOpKpaFuelFocus = new ArrayList<>();
+	
+	int totalAutoGearAttempt, totalAutoGearSuccess, totalLeftPegAttempt, totalLeftPegSuccess, totalCenterPegAttempt, totalCenterPegSuccess,
+		totalRightPegAttempt, totalRightPegSuccess;
 	
 	public TeamReport(int teamNum){
 		this.teamNum = teamNum;
@@ -81,38 +87,69 @@ public class TeamReport {
 		
 		totalTakeoffAttempts = totalTakeoffSuccesses = 0;
 		totalPilotPlaying = totalReachBaseline = totalAutoShootsKey = 0;
+		totalAutoGearSuccess = totalAutoGearAttempt = 0;
+		totalLeftPegAttempt = totalLeftPegSuccess = totalCenterPegAttempt = totalCenterPegSuccess = 0;
+		totalRightPegSuccess = totalRightPegAttempt = 0;
 		
 		
-		
-		for(int i = 0; i < entries.size(); i++){
-			if(entries.get(i).getTeleOp().isAttemptTakeoff())
+		for(ScoutEntry entry : entries){
+			if(entry.getTeleOp().isAttemptTakeoff())
 				totalTakeoffAttempts++;
-			if(entries.get(i).getTeleOp().isReadyTakeoff())
+			if(entry.getTeleOp().isReadyTakeoff())
 				totalTakeoffSuccesses++;
 			
-			if(entries.get(i).getPreMatch().isPilotPlaying())
+			if(entry.getPreMatch().isPilotPlaying())
 				totalPilotPlaying++;
-			if(entries.get(i).auto.isBaselineCrossed())
+			if(entry.auto.isBaselineCrossed())
 				totalReachBaseline++;
-			/*if(entries.get(i).getAuto().isShootsFromKey())
+			/*if(entry.getAuto().isShootsFromKey())
 				totalAutoShootsKey++;*/
 			
-			totalHoppers.add((entries.get(i).auto.isUseHoppers() ? 1 : 0) 
-					+ entries.get(i).teleOp.getHopppersUsed());
-			totalFuel.add(entries.get(i).auto.getHighGoals()+entries.get(i).auto.getLowGoals()
-					+entries.get(i).teleOp.getHighGoals()+entries.get(i).teleOp.getLowGoals());
-			autoGears.add(entries.get(i).getAuto().isSuccessGear()? 1 : 0);
-			teleOpGears.add(entries.get(i).getTeleOp().getGearsDelivered());
-			teleOpKpa.add(entries.get(i).teleOpKpa);
-			autoKpas.add(entries.get(i).autoKpa);
-			autoScores.add(entries.get(i).autoScore);
-			teleOpScores.add( entries.get(i).teleScore);
-			matchScores.add(entries.get(i).totalScore);
-			totalPointsPerCycle.add(entries.get(i).pointsPerCycle);
-			totalCycles.add(entries.get(i).teleOp.getNumCycles());
+			if(entry.auto.isAttemptGear()){
+				totalAutoGearAttempt++;
+				if(entry.auto.getGearPeg().equals("Left"))
+					totalLeftPegAttempt++;
+				if(entry.auto.getGearPeg().equals("Center"))
+					totalCenterPegAttempt++;
+				if(entry.auto.getGearPeg().equals("Right"))
+					totalRightPegAttempt++;
+				
+			}
 			
-			totalHighGoals.add( entries.get(i).getAuto().getHighGoals()+entries.get(i).getTeleOp().getHighGoals());
-			totalLowGoals.add(entries.get(i).getAuto().getLowGoals()+entries.get(i).getTeleOp().getLowGoals());
+			if(entry.auto.isSuccessGear()){
+				totalAutoGearSuccess++;
+				if(entry.auto.getGearPeg().equals("Left"))
+					totalLeftPegSuccess++;
+				if(entry.auto.getGearPeg().equals("Center"))
+					totalCenterPegSuccess++;
+				if(entry.auto.getGearPeg().equals("Right"))
+					totalRightPegSuccess++;
+				
+			}
+			
+			
+			totalHoppers.add((entry.auto.isUseHoppers() ? 1 : 0) 
+					+ entry.teleOp.getHopppersUsed());
+			totalFuel.add(entry.auto.getHighGoals()+entry.auto.getLowGoals()
+					+entry.teleOp.getHighGoals()+entry.teleOp.getLowGoals());
+			autoGears.add(entry.getAuto().isSuccessGear()? 1 : 0);
+			teleOpGears.add(entry.getTeleOp().getGearsDelivered());
+			teleOpKpa.add(entry.teleOpKpa);
+			autoKpas.add(entry.autoKpa);
+			autoScores.add(entry.autoScore);
+			teleOpScores.add( entry.teleScore);
+			matchScores.add(entry.totalScore);
+			totalPointsPerCycle.add(entry.pointsPerCycle);
+			totalCycles.add(entry.teleOp.getNumCycles());
+			totalDroppedGears.add(entry.teleOp.getGearsDropped());
+			
+			totalHighGoals.add( entry.getAuto().getHighGoals()+entry.getTeleOp().getHighGoals());
+			totalLowGoals.add(entry.getAuto().getLowGoals()+entry.getTeleOp().getLowGoals());
+			
+			if(entry.postMatch.getFocus().equals("Gears"))
+				totalTeleOpGearsGearFocus.add(entry.teleOp.getGearsDelivered());
+			if(entry.postMatch.getFocus().equals("Fuel"))
+				totalTeleOpKpaFuelFocus.add(entry.teleOpKpa);
 		}
 			
 		
@@ -142,6 +179,8 @@ public class TeamReport {
 		avgTeleOpGears = Statistics.average(Statistics.toDoubleArrayList(teleOpGears));
 		sdTeleOpGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpGears));
 		
+		avgDroppedGears = Statistics.average(Statistics.toDoubleArrayList(totalDroppedGears));
+		
 		
 		avgAutoKpa = Statistics.average(autoKpas);
 		sdAutoKpa = Statistics.popStandardDeviation(autoKpas);
@@ -152,6 +191,11 @@ public class TeamReport {
 		avgAutoGears = Statistics.average(Statistics.toDoubleArrayList(autoGears));
 		sdAutoGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoGears));
 		
+		
+		autoGearAttemptSuccessPercent = totalAutoGearAttempt!=0 ? (double) totalAutoGearSuccess/totalAutoGearAttempt*100 : 0;
+		leftPegPercent = totalLeftPegAttempt!= 0 ? (double) totalLeftPegSuccess / totalLeftPegAttempt * 100 : 0;
+		rightPegPercent = totalRightPegAttempt!= 0 ? (double) totalRightPegSuccess / totalRightPegAttempt * 100 : 0;
+		centerPegPercent = totalCenterPegAttempt!=0 ? (double) totalCenterPegSuccess / totalCenterPegAttempt * 100 : 0;
 		
 		avgAutoScore = Statistics.average(Statistics.toDoubleArrayList(autoScores));
 		sdAutoScore = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoScores));
@@ -180,9 +224,15 @@ public class TeamReport {
 		avgLowGoals = Statistics.average(Statistics.toDoubleArrayList(totalLowGoals));
 		sdLowGoals = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalLowGoals));
 		
-		if(totalAutoShootsKey/((double)entries.size())>=0.50)
+		avgTeleOpKpaFuelFocus = Statistics.average(totalTeleOpKpaFuelFocus);
+		avgTeleOpGearsGearFocus = Statistics.average(Statistics.toDoubleArrayList(totalTeleOpGearsGearFocus));
+		
+		fuelFocusPercent = (double) totalTeleOpKpaFuelFocus.size() / entries.size() * 100;
+		gearFocusPercent = (double) totalTeleOpGearsGearFocus.size() / entries.size() * 100;
+		
+		/*if(totalAutoShootsKey/((double)entries.size())>=0.50)
 			autoShootsKey = true;
-		else autoShootsKey = false;
+		else autoShootsKey = false;*/
 		
 		HashMap<String, Integer> commentFrequencies = new HashMap<>();
 		
@@ -199,6 +249,17 @@ public class TeamReport {
 		for(String key : commentFrequencies.keySet())
 			if(commentFrequencies.get(key)>=entries.size()/4.0)
 				frequentRobotComment.add(key);
+		
+		
+		doNotPick = frequentRobotComment.contains("Do not pick (explain)");
+		isActive = frequentRobotComment.contains("Active gear mech.");
+		hasIntake = frequentRobotComment.contains("Fuel intake");
+		hasPickup = frequentRobotComment.contains("Gear pickup");
+		
+		frequentRobotComment.remove("Do not pick (explain)");
+		frequentRobotComment.remove("Active gear mech.");
+		frequentRobotComment.remove("Fuel intake");
+		frequentRobotComment.remove("Gear pickup");
 		
 		commentFrequencies = new HashMap<>();
 		
@@ -229,8 +290,8 @@ public class TeamReport {
 				allComments+=entry.getPostMatch().getRobotComment() + "; ";
 			if(!entry.getPostMatch().getPilotComment().equals(""))
 				allComments+=entry.getPostMatch().getPilotComment()+"; ";
-			if(!autoGearPeg.contains(entry.getAuto().getGearPeg()))
-				autoGearPeg+=entry.getAuto().getGearPeg()+"; ";
+			if(!autoGearPegLoc.contains(entry.getAuto().getGearPeg()))
+				autoGearPegLoc+=entry.getAuto().getGearPeg()+"; ";
 		}
 			
 				

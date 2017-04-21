@@ -1,13 +1,14 @@
 fields = ['teamNum','teamName','avgAutoScore', 'sdAutoScore','avgTeleOpScore',
            'sdTeleOpScore','avgMatchScore','sdMatchScore',
           'reachBaselinePercentage','avgAutoKpa', 'sdAutoKpa','avgTeleOpKpa', 'sdTeleOpKpa',
-          'avgAutoGears','sdAutoGears','avgTeleOpGears', 'sdTeleOpGears',
+          'avgAutoGears','sdAutoGears','autoGearAttemptSuccessPercent','autoGearPegLoc','leftPegPercent',
+          'rightPegPercent','centerPegPercent','avgTeleOpGears', 'sdTeleOpGears','avgDroppedGears',
           'avgHighGoals','sdHighGoals','avgLowGoals',
           'sdLowGoals',
           'avgHoppers','avgPointsPerCycle','sdPointsPerCycle','avgCycles',
           'sdCycles',
           'takeoffPercentage','takeoffAttemptPercentage','takeoffAttemptSuccessPercentage',
-          'pilotPlayPercentage', 'autoShootsKey',
+          'pilotPlayPercentage', 'hasPickup','hasIntake','isActive','doNotPick',
             'frequentRobotCommentStr','frequentPilotCommentStr',
           'allComments']
 
@@ -19,7 +20,7 @@ fileContents = 'fileContents += '
 for field in fields:
     fileContents+='report.'+field+'+COMMA+'
 
-fileContents+='+\'\\n\';'
+fileContents+='\'\\n\';'
 
 print(header)
 print('\n')
