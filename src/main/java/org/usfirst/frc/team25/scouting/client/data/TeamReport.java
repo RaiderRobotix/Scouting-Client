@@ -20,9 +20,9 @@ public class TeamReport {
 
 	double avgPointsPerCycle, avgCycles, sdCycles , reachBaselinePercentage, 
 		avgHighGoals, avgLowGoals,sdHighGoals, sdLowGoals, sdPointsPerCycle;
-	boolean autoShootsKey;
+	boolean hasPickup, hasIntake, isActive;
 	double avgAutoScore, avgTeleOpScore, avgMatchScore, avgAutoKpa, avgTeleOpKpa, avgAutoGears, 
-		avgTeleOpGears, avgTotalFuel, avgHoppers;
+		avgTeleOpGears, avgTotalFuel, avgHoppers, avgDroppedGears;
 	
 	
 	double sdAutoScore, sdTeleOpScore, sdMatchScore, sdAutoKpa, sdTeleOpKpa, 
@@ -30,6 +30,9 @@ public class TeamReport {
 	
 	String autoGearPeg = "";
 	
+	double autoGearPercent, autoGearAttemptSuccessPercent, leftPegPercent, centerPegPercent, rightPegPercent;
+	
+	double avgTeleOpKpaFuelFocus, avgTeleOpGearsGearFocus, fuelFocusPercent, gearFocusPercent;
 	
 	double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffPercentage;// attempt is out of all matches; success is for each attempt
 	double pilotPlayPercentage;
