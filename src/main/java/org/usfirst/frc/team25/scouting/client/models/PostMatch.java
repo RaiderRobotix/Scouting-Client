@@ -31,16 +31,41 @@ public class PostMatch {
 	}
 
 	public PostMatch(String robotComment, String pilotComment, HashMap<String, Boolean> robotQuickCommentSelections
-    		, HashMap<String, Boolean> pilotQuickCommentSelections) {
+    		, HashMap<String, Boolean> pilotQuickCommentSelections, String focus) {
         this.robotComment = robotComment;
         this.pilotComment = pilotComment;
         this.robotQuickCommentSelections = robotQuickCommentSelections;
         this.pilotQuickCommentSelections = pilotQuickCommentSelections;
-
+        this.focus = focus;
     }
 
-    public String robotComment, pilotComment;
-    public transient String robotQuickCommentStr, pilotQuickCommentStr;
+    public String getFocus() {
+		return focus;
+	}
+
+	public void setFocus(String focus) {
+		this.focus = focus;
+	}
+
+	public String getRobotQuickCommentStr() {
+		return robotQuickCommentStr;
+	}
+
+	public void setRobotQuickCommentStr(String robotQuickCommentStr) {
+		this.robotQuickCommentStr = robotQuickCommentStr;
+	}
+
+	public String getPilotQuickCommentStr() {
+		return pilotQuickCommentStr;
+	}
+
+	public void setPilotQuickCommentStr(String pilotQuickCommentStr) {
+		this.pilotQuickCommentStr = pilotQuickCommentStr;
+	}
+
+	String robotComment, pilotComment, focus;
+    transient String robotQuickCommentStr, pilotQuickCommentStr;
+    
 
 
     

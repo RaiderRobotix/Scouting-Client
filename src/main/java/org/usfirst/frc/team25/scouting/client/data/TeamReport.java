@@ -89,16 +89,16 @@ public class TeamReport {
 			
 			if(entries.get(i).getPreMatch().isPilotPlaying())
 				totalPilotPlaying++;
-			if(entries.get(i).auto.baselineCrossed)
+			if(entries.get(i).auto.isBaselineCrossed())
 				totalReachBaseline++;
-			if(entries.get(i).getAuto().isShootsFromKey())
-				totalAutoShootsKey++;
+			/*if(entries.get(i).getAuto().isShootsFromKey())
+				totalAutoShootsKey++;*/
 			
-			totalHoppers.add((entries.get(i).auto.useHoppers ? 1 : 0) 
-					+ entries.get(i).teleOp.hopppersUsed);
-			totalFuel.add(entries.get(i).auto.highGoals+entries.get(i).auto.lowGoals
-					+entries.get(i).teleOp.highGoals+entries.get(i).teleOp.lowGoals);
-			autoGears.add(entries.get(i).getAuto().getGearsDelivered());
+			totalHoppers.add((entries.get(i).auto.isUseHoppers() ? 1 : 0) 
+					+ entries.get(i).teleOp.getHopppersUsed());
+			totalFuel.add(entries.get(i).auto.getHighGoals()+entries.get(i).auto.getLowGoals()
+					+entries.get(i).teleOp.getHighGoals()+entries.get(i).teleOp.getLowGoals());
+			autoGears.add(entries.get(i).getAuto().isSuccessGear()? 1 : 0);
 			teleOpGears.add(entries.get(i).getTeleOp().getGearsDelivered());
 			teleOpKpa.add(entries.get(i).teleOpKpa);
 			autoKpas.add(entries.get(i).autoKpa);
@@ -106,7 +106,7 @@ public class TeamReport {
 			teleOpScores.add( entries.get(i).teleScore);
 			matchScores.add(entries.get(i).totalScore);
 			totalPointsPerCycle.add(entries.get(i).pointsPerCycle);
-			totalCycles.add(entries.get(i).teleOp.numCycles);
+			totalCycles.add(entries.get(i).teleOp.getNumCycles());
 			
 			totalHighGoals.add( entries.get(i).getAuto().getHighGoals()+entries.get(i).getTeleOp().getHighGoals());
 			totalLowGoals.add(entries.get(i).getAuto().getLowGoals()+entries.get(i).getTeleOp().getLowGoals());

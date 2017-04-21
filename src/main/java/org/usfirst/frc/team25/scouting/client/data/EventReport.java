@@ -212,9 +212,9 @@ public class EventReport {
 	public void generateRawSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
 		String header = "Scout Name,Match Num,Scouting Pos,Team Num,Pilot Playing,High goals auto, "
-				+ "Low goals auto,Gears auto,Auto gear peg,Rotors auto,Reached baseline,Hopper used auto,Shoots from key auto,"
-				+ "High goals tele,Low goals tele,Gears tele,Rotors tele,Hoppers tele,Cycles,Takeoff attempt,"
-				+ "Takeoff success,Robot comment,Robot quick comment,Pilot comment,Pilot quick comment,";
+				+ "Low goals auto,Attempt auto gear,Gears auto,Auto gear peg,Reached baseline,Hopper used auto,"
+				+ "High goals tele,Low goals tele,Gears tele,Gears dropped tele,Gears dropped loc,Hoppers tele,Cycles,Takeoff attempt,"
+				+ "Takeoff success,Match focus,Robot comment,Robot quick comment,Pilot comment,Pilot quick comment,";
 		ArrayList<String> keys = new ArrayList<>();
 		ArrayList<String> pilotKeys = new ArrayList<>();
 			
@@ -243,13 +243,16 @@ public class EventReport {
 			
 			fileContents+=pre.getScoutName()+COMMA + pre.getMatchNum()+COMMA+pre.getScoutPos()+COMMA+
 					pre.getTeamNum()+COMMA+pre.isPilotPlaying()+COMMA;
-			fileContents+=auto.getHighGoals()+COMMA+auto.getLowGoals()+COMMA+auto.getGearsDelivered()+COMMA+auto.getGearPeg()+COMMA+
-					auto.getRotorsStarted()+COMMA+auto.isBaselineCrossed()+COMMA+auto.isUseHoppers()+COMMA+
-					auto.isShootsFromKey()+COMMA;
+			fileContents+=auto.getHighGoals()+COMMA+auto.getLowGoals()+COMMA+auto.isAttemptGear()+COMMA+
+					(auto.isSuccessGear() ? 1 : 0)+COMMA+auto.getGearPeg()+COMMA+
+					auto.isBaselineCrossed()+COMMA+auto.isUseHoppers()+COMMA;
+					
 			fileContents+=tele.getHighGoals()+COMMA+tele.getLowGoals()+COMMA+tele.getGearsDelivered()+COMMA+
-					tele.getRotorsStarted()+COMMA+tele.getHopppersUsed()+COMMA+tele.getNumCycles()+COMMA+tele.isAttemptTakeoff()+
-					COMMA+tele.isReadyTakeoff()+COMMA;
-			fileContents+=post.getRobotComment()+COMMA+post.robotQuickCommentStr+COMMA+post.getPilotComment()+COMMA+post.pilotQuickCommentStr+COMMA;
+					tele.getGearsDropped()+COMMA+tele.getGearsDroppedLoc()+COMMA+tele.getHopppersUsed()+COMMA+tele.getNumCycles()
+					+COMMA+tele.isAttemptTakeoff()+COMMA+tele.isReadyTakeoff()+COMMA;
+			fileContents+=post.getFocus()+COMMA+
+					post.getRobotComment()+COMMA+post.getRobotQuickCommentStr()+COMMA+post.getPilotComment()+
+					COMMA+post.getPilotQuickCommentStr()+COMMA;
 			
 			for(String key : keys)
 				fileContents+=post.getRobotQuickCommentSelections().get(key)+COMMA;

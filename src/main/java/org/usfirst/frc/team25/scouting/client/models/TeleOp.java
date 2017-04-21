@@ -39,13 +39,7 @@ public class TeleOp {
         this.hopppersUsed = hopppersUsed;
     }
 
-    public int getRotorsStarted() {
-        return rotorsStarted;
-    }
 
-    public void setRotorsStarted(int rotorsStarted) {
-        this.rotorsStarted = rotorsStarted;
-    }
 
     public boolean isAttemptTakeoff() {
         return attemptTakeoff;
@@ -65,7 +59,11 @@ public class TeleOp {
 
 
 
-    public int lowGoals, highGoals, gearsDelivered, hopppersUsed,  rotorsStarted, numCycles;
+    int lowGoals, highGoals;
+    String gearsDroppedLoc;
+    int gearsDelivered, gearsDropped;
+    int hopppersUsed,  numCycles;
+    
     public int getNumCycles() {
 		return numCycles;
 	}
@@ -76,17 +74,36 @@ public class TeleOp {
 
 
 
-	public boolean attemptTakeoff, readyTakeoff;
+	public String getGearsDroppedLoc() {
+		return gearsDroppedLoc;
+	}
 
-    public TeleOp(int lowGoals, int highGoals, int gearsDelivered, int hopppersUsed, int rotorsStarted, 
-    		boolean attemptTakeoff, boolean readyTakeoff, int numCycles) {
-        this.lowGoals = lowGoals;
-        this.highGoals = highGoals;
-        this.gearsDelivered = gearsDelivered;
-        this.hopppersUsed = hopppersUsed;
-        this.rotorsStarted = rotorsStarted;
-        this.attemptTakeoff = attemptTakeoff;
-        this.readyTakeoff = readyTakeoff;
-        this.numCycles = numCycles;
-    }
+	public void setGearsDroppedLoc(String gearsDroppedLoc) {
+		this.gearsDroppedLoc = gearsDroppedLoc;
+	}
+
+	public int getGearsDropped() {
+		return gearsDropped;
+	}
+
+	public void setGearsDropped(int gearsDropped) {
+		this.gearsDropped = gearsDropped;
+	}
+
+
+
+	boolean attemptTakeoff, readyTakeoff;
+
+	public TeleOp(int lowGoals, int highGoals, int gearsDelivered, int hopppersUsed, int rotorsStarted, boolean attemptTakeoff, boolean readyTakeoff, boolean useReturnLoading,
+            boolean useOverflowLoading, int numCycles, int gearsDropped, String gearsDroppedLoc) {
+		this.lowGoals = lowGoals;
+		this.highGoals = highGoals;
+		this.gearsDelivered = gearsDelivered;
+		this.hopppersUsed = hopppersUsed;
+		this.attemptTakeoff = attemptTakeoff;
+		this.readyTakeoff = readyTakeoff;
+		this.numCycles = numCycles;
+  		this.gearsDropped = gearsDropped;
+  		this.gearsDroppedLoc = gearsDroppedLoc;
+	}
 }
