@@ -110,7 +110,7 @@ public class BlueAlliance {
 	 */
 	public static boolean downloadEventData(File outputFolder, String eventCode, TBA tba){
 		try{
-			String eventShortName = tba.eventRequest.getEvent(eventCode).getShortName();
+			String eventShortName = tba.eventRequest.getEvent(eventCode).getKey();
 			exportSimpleTeamList(eventCode, outputFolder.getAbsolutePath()+"\\Teams - " + eventShortName, tba);
 			exportTeamList(eventCode, outputFolder.getAbsolutePath()+"\\TeamNames - " + eventShortName, tba);
 			exportMatchList(eventCode, outputFolder.getAbsolutePath()+"\\Matches - " + eventShortName, tba);

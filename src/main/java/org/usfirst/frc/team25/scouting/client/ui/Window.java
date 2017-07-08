@@ -40,7 +40,7 @@ import com.thebluealliance.api.v3.TBA;
 public class Window {
 
 	
-	public static final double VERSION_NUMBER = 1.41;
+	public static final double VERSION_NUMBER = 1.5;
 	
 	static TBA tba;
 	
