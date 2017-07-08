@@ -9,15 +9,14 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-import com.adithyasairam.tba4j.Events;
-import com.adithyasairam.tba4j.Teams;
-import com.adithyasairam.tba4j.models.Event;
-import com.adithyasairam.tba4j.models.Match;
-import com.adithyasairam.tba4j.models.Team;
+import com.thebluealliance.api.v3.TBA;
+import com.thebluealliance.api.v3.models.Event;
+import com.thebluealliance.api.v3.models.Match;
+import com.thebluealliance.api.v3.models.Team;
+
 
 
 /** Class of static methods used to interface with online data from The Blue Alliance
- *  Utilizes TBA Java API written by Adithya Sairam
  *  @author sng
  */
 public class BlueAlliance {
@@ -28,13 +27,13 @@ public class BlueAlliance {
 	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
 	 * @param fileName File name of output file, without extension
 	 */
-	 static void exportSimpleTeamList(String eventCode, String fileName) throws FileNotFoundException{
+	 static void exportSimpleTeamList(String eventCode, String fileName, TBA tba) throws FileNotFoundException{
 		
 		
 			String teamList = "";
-			ArrayList<Team> teams = Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(Events.getEventTeamsList(eventCode))));
+			ArrayList<Team> teams = Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(tba.eventRequest.getTeams(eventCode))));
 			for(Team team : teams)
-	    		teamList+=team.team_number + ",";
+	    		teamList+=team.getTeamNumber() + ",";
 			StringBuilder output = new StringBuilder(teamList);
 			output.setCharAt(output.length()-1, ' ');
 			
@@ -49,12 +48,12 @@ public class BlueAlliance {
 	 * @param fileName File name of output file, without extension
 	 */
 	
-	 static void exportTeamList(String eventCode, String fileName)throws FileNotFoundException{
+	 static void exportTeamList(String eventCode, String fileName, TBA tba)throws FileNotFoundException{
 		
 		String teamList = "";
 			
-			for(Team team : Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(Events.getEventTeamsList(eventCode)))))
-	    		teamList+=team.team_number + ","+team.nickname+",\n";
+			for(Team team : Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(tba.eventRequest.getTeams(eventCode)))))
+	    		teamList+=team.getTeamNumber() + ","+team.getNickname()+",\n";
 		FileManager.outputFile(fileName, "csv", teamList);
 		
 	}
@@ -64,15 +63,17 @@ public class BlueAlliance {
 	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
 	 * @param fileName File name of output, without extension
 	 */
-	 static void exportMatchList(String eventCode, String fileName) throws FileNotFoundException{
+	 static void exportMatchList(String eventCode, String fileName, TBA tba) throws FileNotFoundException{
 		String matchList = "";
-		for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(Events.getEventMatches(eventCode)))))){
+		for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(tba.eventRequest.getMatches(eventCode)))))){
 			
-				matchList+=match.match_number+",";
+				matchList+=match.getMatchNumber()+",";
 				for(int i = 0; i < 2; i++) //iterate through two alliances
-					for(int j = 0; j < 3; j++) //iterate through teams in alliance
-						//A ternary operator is used here for convenience. TODO fix this unreadable mess 
-						matchList+= i==0 ? match.alliances.red.teams[j].split("frc")[1]+",": match.alliances.blue.teams[j].split("frc")[1]+",";
+					for(int j = 0; j < 3; j++){ //iterate through teams in alliance
+						if(i==0) 
+							matchList+=match.getRedAlliance().getTeamKeys()[j].split("frc")[1]+",";
+						else matchList+=match.getBlueAlliance().getTeamKeys()[j].split("frc")[1]+",";
+					}
 				matchList+=",\n";
 			
 			
@@ -84,20 +85,20 @@ public class BlueAlliance {
 	/** Downloads all data from events that Team 25 is playing in for the current calendar year  
 	 * @param outputFolder Output folder for downloaded files
 	 */
-	public static void downloadRaiderEvents(File outputFolder){
+	public static void downloadRaiderEvents(File outputFolder, TBA tba){
 		
-		for(Event event : Teams.getTeamEvents("frc25", Calendar.getInstance().get(Calendar.YEAR)))
-			downloadEventData(outputFolder, event.key);
+		for(Event event : tba.teamRequest.getEvents(25, Calendar.getInstance().get(Calendar.YEAR)))
+			downloadEventData(outputFolder, event.getKey(), tba);
 		
 	}
 	
 	/** Downloads all data from events that Team 25 is playing in for the specified year
 	 * @param outputFolder Output folder for downloaded files
 	 */
-	public static void downloadRaiderEvents(File outputFolder, int year){
+	public static void downloadRaiderEvents(File outputFolder, int year, TBA tba){
 		
-		for(Event event : Teams.getTeamEvents("frc25", year))
-			downloadEventData(outputFolder, event.key);
+		for(Event event : tba.teamRequest.getEvents(25, year))
+			downloadEventData(outputFolder, event.getKey(), tba);
 		
 	}
 	
@@ -107,11 +108,12 @@ public class BlueAlliance {
 	 * @param eventCode Fully qualified event key
 	 * @return True if download of team list is successful, false otherwise
 	 */
-	public static boolean downloadEventData(File outputFolder, String eventCode){
+	public static boolean downloadEventData(File outputFolder, String eventCode, TBA tba){
 		try{
-			exportSimpleTeamList(eventCode, outputFolder.getAbsolutePath()+"\\Teams - " + Events.getEvent(eventCode).short_name);
-			exportTeamList(eventCode, outputFolder.getAbsolutePath()+"\\TeamNames - " + Events.getEvent(eventCode).short_name);
-			exportMatchList(eventCode, outputFolder.getAbsolutePath()+"\\Matches - " + Events.getEvent(eventCode).short_name);
+			String eventShortName = tba.eventRequest.getEvent(eventCode).getShortName();
+			exportSimpleTeamList(eventCode, outputFolder.getAbsolutePath()+"\\Teams - " + eventShortName, tba);
+			exportTeamList(eventCode, outputFolder.getAbsolutePath()+"\\TeamNames - " + eventShortName, tba);
+			exportMatchList(eventCode, outputFolder.getAbsolutePath()+"\\Matches - " + eventShortName, tba);
 		}catch(Exception e){
 			return false;
 		}
