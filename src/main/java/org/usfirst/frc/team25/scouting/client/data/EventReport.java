@@ -231,7 +231,7 @@ public class EventReport {
 				+ "Tele Opponent Switch Cubes,Tele Exchange Cubes,Tele Cubes Dropped,"
 				+ "Climbs Assisted,Parked,Attempt Rung Climb,Success Rung Climb,"
 				+ "Climb on Other Robot,Other Robot Climb Type,"
-				+ "Focus,Robot Comment,Robot Quick Comment Str,Pick Points";
+				+ "Focus,Robot Comment,Robot Quick Comment Str,Pick Points,";
 		
 		ArrayList<String> keys = new ArrayList<>();
 			
@@ -250,7 +250,7 @@ public class EventReport {
 			PostMatch post = entry.getPostMatch(); 
 			
 			fileContents+=pre.getScoutName()+COMMA + pre.getMatchNum()+COMMA+pre.getScoutPos()+COMMA+
-					pre.getTeamNum()+COMMA+pre.getStartingPos()+COMMA+tele.getFieldLayout();
+					pre.getTeamNum()+COMMA+pre.getStartingPos()+COMMA+tele.getFieldLayout()+COMMA;
 			fileContents+=auto.getSwitchCubes()+COMMA+auto.getScaleCubes()+COMMA+auto.getExchangeCubes()+COMMA+
 					auto.getPowerCubePilePickup()+COMMA+auto.getSwitchAdjacentPickup()+COMMA+auto.getCubesDropped()
 					+COMMA+auto.isAutoLineCross()+COMMA+auto.isNullTerritoryFoul()+COMMA+auto.isCubeDropOpponentSwitchPlate()
@@ -262,15 +262,12 @@ public class EventReport {
 				tele.isAttemptRungClimb()+COMMA+tele.isSuccessfulRungClimb()+COMMA+tele.isOtherRobotClimb()
 				+COMMA+tele.getOtherRobotClimbType()+COMMA;
 			fileContents+=post.getFocus()+COMMA+
-					post.getRobotComment()+COMMA+post.getRobotQuickCommentStr()+COMMA
+					post.getRobotComment()+COMMA+post.getRobotQuickCommentStr()
 					+COMMA+post.getPickNumber()+COMMA;
 			
 			for(String key : keys)
 				fileContents+=post.getRobotQuickCommentSelections().get(key)+COMMA;
 			
-			/*if(pre.isPilotPlaying())
-				for(String key : pilotKeys)
-					fileContents+=post.getPilotQuickCommentSelections().get(key)+COMMA;*/
 			
 			fileContents+='\n';	
 		}

@@ -62,9 +62,9 @@ public class ScoutEntry implements Serializable {
 		totalScore = autoScore+teleScore-(int) autoKpa -(int)teleOpKpa+(int)(autoKpa+teleOpKpa);
 		if(teleOp.readyTakeoff)
 			pointsPerCycle = ((double) teleScore-50)/teleOp.numCycles;
-		else pointsPerCycle = ((double) teleScore)/teleOp.numCycles;
+		else pointsPerCycle = ((double) teleScore)/teleOp.numCycles;*/
 		
-		postMatch.generateQuickCommentStr();*/
+		postMatch.generateQuickCommentStr();
 		
 	}
 
