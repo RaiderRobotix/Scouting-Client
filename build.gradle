@@ -28,8 +28,6 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.7'
-   	compile 'com.squareup.retrofit2:retrofit:2.1.0'
-   	compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-   	compile files('libs/TBA4J.jar')
+   	compile files('libs/TBA-APIv3-Java-Library.jar')
    	
 }

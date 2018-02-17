@@ -37,7 +37,7 @@ public class Alliance {
 		allTakeoffPercent = Statistics.percentAll(teamOne.takeoffPercentage/100, 
 				teamTwo.takeoffPercentage/100, teamThree.takeoffPercentage/100);
 		totalGears = teamOne.avgAutoGears+teamOne.avgTeleOpGears+teamTwo.avgAutoGears
-				+teamTwo.avgTeleOpGears+teamThree.avgAutoGears+teamThree.avgTeleOpGears+1; //include reserve gear
+				+teamTwo.avgTeleOpGears+teamThree.avgAutoGears+teamThree.avgTeleOpGears;
 		totalKpa = autoKpa+teleopKpa;
 		
 		predictedScore = totalKpa;
@@ -51,11 +51,11 @@ public class Alliance {
 			predictedScore+=40-60*(autoGearPercent/100);
 		predictedScore+=5*(teamOne.reachBaselinePercentage/100+teamTwo.reachBaselinePercentage/100+teamThree.reachBaselinePercentage/100);
 		predictedScore+=50*(teamOne.takeoffPercentage/100+teamTwo.takeoffPercentage/100+teamThree.takeoffPercentage/100);
-		if(totalGears>=12.8) // four rotors
+		if(totalGears>=11.8) // four rotors
 			predictedScore+=220;
-		else if(totalGears>=6.8) //three rotors
+		else if(totalGears>=5.8) //three rotors
 			predictedScore+=80;
-		else if(totalGears>=2.8) // two rotors
+		else if(totalGears>=1.8) // two rotors
 			predictedScore+=40;
 	}
 }

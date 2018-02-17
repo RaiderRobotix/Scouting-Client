@@ -61,9 +61,17 @@ public class EventReport {
 				+report.totalReachBaseline+"/"+report.entries.size()+")"
 				+ "<br>";
 		formatString+="Place gear: "+Statistics.round(report.avgAutoGears*100,2)+"% ("
-				+Statistics.round(report.avgAutoGears*report.entries.size(),0)+"/"+report.entries.size()+")"
+				+report.totalAutoGearSuccess+"/"+report.entries.size()+")"
 				+"<br>";
 		formatString+="Avg. kPa: "+ Statistics.round(report.avgAutoKpa, 2)+"<br>";
+		formatString+="Gear attempt success: "+ Statistics.round(report.avgAutoKpa, 2)+"% ("
+				+ report.totalAutoGearSuccess+"/"+report.totalAutoGearAttempt+")<br>";
+		formatString+="Left peg: "+ Statistics.round(report.leftPegPercent, 2)+"% ("
+				+ report.totalLeftPegSuccess+"/"+report.totalLeftPegAttempt+")<br>";
+		formatString+="Center peg: "+ Statistics.round(report.centerPegPercent, 2)+"% ("
+				+ report.totalCenterPegSuccess+"/"+report.totalCenterPegAttempt+")<br>";
+		formatString+="Right peg: "+ Statistics.round(report.rightPegPercent, 2)+"% ("
+				+ report.totalRightPegSuccess+"/"+report.totalRightPegAttempt+")<br>";
 		
 		formatString+="<h3>Tele-Op</h3>";
 		formatString+="Avg. gears: "+Statistics.round(report.avgTeleOpGears,2)+"<br>";
@@ -72,6 +80,11 @@ public class EventReport {
 			formatString+=i+", ";
 		formatString+="<br>";
 		formatString+="Avg. kPa: "+Statistics.round(report.avgTeleOpKpa,2)+"<br>";
+		formatString+="Avg. dropped gears: "+Statistics.round(report.avgDroppedGears,2)+"<br>";
+		formatString+="Gear focus: "+Statistics.round(report.gearFocusPercent,2)+"%<br>";
+		formatString+="Avg. gear focus gears: "+Statistics.round(report.avgTeleOpGearsGearFocus,2)+"<br>";
+		formatString+="Fuel focus: "+Statistics.round(report.fuelFocusPercent,2)+"%<br>";
+		formatString+="Avg. kPa fuel focus: "+Statistics.round(report.avgTeleOpKpaFuelFocus,2)+"<br>";
 		formatString+="Takeoff success: " +Statistics.round(report.takeoffPercentage, 2)+"% ("
 				+ report.totalTakeoffSuccesses+"/"+report.entries.size()+")<br>";
 		formatString+="Takeoff attempt: " +Statistics.round(report.takeoffAttemptPercentage,2)+"% ("
@@ -81,6 +94,10 @@ public class EventReport {
 		formatString+="Total gears: "+Statistics.round(report.avgAutoGears+report.avgTeleOpGears,2)+"<br>";
 		formatString+="Total kPa: " + Statistics.round(report.avgAutoKpa+report.avgTeleOpKpa,2)+"<br>";
 		formatString+="Pilot play: "+Statistics.round(report.pilotPlayPercentage,2)+"%<br>";
+		formatString+="Do not pick: "+(report.doNotPick ? "Yes" : "No" )+"<br>";
+		formatString+="Gear floor pickup: "+(report.hasPickup ? "Yes" : "No" )+"<br>";
+		formatString+="Active gear: "+(report.isActive ? "Yes" : "No" )+"<br>";
+		formatString+="Fuel intake: "+(report.hasIntake ? "Yes" : "No" )+"<br>";
 		formatString+="Frequent comments: " + report.frequentRobotCommentStr+" "+report.frequentPilotCommentStr;
 		formatString+="</html>";
 		return formatString;
@@ -181,27 +198,12 @@ public class EventReport {
 	
 	public void generateTeamReportSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
-		String header = "teamNum,teamName,avgAutoScore,sdAutoScore,avgTeleOpScore,sdTeleOpScore,avgMatchScore,sdMatchScore,"
-				+ "reachBaselinePercentage,avgAutoKpa,sdAutoKpa,avgTeleOpKpa,sdTeleOpKpa,avgAutoGears,sdAutoGears,"
-				+ "autoGearAttemptSuccessPercent,autoGearPegLoc,leftPegPercent,rightPegPercent,centerPegPercent,avgTeleOpGears,"
-				+ "sdTeleOpGears,avgDroppedGears,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,avgHoppers,avgPointsPerCycle,"
-				+ "sdPointsPerCycle,avgCycles,sdCycles,takeoffPercentage,takeoffAttemptPercentage,takeoffAttemptSuccessPercentage,"
-				+ "pilotPlayPercentage,hasPickup,hasIntake,isActive,doNotPick,frequentRobotCommentStr,frequentPilotCommentStr,allComments,\n";
+		String header = "teamNum,teamName,avgAutoScore,sdAutoScore,avgTeleOpScore,sdTeleOpScore,avgMatchScore,sdMatchScore,reachBaselinePercentage,avgAutoKpa,sdAutoKpa,avgTeleOpKpa,sdTeleOpKpa,avgAutoGears,sdAutoGears,autoGearAttemptSuccessPercent,autoGearPegLoc,leftPegPercent,rightPegPercent,centerPegPercent,totalLeftPegSuccess,totalRightPegSuccess,totalCenterPegSuccess,avgTeleOpGears,sdTeleOpGears,avgDroppedGears,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,avgHoppers,avgPointsPerCycle,sdPointsPerCycle,avgCycles,sdCycles,takeoffPercentage,takeoffAttemptPercentage,takeoffAttemptSuccessPercentage,pilotPlayPercentage,avgTeleOpKpaFuelFocus,avgTeleOpGearsGearFocus,fuelFocusPercent,gearFocusPercent,hasPickup,hasIntake,isActive,doNotPick,frequentRobotCommentStr,frequentPilotCommentStr,allComments,\n";
 		
 		String fileContents = header;
 		for(int key : teamReports.keySet()){
 			TeamReport report = teamReports.get(key);
-			fileContents += report.teamNum+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+report.sdAutoScore+COMMA+
-					report.avgTeleOpScore+COMMA+report.sdTeleOpScore+COMMA+report.avgMatchScore+COMMA+report.sdMatchScore+COMMA+
-					report.reachBaselinePercentage+COMMA+report.avgAutoKpa+COMMA+report.sdAutoKpa+COMMA+report.avgTeleOpKpa
-					+COMMA+report.sdTeleOpKpa+COMMA+report.avgAutoGears+COMMA+report.sdAutoGears+COMMA+report.autoGearAttemptSuccessPercent
-					+COMMA+report.autoGearPegLoc+COMMA+report.leftPegPercent+COMMA+report.rightPegPercent+COMMA+report.centerPegPercent+
-					COMMA+report.avgTeleOpGears+COMMA+report.sdTeleOpGears+COMMA+report.avgDroppedGears+COMMA+report.avgHighGoals+COMMA+
-					report.sdHighGoals+COMMA+report.avgLowGoals+COMMA+report.sdLowGoals+COMMA+report.avgHoppers+COMMA+report.avgPointsPerCycle+
-					COMMA+report.sdPointsPerCycle+COMMA+report.avgCycles+COMMA+report.sdCycles+COMMA+report.takeoffPercentage+COMMA+
-					report.takeoffAttemptPercentage+COMMA+report.takeoffAttemptSuccessPercentage+COMMA+report.pilotPlayPercentage+
-					COMMA+report.hasPickup+COMMA+report.hasIntake+COMMA+report.isActive+COMMA+report.doNotPick+COMMA+
-					report.frequentRobotCommentStr+COMMA+report.frequentPilotCommentStr+COMMA+report.allComments+COMMA+'\n';	
+			fileContents += report.teamNum+COMMA+report.teamName+COMMA+report.avgAutoScore+COMMA+report.sdAutoScore+COMMA+report.avgTeleOpScore+COMMA+report.sdTeleOpScore+COMMA+report.avgMatchScore+COMMA+report.sdMatchScore+COMMA+report.reachBaselinePercentage+COMMA+report.avgAutoKpa+COMMA+report.sdAutoKpa+COMMA+report.avgTeleOpKpa+COMMA+report.sdTeleOpKpa+COMMA+report.avgAutoGears+COMMA+report.sdAutoGears+COMMA+report.autoGearAttemptSuccessPercent+COMMA+report.autoGearPegLoc+COMMA+report.leftPegPercent+COMMA+report.rightPegPercent+COMMA+report.centerPegPercent+COMMA+report.totalLeftPegSuccess+COMMA+report.totalRightPegSuccess+COMMA+report.totalCenterPegSuccess+COMMA+report.avgTeleOpGears+COMMA+report.sdTeleOpGears+COMMA+report.avgDroppedGears+COMMA+report.avgHighGoals+COMMA+report.sdHighGoals+COMMA+report.avgLowGoals+COMMA+report.sdLowGoals+COMMA+report.avgHoppers+COMMA+report.avgPointsPerCycle+COMMA+report.sdPointsPerCycle+COMMA+report.avgCycles+COMMA+report.sdCycles+COMMA+report.takeoffPercentage+COMMA+report.takeoffAttemptPercentage+COMMA+report.takeoffAttemptSuccessPercentage+COMMA+report.pilotPlayPercentage+COMMA+report.avgTeleOpKpaFuelFocus+COMMA+report.avgTeleOpGearsGearFocus+COMMA+report.fuelFocusPercent+COMMA+report.gearFocusPercent+COMMA+report.hasPickup+COMMA+report.hasIntake+COMMA+report.isActive+COMMA+report.doNotPick+COMMA+report.frequentRobotCommentStr+COMMA+report.frequentPilotCommentStr+COMMA+report.allComments+COMMA+'\n';
 			
 		}
 				

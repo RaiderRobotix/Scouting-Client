@@ -29,8 +29,7 @@ import org.usfirst.frc.team25.scouting.client.data.Statistics;
 import org.usfirst.frc.team25.scouting.client.data.TeamReport;
 import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
 
-import com.adithyasairam.tba4j.Events;
-import com.adithyasairam.tba4j.models.Match;
+import com.thebluealliance.api.v3.TBA;
 
 /** Main class; used to initialize the GUI
  * 
@@ -39,11 +38,17 @@ import com.adithyasairam.tba4j.models.Match;
  */
 
 public class Window {
+
+	
+	public static final double VERSION_NUMBER = 1.5;
+	
+	static TBA tba;
 	
 	public static final double VERSION = 2.0;
 	
-	/** When processing data, dataDirectory must have the qualified <code>short_name</code> for the event
-	 *  Downloaded data from TBA should be in same folder as well
+
+	/** When processing data, dataDirectory must have the qualified <code>short_name</code> for the event.
+	 *  Downloaded data from TBA should be in same folder as well.
 	 *  Output spreadsheets/summary reports to be written to same folder
 	 */
 	static File dataDirectory;
@@ -218,9 +223,10 @@ public class Window {
 	}
 	
 	
-	public static void initialize(){
+	public static void initializeGUI(){
 		
 		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v" + VERSION + "</h1><br>Press start to select data folder</html>");
+		
 		introText.setHorizontalAlignment(JLabel.CENTER);
 		introText.setFont(new Font("Arial", Font.PLAIN, 16));
 		
@@ -263,25 +269,36 @@ public class Window {
 		
 		downloadButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				JFrame eventCodePrompt = addIcon(new JFrame());
+				JFrame eventCodePrompt = addIcon(new JFrame()), apiKeyPrompt= addIcon(new JFrame());
+				
+				String apiKey =  JOptionPane.showInputDialog(apiKeyPrompt,
+						"Enter The Blue Alliance API key", "Enter API key",JOptionPane.PLAIN_MESSAGE);
+				//test if API key is valid				
+				tba = new TBA(apiKey);
+				
+				
+				if(tba.dataRequest.getDataTBA("/status").getResponseCode()==401){
+					JOptionPane.showMessageDialog(apiKeyPrompt, "Invalid API key. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
+					return;
+				}
+				
 				File outputDirectory = FileManager.selectFolder(eventCodePrompt, "Select output folder");
 				if(outputDirectory==null)
 					return;
 				eventCodePrompt.setIconImage(null);
 				
-				
 				String userInput = JOptionPane.showInputDialog(eventCodePrompt,
-						"Enter the event code or \"25\" to download data for all events", "Enter event code",JOptionPane.PLAIN_MESSAGE);
+						"Enter the event code, \"25\" (for current calendar year), or \"25+[YYYY]\" to download data for all events", "Enter event code",JOptionPane.PLAIN_MESSAGE);
 				
-				if(userInput.contains("25")){ // Gonna be a problem in 2025...
+				if(userInput.contains("25")&&!userInput.contains("2025")){ 
 					String[] splitInput = userInput.split("\\+");
 					if(splitInput.length==1)
-						BlueAlliance.downloadRaiderEvents(outputDirectory);
-					else BlueAlliance.downloadRaiderEvents(outputDirectory, Integer.parseInt(splitInput[1]));
+						BlueAlliance.downloadRaiderEvents(outputDirectory, tba);
+					else BlueAlliance.downloadRaiderEvents(outputDirectory, Integer.parseInt(splitInput[1]), tba);
 					
 				}
 				
-				else if(!BlueAlliance.downloadEventData(outputDirectory, userInput)) //Invalid event code
+				else if(!BlueAlliance.downloadEventData(outputDirectory, userInput, tba)) //Invalid event code
 					JOptionPane.showMessageDialog(eventCodePrompt, "Invalid event code. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
 				
 	
@@ -290,7 +307,6 @@ public class Window {
 	}
 	
 	public static void main(String[] args){
-		
-		initialize();
+		initializeGUI();
 	}
 }

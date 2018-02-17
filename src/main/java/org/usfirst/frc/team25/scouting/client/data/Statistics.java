@@ -64,9 +64,11 @@ public class Statistics {
 	/** Calculates arithmetic mean of a dataset
 	 * 
 	 * @param dataset Array of numbers
-	 * @return Average of entries in array
+	 * @return Average of entries in array, 0 if dataset.size() is 0
 	 */
-	public static double average(ArrayList<Double> dataset){		
+	public static double average(ArrayList<Double> dataset){
+		if(dataset.size()==0)
+			return 0;
 		return sum(dataset)/dataset.size();
 	}
 	
