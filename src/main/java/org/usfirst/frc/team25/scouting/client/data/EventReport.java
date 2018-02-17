@@ -24,6 +24,11 @@ import com.google.gson.GsonBuilder;
  */
 public class EventReport {
 	
+	/** Helper method to prevent manual comments with commas 
+	 *  from changing CSV format
+	 * @param s
+	 * @return
+	 */
 	String removeCommas(String s){
 		String newString = "";
 	     for(int i = 0; i < s.length(); i++) {
@@ -42,7 +47,7 @@ public class EventReport {
 	}
 	
 
-	
+	//TODO update this
 	public String quickTeamReport(int teamNum){
 		String formatString = "<html>";
 		TeamReport report = teamReports.get(teamNum);
@@ -81,6 +86,7 @@ public class EventReport {
 		return formatString;
 	}
 	
+	//TODO update this
 	public String allianceReport(int t1, int t2, int t3){
 		String formatString = "<html>";
 		TeamReport r1 = teamReports.get(t1), r2=teamReports.get(t2),r3=teamReports.get(t3);
@@ -132,7 +138,7 @@ public class EventReport {
 	String event;
 	HashMap<Integer, TeamReport> teamReports = new HashMap<Integer, TeamReport>(); 
 	
-	public EventReport(ArrayList<ScoutEntry> entries){
+	public EventReport(ArrayList<ScoutEntry> entries, String event){
 		scoutEntries = entries;
 		for(ScoutEntry entry : scoutEntries){
 			entry.calculateDerivedStats();
@@ -143,7 +149,7 @@ public class EventReport {
 			
 			teamReports.get(teamNum).addEntry(entry);
 		}
-		event = scoutEntries.get(0).getPreMatch().getCurrentEvent();
+		this.event = event;
 		
 		
 	}
@@ -214,28 +220,25 @@ public class EventReport {
 	 */
 	public void generateRawSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
-		String header = "Scout Name,Match Num,Scouting Pos,Team Num,Pilot Playing,High goals auto, "
-				+ "Low goals auto,Attempt auto gear,Gears auto,Auto gear peg,Reached baseline,Hopper used auto,"
-				+ "High goals tele,Low goals tele,Gears tele,Gears dropped tele,Gears dropped loc,Hoppers tele,Cycles,Takeoff attempt,"
-				+ "Takeoff success,Match focus,Robot comment,Robot quick comment,Pilot comment,Pilot quick comment,";
+		String header = "Scout Name,Match Num,Scouting Pos,Team Num,Starting Pos,Field Layout,"
+				+ "Auto Switch Cubes,Auto Scale Cubes,Auto Exchange Cubes,Auto PCP Pickup,"
+				+ "Auto Switch Adj Pickup,"
+				+ "Auto Cubes Dropped,Auto Line Cross,Auto Null Territory Foul,"
+				+ "Auto Drop Opponent Switch,Auto Drop Opponent Scale,"
+				+ "Tele First Cube Time,Cycle Time,Tele Own Switch Cubes,Tele Scale Cubes,"
+				+ "Tele Opponent Switch Cubes,Tele Exchange Cubes,Tele Cubes Dropped,"
+				+ "Climbs Assisted,Parked,Attempt Rung Climb,Success Rung Climb,"
+				+ "Climb on Other Robot,Other Robot Climb Type,"
+				+ "Focus,Robot Comment,Robot Quick Comment Str,Pick Points";
+		
 		ArrayList<String> keys = new ArrayList<>();
-		ArrayList<String> pilotKeys = new ArrayList<>();
 			
 
 		for(String key : scoutEntries.get(0).getPostMatch().getRobotQuickCommentSelections().keySet()){
 			header+=removeCommas(key)+",";
 			keys.add(key);
 		}
-		for(ScoutEntry entry : scoutEntries){
-			if(entry.getPreMatch().isPilotPlaying()){
-				for(String key : entry.getPostMatch().getPilotQuickCommentSelections().keySet()){
-					header+=removeCommas(key)+",";
-					pilotKeys.add(key);
-				}
-				break;
-			}
-		}
-		
+
 		
 		String fileContents = header + "\n";
 		for(ScoutEntry entry : scoutEntries){
@@ -245,24 +248,27 @@ public class EventReport {
 			PostMatch post = entry.getPostMatch(); 
 			
 			fileContents+=pre.getScoutName()+COMMA + pre.getMatchNum()+COMMA+pre.getScoutPos()+COMMA+
-					pre.getTeamNum()+COMMA+pre.isPilotPlaying()+COMMA;
-			fileContents+=auto.getHighGoals()+COMMA+auto.getLowGoals()+COMMA+auto.isAttemptGear()+COMMA+
-					(auto.isSuccessGear() ? 1 : 0)+COMMA+auto.getGearPeg()+COMMA+
-					auto.isBaselineCrossed()+COMMA+auto.isUseHoppers()+COMMA;
+					pre.getTeamNum()+COMMA+pre.getStartingPos()+COMMA+tele.getFieldLayout();
+			fileContents+=auto.getSwitchCubes()+COMMA+auto.getScaleCubes()+COMMA+auto.getExchangeCubes()+COMMA+
+					auto.getPowerCubePilePickup()+COMMA+auto.getSwitchAdjacentPickup()+COMMA+auto.getCubesDropped()
+					+COMMA+auto.isAutoLineCross()+COMMA+auto.isNullTerritoryFoul()+COMMA+auto.isCubeDropOpponentSwitchPlate()
+					+COMMA+auto.isCubeDropOpponentScalePlate()+COMMA;
 					
-			fileContents+=tele.getHighGoals()+COMMA+tele.getLowGoals()+COMMA+tele.getGearsDelivered()+COMMA+
-					tele.getGearsDropped()+COMMA+tele.getGearsDroppedLoc()+COMMA+tele.getHopppersUsed()+COMMA+tele.getNumCycles()
-					+COMMA+tele.isAttemptTakeoff()+COMMA+tele.isReadyTakeoff()+COMMA;
+			fileContents+=tele.getFirstCubeTime()+COMMA+tele.getCycleTime()+COMMA+tele.getOwnSwitchCubes()
+				+COMMA+tele.getScaleCubes()+COMMA+tele.getOpponentSwitchCubes()+COMMA+tele.getExchangeCubes()
+				+COMMA+tele.getCubesDropped()+COMMA+tele.getClimbsAssisted()+COMMA+tele.isParked()+COMMA+
+				tele.isAttemptRungClimb()+COMMA+tele.isSuccessfulRungClimb()+COMMA+tele.isOtherRobotClimb()
+				+COMMA+tele.getOtherRobotClimbType()+COMMA;
 			fileContents+=post.getFocus()+COMMA+
-					post.getRobotComment()+COMMA+post.getRobotQuickCommentStr()+COMMA+post.getPilotComment()+
-					COMMA+post.getPilotQuickCommentStr()+COMMA;
+					post.getRobotComment()+COMMA+post.getRobotQuickCommentStr()+COMMA
+					+COMMA+post.getPickNumber()+COMMA;
 			
 			for(String key : keys)
 				fileContents+=post.getRobotQuickCommentSelections().get(key)+COMMA;
 			
-			if(pre.isPilotPlaying())
+			/*if(pre.isPilotPlaying())
 				for(String key : pilotKeys)
-					fileContents+=post.getPilotQuickCommentSelections().get(key)+COMMA;
+					fileContents+=post.getPilotQuickCommentSelections().get(key)+COMMA;*/
 			
 			fileContents+='\n';	
 		}

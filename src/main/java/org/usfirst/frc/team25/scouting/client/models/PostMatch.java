@@ -1,6 +1,5 @@
 package org.usfirst.frc.team25.scouting.client.models;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /** Qualitative reflection on the robot's performance after a match
@@ -11,8 +10,11 @@ public class PostMatch {
 
     
     HashMap<String, Boolean> robotQuickCommentSelections = new HashMap<>();
-    HashMap<String, Boolean>pilotQuickCommentSelections = new HashMap<>();
 
+    transient String robotQuickCommentStr;
+    private int teamOneCompare, teamTwoCompare, pickNumber;
+    private String comparison;
+    private String robotComment, focus;
 
     public HashMap<String, Boolean> getRobotQuickCommentSelections() {
 		return robotQuickCommentSelections;
@@ -22,21 +24,16 @@ public class PostMatch {
 		this.robotQuickCommentSelections = robotQuickCommentSelections;
 	}
 
-	public HashMap<String, Boolean> getPilotQuickCommentSelections() {
-		return pilotQuickCommentSelections;
-	}
 
-	public void setPilotQuickCommentSelections(HashMap<String, Boolean> pilotQuickCommentSelections) {
-		this.pilotQuickCommentSelections = pilotQuickCommentSelections;
-	}
-
-	public PostMatch(String robotComment, String pilotComment, HashMap<String, Boolean> robotQuickCommentSelections
-    		, HashMap<String, Boolean> pilotQuickCommentSelections, String focus) {
+	public PostMatch(String robotComment, HashMap<String, Boolean> robotQuickCommentSelections, 
+			String focus, int teamOneCompare, int teamTwoCompare, String comparison, int pickNumber) {
         this.robotComment = robotComment;
-        this.pilotComment = pilotComment;
         this.robotQuickCommentSelections = robotQuickCommentSelections;
-        this.pilotQuickCommentSelections = pilotQuickCommentSelections;
         this.focus = focus;
+        this.teamOneCompare = teamOneCompare; 
+        this.teamTwoCompare = teamTwoCompare;
+        this.comparison = comparison;
+        this.pickNumber = pickNumber;
     }
 
     public String getFocus() {
@@ -55,21 +52,6 @@ public class PostMatch {
 		this.robotQuickCommentStr = robotQuickCommentStr;
 	}
 
-	public String getPilotQuickCommentStr() {
-		return pilotQuickCommentStr;
-	}
-
-	public void setPilotQuickCommentStr(String pilotQuickCommentStr) {
-		this.pilotQuickCommentStr = pilotQuickCommentStr;
-	}
-
-	String robotComment, pilotComment, focus;
-    transient String robotQuickCommentStr, pilotQuickCommentStr;
-    
-
-
-    
-
     public String getRobotComment() {
         return robotComment;
     }
@@ -78,27 +60,28 @@ public class PostMatch {
         this.robotComment = robotComment;
     }
 
-    public String getPilotComment() {
-        return pilotComment;
-    }
-
-    public void setPilotComment(String pilotComment) {
-        this.pilotComment = pilotComment;
-    }
-    
     void generateQuickCommentStr(){
-    	robotQuickCommentStr = pilotQuickCommentStr = "";
+    	robotQuickCommentStr = "";
     	for(String comment : robotQuickCommentSelections.keySet())
     		if(robotQuickCommentSelections.get(comment))
     			robotQuickCommentStr+=comment+"; ";
-    	for(String comment : pilotQuickCommentSelections.keySet())
-    		if(pilotQuickCommentSelections.get(comment))
-    			pilotQuickCommentStr+=comment+"; ";
+    }
+    
+    public int getTeamOneCompare() {
+        return teamOneCompare;
+    }
+
+    public int getTeamTwoCompare() {
+        return teamTwoCompare;
+    }
+
+    public int getPickNumber() {
+        return pickNumber;
+    }
+
+    public String getComparison() {
+        return comparison;
     }
 
 
-
 }
-
-
-

@@ -2,54 +2,43 @@ package org.usfirst.frc.team25.scouting.client.models;
 
 
 /** General information about a match and scout before it begins
- *
- */
+*
+*/
 public class PreMatch {
 
-    public PreMatch(String scoutName, String currentEvent, String scoutPos, int matchNum, int teamNum, boolean pilotPlaying) {
-        this.scoutName = scoutName;
-        this.currentEvent = currentEvent;
-        this.scoutPos = scoutPos;
-        this.matchNum = matchNum;
-        this.teamNum = teamNum;
-        this.pilotPlaying = pilotPlaying;
-    }
+   public PreMatch(String scoutName, String scoutPos, int matchNum, int teamNum, String startingPos) {
+       this.scoutName = scoutName;
+       this.scoutPos = scoutPos;
+       this.matchNum = matchNum;
+       this.teamNum = teamNum;
+       this.startingPos = startingPos;
+   }
 
-    public String scoutName, currentEvent, scoutPos;
-    public int matchNum, teamNum;
-    public boolean pilotPlaying;
+   private String scoutName;
+   private String scoutPos;
+   private String startingPos;
+   private int matchNum, teamNum;
 
-    public boolean isPilotPlaying() {
-        return pilotPlaying;
-    }
+   public String getScoutName() {
+       return scoutName;
+   }
 
-    public void setPilotPlaying(boolean pilotPlaying) {
-        this.pilotPlaying = pilotPlaying;
-    }
+   public String getScoutPos() { return scoutPos; }
 
+   public int getMatchNum() {
+       return matchNum;
+   }
 
+   public int getTeamNum() {
+       return teamNum;
+   }
 
+   public String getStartingPos() {
+       return startingPos;
+   }
 
-
-    public String getScoutName() {
-        return scoutName;
-    }
-
-    public String getCurrentEvent() {
-        return currentEvent;
-    }
-
-    public String getScoutPos() { return scoutPos; }
-
-    public int getMatchNum() {
-        return matchNum;
-    }
-
-    public int getTeamNum() {
-        return teamNum;
-    }
-
-    public PreMatch(){
-        //Default empty constructor for JSON parsing
-    }
+   public PreMatch(){
+       //Default empty constructor for JSON parsing
+   }
 }
+

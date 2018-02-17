@@ -6,104 +6,87 @@ package org.usfirst.frc.team25.scouting.client.models;
  */
 public class TeleOp {
 
-
-    public int getLowGoals() {
-        return lowGoals;
+	private float firstCubeTime, cycleTime;
+    private int ownSwitchCubes, scaleCubes, opponentSwitchCubes,
+            exchangeCubes, cubesDropped, climbsAssisted;
+    private boolean parked, attemptRungClimb, successfulRungClimb, otherRobotClimb;
+    private String otherRobotClimbType, fieldLayout;
+	
+    public float getFirstCubeTime() {
+        return firstCubeTime;
     }
 
-    public void setLowGoals(int lowGoals) {
-        this.lowGoals = lowGoals;
+    public float getCycleTime() {
+        return cycleTime;
     }
 
-    public int getHighGoals() {
-        return highGoals;
+    public int getOwnSwitchCubes() {
+        return ownSwitchCubes;
     }
 
-    public void setHighGoals(int highGoals) {
-        this.highGoals = highGoals;
+    public int getScaleCubes() {
+        return scaleCubes;
     }
 
-    public int getGearsDelivered() {
-        return gearsDelivered;
+    public int getOpponentSwitchCubes() {
+        return opponentSwitchCubes;
     }
 
-    public void setGearsDelivered(int gearsDelivered) {
-        this.gearsDelivered = gearsDelivered;
+    public int getExchangeCubes() {
+        return exchangeCubes;
     }
 
-    public int getHopppersUsed() {
-        return hopppersUsed;
+    public int getCubesDropped() {
+        return cubesDropped;
     }
 
-    public void setHopppersUsed(int hopppersUsed) {
-        this.hopppersUsed = hopppersUsed;
+    public int getClimbsAssisted() {
+        return climbsAssisted;
     }
 
-
-
-    public boolean isAttemptTakeoff() {
-        return attemptTakeoff;
+    public boolean isParked() {
+        return parked;
     }
 
-    public void setAttemptTakeoff(boolean attemptTakeoff) {
-        this.attemptTakeoff = attemptTakeoff;
+    public boolean isAttemptRungClimb() {
+        return attemptRungClimb;
     }
 
-    public boolean isReadyTakeoff() {
-        return readyTakeoff;
+    public boolean isSuccessfulRungClimb() {
+        return successfulRungClimb;
     }
 
-    public void setReadyTakeoff(boolean readyTakeoff) {
-        this.readyTakeoff = readyTakeoff;
+    public boolean isOtherRobotClimb() {
+        return otherRobotClimb;
     }
 
+    public String getOtherRobotClimbType() {
+        return otherRobotClimbType;
+    }
 
+    public String getFieldLayout() {
+        return fieldLayout;
+    }
 
-    int lowGoals, highGoals;
-    String gearsDroppedLoc;
-    int gearsDelivered, gearsDropped;
-    int hopppersUsed,  numCycles;
+    public TeleOp(float firstCubeTime, float cycleTime, int ownSwitchCubes, int scaleCubes, int opponentSwitchCubes, 
+    		int exchangeCubes, int cubesDropped, int climbsAssisted, boolean parked,
+            boolean attemptRungClimb, boolean successfulRungClimb, boolean otherRobotClimb, String otherRobotClimbType, String fieldLayout) {
+        this.firstCubeTime = firstCubeTime;
+        this.cycleTime = cycleTime;
+        this.ownSwitchCubes = ownSwitchCubes;
+        this.scaleCubes = scaleCubes;
+        this.opponentSwitchCubes = opponentSwitchCubes;
+        this.exchangeCubes = exchangeCubes;
+        this.cubesDropped = cubesDropped;
+        this.climbsAssisted = climbsAssisted;
+        this.parked = parked;
+        this.attemptRungClimb = attemptRungClimb;
+        this.successfulRungClimb = successfulRungClimb;
+        this.otherRobotClimb = otherRobotClimb;
+        this.otherRobotClimbType = otherRobotClimbType;
+        this.fieldLayout = fieldLayout;
+    }
+
     
-    public int getNumCycles() {
-		return numCycles;
-	}
 
-	public void setNumCycles(int numCycles) {
-		this.numCycles = numCycles;
-	}
-
-
-
-	public String getGearsDroppedLoc() {
-		return gearsDroppedLoc;
-	}
-
-	public void setGearsDroppedLoc(String gearsDroppedLoc) {
-		this.gearsDroppedLoc = gearsDroppedLoc;
-	}
-
-	public int getGearsDropped() {
-		return gearsDropped;
-	}
-
-	public void setGearsDropped(int gearsDropped) {
-		this.gearsDropped = gearsDropped;
-	}
-
-
-
-	boolean attemptTakeoff, readyTakeoff;
-
-	public TeleOp(int lowGoals, int highGoals, int gearsDelivered, int hopppersUsed, int rotorsStarted, boolean attemptTakeoff, boolean readyTakeoff, boolean useReturnLoading,
-            boolean useOverflowLoading, int numCycles, int gearsDropped, String gearsDroppedLoc) {
-		this.lowGoals = lowGoals;
-		this.highGoals = highGoals;
-		this.gearsDelivered = gearsDelivered;
-		this.hopppersUsed = hopppersUsed;
-		this.attemptTakeoff = attemptTakeoff;
-		this.readyTakeoff = readyTakeoff;
-		this.numCycles = numCycles;
-  		this.gearsDropped = gearsDropped;
-  		this.gearsDroppedLoc = gearsDroppedLoc;
-	}
 }

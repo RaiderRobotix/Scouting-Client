@@ -92,7 +92,7 @@ public class TeamReport {
 		totalRightPegSuccess = totalRightPegAttempt = 0;
 		
 		
-		for(ScoutEntry entry : entries){
+		/*for(ScoutEntry entry : entries){
 			if(entry.getTeleOp().isAttemptTakeoff())
 				totalTakeoffAttempts++;
 			if(entry.getTeleOp().isReadyTakeoff())
@@ -103,7 +103,7 @@ public class TeamReport {
 			if(entry.auto.isBaselineCrossed())
 				totalReachBaseline++;
 			/*if(entry.getAuto().isShootsFromKey())
-				totalAutoShootsKey++;*/
+				totalAutoShootsKey++;*\/
 			
 			if(entry.auto.isAttemptGear()){
 				totalAutoGearAttempt++;
@@ -150,7 +150,7 @@ public class TeamReport {
 				totalTeleOpGearsGearFocus.add(entry.teleOp.getGearsDelivered());
 			if(entry.postMatch.getFocus().equals("Fuel"))
 				totalTeleOpKpaFuelFocus.add(entry.teleOpKpa);
-		}
+		}*/
 			
 		
 	}
@@ -263,24 +263,9 @@ public class TeamReport {
 		
 		commentFrequencies = new HashMap<>();
 		
-		for(String key : entries.get(0).getPostMatch().getPilotQuickCommentSelections().keySet()){
-			commentFrequencies.put(key, 0);
-			for(ScoutEntry entry : entries)
-				if(entry.getPreMatch().isPilotPlaying())
-					if(entry.getPostMatch().getPilotQuickCommentSelections().get(key))
-						commentFrequencies.put(key, 1+commentFrequencies.get(key));
-		}
-		
-		frequentPilotComment = new ArrayList<>();
-		
-		for(String key : commentFrequencies.keySet())
-			if(commentFrequencies.get(key)>=totalPilotPlaying/4.0)
-				frequentPilotComment.add(key);
 		
 		for(String comment : frequentRobotComment)
 			frequentRobotCommentStr+=removeCommas(comment)+';';
-		for(String comment : frequentPilotComment)
-			frequentPilotCommentStr+=removeCommas(comment)+"; ";
 		
 		computeRankingMetrics();
 		
@@ -288,10 +273,8 @@ public class TeamReport {
 		for(ScoutEntry entry : entries){
 			if(!entry.getPostMatch().getRobotComment().equals(""))
 				allComments+=entry.getPostMatch().getRobotComment() + "; ";
-			if(!entry.getPostMatch().getPilotComment().equals(""))
-				allComments+=entry.getPostMatch().getPilotComment()+"; ";
-			if(!autoGearPegLoc.contains(entry.getAuto().getGearPeg()))
-				autoGearPegLoc+=entry.getAuto().getGearPeg()+"; ";
+			/*if(!autoGearPegLoc.contains(entry.getAuto().getGearPeg()))
+				autoGearPegLoc+=entry.getAuto().getGearPeg()+"; ";*/
 		}
 			
 				
@@ -334,7 +317,6 @@ public class TeamReport {
 	public void addEntry(ScoutEntry entry){
 		entry.getPostMatch().setRobotComment(removeCommasAndBreaks(entry.getPostMatch().getRobotComment()));
 		
-		entry.getPostMatch().setPilotComment(removeCommasAndBreaks(entry.getPostMatch().getPilotComment()));
 		entries.add(entry);
 	}
 	

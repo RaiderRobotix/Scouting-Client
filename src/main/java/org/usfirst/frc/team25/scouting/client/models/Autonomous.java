@@ -1,102 +1,73 @@
 package org.usfirst.frc.team25.scouting.client.models;
 
 
-
-
-
 /** Object model for autonomous period of a match
  *
  */
 public class Autonomous {
 
-    public Autonomous(boolean baselineCrossed, boolean useHoppers, int highGoals, int lowGoals, int rotorsStarted, int gearsDelivered,
-            boolean shootsFromKey, String gearPeg, boolean attemptGear, boolean successGear) {
-		this.baselineCrossed = baselineCrossed;
-		this.useHoppers = useHoppers;
-		this.highGoals = highGoals;
-		this.lowGoals = lowGoals;
-		this.gearPeg = gearPeg;
-		this.attemptGear = attemptGear;
-		this.successGear = successGear;
+    public int getSwitchCubes() {
+        return switchCubes;
+    }
+
+    public int getScaleCubes() {
+        return scaleCubes;
+    }
+
+    public int getExchangeCubes() {
+        return exchangeCubes;
+    }
+
+    public int getPowerCubePilePickup() {
+        return powerCubePilePickup;
+    }
+
+    public int getSwitchAdjacentPickup() {
+        return switchAdjacentPickup;
+    }
+
+    public int getCubesDropped() {
+        return cubesDropped;
+    }
+
+    public boolean isAutoLineCross() {
+        return autoLineCross;
+    }
+
+    public boolean isNullTerritoryFoul() {
+        return nullTerritoryFoul;
+    }
+
+    public boolean isCubeDropOpponentSwitchPlate() {
+        return cubeDropOpponentSwitchPlate;
+    }
+
+    public boolean isCubeDropOpponentScalePlate() {
+        return isCubeDropOpponentScalePlate;
+    }
+
+    private int switchCubes, scaleCubes, exchangeCubes, powerCubePilePickup,
+            switchAdjacentPickup, cubesDropped;
+    private boolean autoLineCross;
+    private boolean nullTerritoryFoul;
+    private boolean cubeDropOpponentSwitchPlate;
+    private boolean isCubeDropOpponentScalePlate;
+
+    public Autonomous(int switchCubes, int scaleCubes, int exchangeCubes, int powerCubePilePickup, int switchAdjacentPickup,
+                      int cubesDropped, boolean autoLineCross, boolean nullTerritoryFoul, boolean cubeDropOpponentSwitchPlate, boolean isCubeDropOpponentScalePlate) {
+        this.switchCubes = switchCubes;
+        this.scaleCubes = scaleCubes;
+        this.exchangeCubes = exchangeCubes;
+        this.powerCubePilePickup = powerCubePilePickup;
+        this.switchAdjacentPickup = switchAdjacentPickup;
+        this.cubesDropped = cubesDropped;
+        this.autoLineCross = autoLineCross;
+        this.nullTerritoryFoul = nullTerritoryFoul;
+        this.cubeDropOpponentSwitchPlate = cubeDropOpponentSwitchPlate;
+        this.isCubeDropOpponentScalePlate = isCubeDropOpponentScalePlate;
     }
 
 
-    public boolean isBaselineCrossed() {
-        return baselineCrossed;
-    }
-
-    public void setBaselineCrossed(boolean baselineCrossed) {
-        this.baselineCrossed = baselineCrossed;
-    }
-
-    public boolean isUseHoppers() {
-        return useHoppers;
-    }
-
-    public void setUseHoppers(boolean useHoppers) {
-        this.useHoppers = useHoppers;
-    }
-
-    public int getHighGoals() {
-        return highGoals;
-    }
-
-    public void setHighGoals(int highGoals) {
-        this.highGoals = highGoals;
-    }
-
-    public int getLowGoals() {
-        return lowGoals;
-    }
-
-    public void setLowGoals(int lowGoals) {
-        this.lowGoals = lowGoals;
-    }
-
-
-
-    
-
-    boolean baselineCrossed;
-    boolean useHoppers;
-
-
-
-    public boolean isAttemptGear() {
-		return attemptGear;
-	}
-
-
-	public void setAttemptGear(boolean attemptGear) {
-		this.attemptGear = attemptGear;
-	}
-
-
-	public boolean isSuccessGear() {
-		return successGear;
-	}
-
-
-	public void setSuccessGear(boolean successGear) {
-		this.successGear = successGear;
-	}
-
-
-
-
-
-	boolean attemptGear, successGear;
-    int highGoals, lowGoals;
-
-    public String getGearPeg() {
-        return gearPeg;
-    }
-
-    public void setGearPeg(String gearPeg) {
-        this.gearPeg = gearPeg;
-    }
-
-    public String gearPeg;
 
 
 

@@ -40,6 +40,8 @@ import com.adithyasairam.tba4j.models.Match;
 
 public class Window {
 	
+	public static final double VERSION = 2.0;
+	
 	/** When processing data, dataDirectory must have the qualified <code>short_name</code> for the event
 	 *  Downloaded data from TBA should be in same folder as well
 	 *  Output spreadsheets/summary reports to be written to same folder
@@ -93,7 +95,8 @@ public class Window {
 			introText.setText("<html><h1>Processing data</h1><br>Error!</html>"); 
 			return;
 		}
-		EventReport report = new EventReport(scoutEntries);
+		
+		EventReport report = new EventReport(scoutEntries, eventName);
 		
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
@@ -217,7 +220,7 @@ public class Window {
 	
 	public static void initialize(){
 		
-		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v1.4</h1><br>Press start to select data folder</html>");
+		JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v" + VERSION + "</h1><br>Press start to select data folder</html>");
 		introText.setHorizontalAlignment(JLabel.CENTER);
 		introText.setFont(new Font("Arial", Font.PLAIN, 16));
 		
