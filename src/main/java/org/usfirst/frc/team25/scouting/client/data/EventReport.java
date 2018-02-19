@@ -5,7 +5,12 @@ import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.usfirst.frc.team25.scouting.client.models.Autonomous;
@@ -317,6 +322,82 @@ public class EventReport {
 			e.printStackTrace();
 		}
 	}
+	
+	public void generatePicklists(File outputDirectory){
+		HashMap<Integer, Integer> compareList = new HashMap<>();
+		HashMap<Integer, Integer> pickNumList = new HashMap<>();
+		
+		for(ScoutEntry entry : scoutEntries){
+			Integer teamNum = entry.getPreMatch().getTeamNum();
+			
+			if(!compareList.containsKey(teamNum)){
+				compareList.put(teamNum, 0);
+				pickNumList.put(teamNum, 0);
+			}
+			
+			pickNumList.put(teamNum, pickNumList.get(teamNum)+entry.getPostMatch().getPickNumber());
+			String comparisonChar = entry.getPostMatch().getComparison();
+			Integer t1 = entry.getPostMatch().getTeamOneCompare(), t2 = entry.getPostMatch().getTeamTwoCompare();
+			if(comparisonChar.equals("<")){
+				compareList.put(t1, compareList.get(t1)-1);
+				compareList.put(t2, compareList.get(t2)+1);
+			}
+			else if(comparisonChar.equals(">")){
+				compareList.put(t1, compareList.get(t1)+1);
+				compareList.put(t2, compareList.get(t2)-1);
+			}
+		}
+		
+		compareList  = sortByComparator(compareList, false);
+		pickNumList = sortByComparator(pickNumList, false);
+		
+		String compareListOut = "", pickNumListOut = "";
+		
+		int rankNum = 1;
+		for (Entry<Integer, Integer> entry : compareList.entrySet()){
+			compareListOut += rankNum++ + ". " + entry.getKey() + " - " + entry.getValue() + " pts\n";
+		}
+		rankNum = 1;
+		for (Entry<Integer, Integer> entry : pickNumList.entrySet()){
+			pickNumListOut += rankNum++ + ". " + entry.getKey() + " - " + entry.getValue() + " pts\n";
+		}
+		
+		FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\compare_list.txt"), compareListOut);
+		FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\picknum_list.txt"), pickNumListOut);
+		
+	}
+	
+	// true is ascending, false is descending
+    private HashMap<Integer, Integer> sortByComparator(HashMap<Integer, Integer> unsortMap, final boolean order)
+    {
+
+        List<Entry<Integer, Integer>> list = new LinkedList<Entry<Integer, Integer>>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        Collections.sort(list, new Comparator<Entry<Integer, Integer>>()
+        {
+            public int compare(Entry<Integer, Integer> o1,
+                    Entry<Integer, Integer> o2)
+            {
+                if (order)
+                {
+                    return o1.getValue().compareTo(o2.getValue());
+                }
+                else
+                {
+                    return o2.getValue().compareTo(o1.getValue());
+
+                }
+            }
+        });
+
+        // Maintaining insertion order with the help of LinkedList
+        HashMap<Integer, Integer> sortedMap = new LinkedHashMap<Integer, Integer>();
+        for (Entry<Integer, Integer> entry : list)
+        	sortedMap.put(entry.getKey(), entry.getValue());
+
+        return sortedMap;
+    }
 	
 	public TeamReport getTeamReport(int teamNum){
 		return teamReports.get(teamNum);

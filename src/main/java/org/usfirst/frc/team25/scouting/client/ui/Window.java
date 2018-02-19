@@ -113,8 +113,9 @@ public class Window {
 				if(!file.getName().contains("All"))
 					file.delete();
 		
-		report.generateTeamReportJson(dataDirectory);
-		report.generateTeamReportSpreadsheet(dataDirectory);
+		//report.generateTeamReportJson(dataDirectory);
+		//report.generateTeamReportSpreadsheet(dataDirectory);
+		report.generatePicklists(dataDirectory);
 		
 		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); 
 		
@@ -269,7 +270,10 @@ public class Window {
 			public void actionPerformed(ActionEvent e){
 				JFrame eventCodePrompt = addIcon(new JFrame()), apiKeyPrompt= addIcon(new JFrame());
 				
-				String apiKey =  JOptionPane.showInputDialog(apiKeyPrompt,
+				String apiKey = FileManager.getFileString(new File("apikey.txt"));
+				System.out.println(apiKey);
+				if(apiKey==null)
+					apiKey =  JOptionPane.showInputDialog(apiKeyPrompt,
 						"Enter The Blue Alliance API key", "Enter API key",JOptionPane.PLAIN_MESSAGE);
 				//test if API key is valid				
 				tba = new TBA(apiKey);
