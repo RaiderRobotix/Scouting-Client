@@ -199,75 +199,81 @@ public class EventReport {
 			return;
 		else tba = new TBA(apiKey);
 		
-		ArrayList<Match> matchData = BlueAlliance.downloadEventMatchData(event, tba);
-		
-		for(ScoutEntry entry : scoutEntries){
-			try{
-				String prefix = "Q" + entry.getPreMatch().getMatchNum() + "-" + entry.getPreMatch().getScoutPos() + "-"+
-						entry.getPreMatch().getScoutName()+": ";
-				String inaccuracies = "";
-				Match match = matchData.get(entry.getPreMatch().getMatchNum()-1);
-				MatchScoreBreakdown2018Alliance sb;
-				if(entry.getPreMatch().getScoutPos().contains("Red"))
-					sb = match.getScoreBreakdown().getRed();
-				else sb = match.getScoreBreakdown().getBlue();
-				
-				if(!entry.getTeleOp().getFieldLayout().equals(sb.getTba_gameData())){
-					inaccuracies+="plate lighting, ";
-					entry.getTeleOp().setFieldLayout(sb.getTba_gameData());
+	
+		try {
+			ArrayList<Match> matchData = BlueAlliance.downloadEventMatchData(event, tba);
+	
+			for(ScoutEntry entry : scoutEntries){
+				try{
+					String prefix = "Q" + entry.getPreMatch().getMatchNum() + "-" + entry.getPreMatch().getScoutPos() + "-"+
+							entry.getPreMatch().getScoutName()+": ";
+					String inaccuracies = "";
+					Match match = matchData.get(entry.getPreMatch().getMatchNum()-1);
+					MatchScoreBreakdown2018Alliance sb;
+					if(entry.getPreMatch().getScoutPos().contains("Red"))
+						sb = match.getScoreBreakdown().getRed();
+					else sb = match.getScoreBreakdown().getBlue();
+					
+					if(!entry.getTeleOp().getFieldLayout().equals(sb.getTba_gameData())){
+						inaccuracies+="plate lighting, ";
+						entry.getTeleOp().setFieldLayout(sb.getTba_gameData());
+					}
+					
+					boolean actualAutoRun = false;
+					boolean actualClimb = false;
+					boolean actualLevitate = false;
+					boolean actualPark = false;
+					boolean partnersClimb = false;
+					
+					
+					if(entry.getPreMatch().getScoutPos().contains("1")){
+						actualAutoRun = sb.getAutoRobot1().equals("AutoRun");
+						actualClimb = sb.getEndgameRobot1().equals("Climbing");
+						actualLevitate = sb.getEndgameRobot1().equals("Levitate");
+						actualPark = sb.getEndgameRobot1().equals("Parking");
+						partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
+					}
+					else if(entry.getPreMatch().getScoutPos().contains("2")){
+						actualAutoRun = sb.getAutoRobot2().equals("AutoRun");
+						actualClimb = sb.getEndgameRobot2().equals("Climbing");
+						actualLevitate = sb.getEndgameRobot2().equals("Levitate");
+						actualPark = sb.getEndgameRobot2().equals("Parking");
+						partnersClimb = sb.getEndgameRobot1().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
+					}
+					else if(entry.getPreMatch().getScoutPos().contains("3")){
+						actualAutoRun = sb.getAutoRobot3().equals("AutoRun");
+						actualClimb = sb.getEndgameRobot3().equals("Climbing");
+						actualLevitate = sb.getEndgameRobot3().equals("Levitate");
+						actualPark = sb.getEndgameRobot3().equals("Parking");
+						partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot1().equals("Climbing");
+					}
+					
+					if(actualAutoRun!=entry.getAuto().isAutoLineCross()){
+						inaccuracies += "auto run, ";
+						entry.getAuto().setAutoLineCross(actualAutoRun);
+					}
+					
+					if(actualClimb!=entry.getTeleOp().isSuccessfulRungClimb()&&actualClimb!=entry.getTeleOp().isOtherRobotClimb()){
+						inaccuracies += "climbing (manually check), ";
+					}
+					//not completely accurate due to random nature of levitate
+					if(actualPark!=entry.getTeleOp().isParked()&& !actualLevitate){ 
+						inaccuracies +="parking, ";
+						entry.getTeleOp().setParked(actualPark);
+					}
+					if(actualLevitate&&partnersClimb)
+						entry.getPostMatch().robotQuickCommentSelections.put("Climb/park unneeded (levitate used and others climbed)", true);
+					
+					if(!inaccuracies.isEmpty())
+						inaccuracyList += prefix + inaccuracies + "\n";
+				}catch(ArrayIndexOutOfBoundsException e){
+					
 				}
-				
-				boolean actualAutoRun = false;
-				boolean actualClimb = false;
-				boolean actualLevitate = false;
-				boolean actualPark = false;
-				boolean partnersClimb = false;
-				
-				
-				if(entry.getPreMatch().getScoutPos().contains("1")){
-					actualAutoRun = sb.getAutoRobot1().equals("AutoRun");
-					actualClimb = sb.getEndgameRobot1().equals("Climbing");
-					actualLevitate = sb.getEndgameRobot1().equals("Levitate");
-					actualPark = sb.getEndgameRobot1().equals("Parking");
-					partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
-				}
-				else if(entry.getPreMatch().getScoutPos().contains("2")){
-					actualAutoRun = sb.getAutoRobot2().equals("AutoRun");
-					actualClimb = sb.getEndgameRobot2().equals("Climbing");
-					actualLevitate = sb.getEndgameRobot2().equals("Levitate");
-					actualPark = sb.getEndgameRobot2().equals("Parking");
-					partnersClimb = sb.getEndgameRobot1().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
-				}
-				else if(entry.getPreMatch().getScoutPos().contains("3")){
-					actualAutoRun = sb.getAutoRobot3().equals("AutoRun");
-					actualClimb = sb.getEndgameRobot3().equals("Climbing");
-					actualLevitate = sb.getEndgameRobot3().equals("Levitate");
-					actualPark = sb.getEndgameRobot3().equals("Parking");
-					partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot1().equals("Climbing");
-				}
-				
-				if(actualAutoRun!=entry.getAuto().isAutoLineCross()){
-					inaccuracies += "auto run, ";
-					entry.getAuto().setAutoLineCross(actualAutoRun);
-				}
-				
-				if(actualClimb!=entry.getTeleOp().isSuccessfulRungClimb()&&actualClimb!=entry.getTeleOp().isOtherRobotClimb()){
-					inaccuracies += "climbing (manually check), ";
-				}
-				//not completely accurate due to random nature of levitate
-				if(actualPark!=entry.getTeleOp().isParked()&& !actualLevitate){ 
-					inaccuracies +="parking, ";
-					entry.getTeleOp().setParked(actualPark);
-				}
-				if(actualLevitate&&partnersClimb)
-					entry.getPostMatch().robotQuickCommentSelections.put("Climb/park unneeded (levitate used and others climbed)", true);
-				
-				if(!inaccuracies.isEmpty())
-					inaccuracyList += prefix + inaccuracies + "\n";
-			}catch(ArrayIndexOutOfBoundsException e){
 				
 			}
-			
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 	}
