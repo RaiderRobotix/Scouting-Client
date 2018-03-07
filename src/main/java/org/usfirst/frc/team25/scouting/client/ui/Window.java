@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -116,6 +117,7 @@ public class Window {
 		//report.generateTeamReportJson(dataDirectory);
 		//report.generateTeamReportSpreadsheet(dataDirectory);
 		report.generatePicklists(dataDirectory);
+		report.generateInaccuracyList(dataDirectory);
 		
 		introText.setText("<html><h1>Processing data</h1><br>Done!</html>"); 
 		
@@ -266,23 +268,17 @@ public class Window {
 			}
 		});
 		
+		
+		
 		downloadButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				JFrame eventCodePrompt = addIcon(new JFrame()), apiKeyPrompt= addIcon(new JFrame());
+				JFrame eventCodePrompt = addIcon(new JFrame());
 				
-				String apiKey = FileManager.getFileString(new File("apikey.txt"));
-				System.out.println(apiKey);
-				if(apiKey==null)
-					apiKey =  JOptionPane.showInputDialog(apiKeyPrompt,
-						"Enter The Blue Alliance API key", "Enter API key",JOptionPane.PLAIN_MESSAGE);
-				//test if API key is valid				
-				tba = new TBA(apiKey);
+				String apiKey = apiKeyFetch();
 				
-				
-				if(tba.dataRequest.getDataTBA("/status").getResponseCode()==401){
-					JOptionPane.showMessageDialog(apiKeyPrompt, "Invalid API key. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
+				if(apiKey.isEmpty())
 					return;
-				}
+				else tba = new TBA(apiKey);
 				
 				File outputDirectory = FileManager.selectFolder(eventCodePrompt, "Select output folder");
 				if(outputDirectory==null)
@@ -306,6 +302,30 @@ public class Window {
 	
 			}
 		});
+	}
+	
+	public static String apiKeyFetch(){
+		JFrame apiKeyPrompt= addIcon(new JFrame());
+		
+		String apiKey = FileManager.getFileString(new File("apikey.txt"));
+		System.out.println(apiKey);
+		if(apiKey==null)
+			apiKey =  JOptionPane.showInputDialog(apiKeyPrompt,
+				"Enter The Blue Alliance API key", "Enter API key",JOptionPane.PLAIN_MESSAGE);
+		//test if API key is valid				
+		tba = new TBA(apiKey);
+		
+		
+		try {
+			if(tba.dataRequest.getDataTBA("/status").getResponseCode()==401){
+				JOptionPane.showMessageDialog(apiKeyPrompt, "Invalid API key. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
+				return "";
+			}
+		} catch (HeadlessException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return apiKey;
 	}
 	
 	public static void main(String[] args){

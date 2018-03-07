@@ -13,9 +13,8 @@ public class ScoutEntry implements Serializable {
     public Autonomous auto;
     public TeleOp teleOp;
     public PostMatch postMatch;
-   /* public transient int autoScore, teleScore, totalScore;
-    public transient double autoKpa, teleOpKpa;
-    public transient double pointsPerCycle;*/
+    private transient boolean centerSwitchAuto = false, centerScaleAuto = false, 
+    		farSwitchAuto = false, farScaleAuto = false, nearSwitchAuto = false, nearScaleAuto = false;
 
     //Actual member variables will be set using setters as data is filled in
     public ScoutEntry() {}
@@ -54,19 +53,49 @@ public class ScoutEntry implements Serializable {
 
 	
 
-	public void calculateDerivedStats() {
-	/*	autoKpa = auto.highGoals+auto.lowGoals/3.0;
-		teleOpKpa = teleOp.highGoals/3.0+teleOp.lowGoals/9.0;
-		autoScore = (auto.baselineCrossed ? 5 : 0)+ (auto.successGear ? 40 : 0)+ (int) autoKpa;
-		teleScore = teleOp.gearsDelivered*20+(int) Math.floor(teleOpKpa)+(teleOp.readyTakeoff ? 50 : 0);
-		totalScore = autoScore+teleScore-(int) autoKpa -(int)teleOpKpa+(int)(autoKpa+teleOpKpa);
-		if(teleOp.readyTakeoff)
-			pointsPerCycle = ((double) teleScore-50)/teleOp.numCycles;
-		else pointsPerCycle = ((double) teleScore)/teleOp.numCycles;*/
+public void calculateDerivedStats() {
+		if(preMatch.getStartingPos().equals("Center")){
+			centerSwitchAuto =  true;
+			centerScaleAuto = true;
+		}
+		else{
+			if(preMatch.getStartingPos().charAt(0)==teleOp.getFieldLayout().charAt(0))
+				nearSwitchAuto  =  true;
+			else farSwitchAuto = true;
+			
+			if(preMatch.getStartingPos().charAt(0)==teleOp.getFieldLayout().charAt(1))
+				nearScaleAuto  =  true;
+			else farScaleAuto = true;
+		}
+		
 		
 		postMatch.generateQuickCommentStr();
 		
 	}
+
+public boolean isCenterSwitchAuto() {
+	return centerSwitchAuto;
+}
+
+public boolean isCenterScaleAuto() {
+	return centerScaleAuto;
+}
+
+public boolean isFarSwitchAuto() {
+	return farSwitchAuto;
+}
+
+public boolean isFarScaleAuto() {
+	return farScaleAuto;
+}
+
+public boolean isNearSwitchAuto() {
+	return nearSwitchAuto;
+}
+
+public boolean isNearScaleAuto() {
+	return nearScaleAuto;
+}
 
 
 }

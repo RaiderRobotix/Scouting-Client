@@ -45,6 +45,10 @@ public class Autonomous {
     public boolean isCubeDropOpponentScalePlate() {
         return isCubeDropOpponentScalePlate;
     }
+    
+    public void setAutoLineCross(boolean autoLineCross){
+    	this.autoLineCross = autoLineCross;
+    }
 
     private int switchCubes, scaleCubes, exchangeCubes, powerCubePilePickup,
             switchAdjacentPickup, cubesDropped;
@@ -52,6 +56,9 @@ public class Autonomous {
     private boolean nullTerritoryFoul;
     private boolean cubeDropOpponentSwitchPlate;
     private boolean isCubeDropOpponentScalePlate;
+    
+  
+    
 
     public Autonomous(int switchCubes, int scaleCubes, int exchangeCubes, int powerCubePilePickup, int switchAdjacentPickup,
                       int cubesDropped, boolean autoLineCross, boolean nullTerritoryFoul, boolean cubeDropOpponentSwitchPlate, boolean isCubeDropOpponentScalePlate) {
@@ -66,6 +73,7 @@ public class Autonomous {
         this.cubeDropOpponentSwitchPlate = cubeDropOpponentSwitchPlate;
         this.isCubeDropOpponentScalePlate = isCubeDropOpponentScalePlate;
     }
+    
 
 
 

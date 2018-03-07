@@ -19,9 +19,14 @@ import org.usfirst.frc.team25.scouting.client.models.PostMatch;
 import org.usfirst.frc.team25.scouting.client.models.PreMatch;
 import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
 import org.usfirst.frc.team25.scouting.client.models.TeleOp;
+import org.usfirst.frc.team25.scouting.client.ui.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.thebluealliance.api.v3.TBA;
+import com.thebluealliance.api.v3.models.Match;
+import com.thebluealliance.api.v3.models.MatchScoreBreakdown2018Alliance;
+import com.thebluealliance.api.v3.models.ScoreBreakdown;
 
 /** Object model holding all data for an event
  * 
@@ -29,6 +34,10 @@ import com.google.gson.GsonBuilder;
  *
  */
 public class EventReport {
+	
+	String inaccuracyList = "";
+	
+	
 	
 	/** Helper method to prevent manual comments with commas 
 	 *  from changing CSV format
@@ -163,10 +172,11 @@ public class EventReport {
 	
 	public EventReport(ArrayList<ScoutEntry> entries, String event){
 		scoutEntries = entries;
+		fixInaccuraciesTBA();
 		for(ScoutEntry entry : scoutEntries){
 			
-			
 			entry.calculateDerivedStats();
+			
 			
 			int teamNum = entry.getPreMatch().getTeamNum();
 			if(!teamReports.containsKey(teamNum))
@@ -178,8 +188,87 @@ public class EventReport {
 		
 	}
 	
-	public void fixInaccuraciesTBA() throws IOException{
+	public void fixInaccuraciesTBA() {
 		
+		
+		TBA tba;
+		
+		String apiKey = Window.apiKeyFetch();
+		
+		if(apiKey.isEmpty())
+			return;
+		else tba = new TBA(apiKey);
+		
+		ArrayList<Match> matchData = BlueAlliance.downloadEventMatchData(event, tba);
+		
+		for(ScoutEntry entry : scoutEntries){
+			try{
+				String prefix = "Q" + entry.getPreMatch().getMatchNum() + "-" + entry.getPreMatch().getScoutPos() + "-"+
+						entry.getPreMatch().getScoutName()+": ";
+				String inaccuracies = "";
+				Match match = matchData.get(entry.getPreMatch().getMatchNum()-1);
+				MatchScoreBreakdown2018Alliance sb;
+				if(entry.getPreMatch().getScoutPos().contains("Red"))
+					sb = match.getScoreBreakdown().getRed();
+				else sb = match.getScoreBreakdown().getBlue();
+				
+				if(!entry.getTeleOp().getFieldLayout().equals(sb.getTba_gameData())){
+					inaccuracies+="plate lighting, ";
+					entry.getTeleOp().setFieldLayout(sb.getTba_gameData());
+				}
+				
+				boolean actualAutoRun = false;
+				boolean actualClimb = false;
+				boolean actualLevitate = false;
+				boolean actualPark = false;
+				boolean partnersClimb = false;
+				
+				
+				if(entry.getPreMatch().getScoutPos().contains("1")){
+					actualAutoRun = sb.getAutoRobot1().equals("AutoRun");
+					actualClimb = sb.getEndgameRobot1().equals("Climbing");
+					actualLevitate = sb.getEndgameRobot1().equals("Levitate");
+					actualPark = sb.getEndgameRobot1().equals("Parking");
+					partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
+				}
+				else if(entry.getPreMatch().getScoutPos().contains("2")){
+					actualAutoRun = sb.getAutoRobot2().equals("AutoRun");
+					actualClimb = sb.getEndgameRobot2().equals("Climbing");
+					actualLevitate = sb.getEndgameRobot2().equals("Levitate");
+					actualPark = sb.getEndgameRobot2().equals("Parking");
+					partnersClimb = sb.getEndgameRobot1().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
+				}
+				else if(entry.getPreMatch().getScoutPos().contains("3")){
+					actualAutoRun = sb.getAutoRobot3().equals("AutoRun");
+					actualClimb = sb.getEndgameRobot3().equals("Climbing");
+					actualLevitate = sb.getEndgameRobot3().equals("Levitate");
+					actualPark = sb.getEndgameRobot3().equals("Parking");
+					partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot1().equals("Climbing");
+				}
+				
+				if(actualAutoRun!=entry.getAuto().isAutoLineCross()){
+					inaccuracies += "auto run, ";
+					entry.getAuto().setAutoLineCross(actualAutoRun);
+				}
+				
+				if(actualClimb!=entry.getTeleOp().isSuccessfulRungClimb()&&actualClimb!=entry.getTeleOp().isOtherRobotClimb()){
+					inaccuracies += "climbing (manually check), ";
+				}
+				//not completely accurate due to random nature of levitate
+				if(actualPark!=entry.getTeleOp().isParked()&& !actualLevitate){ 
+					inaccuracies +="parking, ";
+					entry.getTeleOp().setParked(actualPark);
+				}
+				if(actualLevitate&&partnersClimb)
+					entry.getPostMatch().robotQuickCommentSelections.put("Climb/park unneeded (levitate used and others climbed)", true);
+				
+				if(!inaccuracies.isEmpty())
+					inaccuracyList += prefix + inaccuracies + "\n";
+			}catch(ArrayIndexOutOfBoundsException e){
+				
+			}
+			
+		}
 		
 	}
 	
@@ -235,6 +324,7 @@ public class EventReport {
 	public void generateRawSpreadsheet(File outputDirectory){
 		final String COMMA = ",";
 		String header = "Scout Name,Match Num,Scouting Pos,Team Num,Starting Pos,Field Layout,"
+				+ "Near Switch Auto,Far Switch Auto,Near Scale Auto,Far Scale Auto,Center Switch Auto,Center Scale Auto,"
 				+ "Auto Switch Cubes,Auto Scale Cubes,Auto Exchange Cubes,Auto PCP Pickup,"
 				+ "Auto Switch Adj Pickup,"
 				+ "Auto Cubes Dropped,Auto Line Cross,Auto Null Territory Foul,"
@@ -262,7 +352,9 @@ public class EventReport {
 			PostMatch post = entry.getPostMatch(); 
 			
 			fileContents+=pre.getScoutName()+COMMA + pre.getMatchNum()+COMMA+pre.getScoutPos()+COMMA+
-					pre.getTeamNum()+COMMA+pre.getStartingPos()+COMMA+tele.getFieldLayout()+COMMA;
+					pre.getTeamNum()+COMMA+pre.getStartingPos()+COMMA+tele.getFieldLayout()+COMMA+
+					entry.isNearSwitchAuto()+COMMA+entry.isFarSwitchAuto()+COMMA+entry.isNearScaleAuto()+COMMA+entry.isFarScaleAuto()
+					+COMMA+entry.isCenterSwitchAuto()+COMMA+entry.isCenterScaleAuto();
 			fileContents+=auto.getSwitchCubes()+COMMA+auto.getScaleCubes()+COMMA+auto.getExchangeCubes()+COMMA+
 					auto.getPowerCubePilePickup()+COMMA+auto.getSwitchAdjacentPickup()+COMMA+auto.getCubesDropped()
 					+COMMA+auto.isAutoLineCross()+COMMA+auto.isNullTerritoryFoul()+COMMA+auto.isCubeDropOpponentSwitchPlate()
@@ -372,6 +464,11 @@ public class EventReport {
 		FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\compare_list.txt"), compareListOut);
 		FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\picknum_list.txt"), pickNumListOut);
 		
+	}
+	
+	public void generateInaccuracyList(File outputDirectory){
+		if(!inaccuracyList.isEmpty())
+			FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\inaccuracies.txt"), inaccuracyList);
 	}
 	
 	// true is ascending, false is descending

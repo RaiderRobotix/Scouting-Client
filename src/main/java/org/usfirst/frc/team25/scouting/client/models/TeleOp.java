@@ -11,6 +11,14 @@ public class TeleOp {
             exchangeCubes, cubesDropped, climbsAssisted;
     private boolean parked, attemptRungClimb, successfulRungClimb, otherRobotClimb;
     private String otherRobotClimbType, fieldLayout;
+    
+    public void setFieldLayout(String fieldLayout){
+    	this.fieldLayout = fieldLayout;
+    }
+    
+    public void setParked(boolean parked){
+    	this.parked = parked;
+    }
 	
     public float getFirstCubeTime() {
         return firstCubeTime;

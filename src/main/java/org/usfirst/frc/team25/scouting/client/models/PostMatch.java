@@ -9,7 +9,7 @@ public class PostMatch {
 	
 
     
-    HashMap<String, Boolean> robotQuickCommentSelections = new HashMap<>();
+    public HashMap<String, Boolean> robotQuickCommentSelections = new HashMap<>();
 
     transient String robotQuickCommentStr;
     private int teamOneCompare, teamTwoCompare, pickNumber;

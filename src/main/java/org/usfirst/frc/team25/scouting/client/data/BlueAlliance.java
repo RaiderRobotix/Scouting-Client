@@ -2,6 +2,7 @@ package org.usfirst.frc.team25.scouting.client.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class BlueAlliance {
 	
 	/** Exports a simple comma delimited sorted file of teams playing at an event.
 	 *  Output file intended to be read by Scouting App
-	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
+	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatboro-Horsham in 2016
 	 * @param fileName File name of output file, without extension
 	 */
 	 static void exportSimpleTeamList(String eventCode, String fileName, TBA tba) throws FileNotFoundException{
@@ -44,7 +45,7 @@ public class BlueAlliance {
 	
 	/** Exports a comma and line break delimited file of team numbers and names at an event. 
 	 * Each line contains a comma delimited pair of team number and team nickname.
-	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
+	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatboro-Horsham in 2016
 	 * @param fileName File name of output file, without extension
 	 */
 	
@@ -60,7 +61,7 @@ public class BlueAlliance {
 	
 	/** Generates a file with list of teams playing in each match
 	 * Each line contains comma delimited match number, then team numbers for red alliance, then blue alliance.
-	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatsboro-Horsham in 2016
+	 * @param eventCode Fully qualified event key, i.e. "2016pahat" for Hatboro-Horsham in 2016
 	 * @param fileName File name of output, without extension
 	 */
 	 static void exportMatchList(String eventCode, String fileName, TBA tba) throws FileNotFoundException{
@@ -87,8 +88,12 @@ public class BlueAlliance {
 	 */
 	public static void downloadRaiderEvents(File outputFolder, TBA tba){
 		
-		for(Event event : tba.teamRequest.getEvents(25, Calendar.getInstance().get(Calendar.YEAR)))
-			downloadEventTeamData(outputFolder, event.getKey(), tba);
+		try {
+			for(Event event : tba.teamRequest.getEvents(25, Calendar.getInstance().get(Calendar.YEAR)))
+				downloadEventTeamData(outputFolder, event.getKey(), tba);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -97,8 +102,12 @@ public class BlueAlliance {
 	 */
 	public static void downloadRaiderEvents(File outputFolder, int year, TBA tba){
 		
-		for(Event event : tba.teamRequest.getEvents(25, year))
-			downloadEventTeamData(outputFolder, event.getKey(), tba);
+		try {
+			for(Event event : tba.teamRequest.getEvents(25, year))
+				downloadEventTeamData(outputFolder, event.getKey(), tba);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -121,9 +130,8 @@ public class BlueAlliance {
 		return true;
 	}
 	
-	//TODO implement this
-	public static boolean downloadEventMatchData(File outputFolder, String eventCode, TBA tba){
-		return true;
+	public static ArrayList<Match> downloadEventMatchData( String eventCode, TBA tba){
+		return Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(tba.eventRequest.getMatches(eventCode)))));
 	}
 	
 	
