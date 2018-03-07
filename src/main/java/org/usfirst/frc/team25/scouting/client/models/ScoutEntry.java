@@ -2,22 +2,19 @@ package org.usfirst.frc.team25.scouting.client.models;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.usfirst.frc.team25.scouting.client.data.Statistics;
 
 public class ScoutEntry implements Serializable {
 
-    public PreMatch preMatch;
-    public Autonomous auto;
-    public TeleOp teleOp;
-    public PostMatch postMatch;
-    private transient boolean centerSwitchAuto = false, centerScaleAuto = false, 
-    		farSwitchAuto = false, farScaleAuto = false, nearSwitchAuto = false, nearScaleAuto = false;
+    private PreMatch preMatch;
+    private Autonomous auto;
+    private TeleOp teleOp;
+    private PostMatch postMatch;
+    private transient boolean centerSwitchAuto = false, centerScaleAuto = false,
+            farSwitchAuto = false, farScaleAuto = false, nearSwitchAuto = false, nearScaleAuto = false;
 
     //Actual member variables will be set using setters as data is filled in
-    public ScoutEntry() {}
+    public ScoutEntry() {
+    }
 
     public PreMatch getPreMatch() {
         return preMatch;
@@ -51,51 +48,49 @@ public class ScoutEntry implements Serializable {
         this.postMatch = postMatch;
     }
 
-	
 
-public void calculateDerivedStats() {
-		if(preMatch.getStartingPos().equals("Center")){
-			centerSwitchAuto =  true;
-			centerScaleAuto = true;
-		}
-		else{
-			if(preMatch.getStartingPos().charAt(0)==teleOp.getFieldLayout().charAt(0))
-				nearSwitchAuto  =  true;
-			else farSwitchAuto = true;
-			
-			if(preMatch.getStartingPos().charAt(0)==teleOp.getFieldLayout().charAt(1))
-				nearScaleAuto  =  true;
-			else farScaleAuto = true;
-		}
-		
-		
-		postMatch.generateQuickCommentStr();
-		
-	}
+    public void calculateDerivedStats() {
+        if (preMatch.getStartingPos().equals("Center")) {
+            centerSwitchAuto = true;
+            centerScaleAuto = true;
+        } else {
+            if (preMatch.getStartingPos().charAt(0) == teleOp.getFieldLayout().charAt(0))
+                nearSwitchAuto = true;
+            else farSwitchAuto = true;
 
-public boolean isCenterSwitchAuto() {
-	return centerSwitchAuto;
-}
+            if (preMatch.getStartingPos().charAt(0) == teleOp.getFieldLayout().charAt(1))
+                nearScaleAuto = true;
+            else farScaleAuto = true;
+        }
 
-public boolean isCenterScaleAuto() {
-	return centerScaleAuto;
-}
 
-public boolean isFarSwitchAuto() {
-	return farSwitchAuto;
-}
+        postMatch.generateQuickCommentStr();
 
-public boolean isFarScaleAuto() {
-	return farScaleAuto;
-}
+    }
 
-public boolean isNearSwitchAuto() {
-	return nearSwitchAuto;
-}
+    public boolean isCenterSwitchAuto() {
+        return centerSwitchAuto;
+    }
 
-public boolean isNearScaleAuto() {
-	return nearScaleAuto;
-}
+    public boolean isCenterScaleAuto() {
+        return centerScaleAuto;
+    }
+
+    public boolean isFarSwitchAuto() {
+        return farSwitchAuto;
+    }
+
+    public boolean isFarScaleAuto() {
+        return farScaleAuto;
+    }
+
+    public boolean isNearSwitchAuto() {
+        return nearSwitchAuto;
+    }
+
+    public boolean isNearScaleAuto() {
+        return nearScaleAuto;
+    }
 
 
 }
