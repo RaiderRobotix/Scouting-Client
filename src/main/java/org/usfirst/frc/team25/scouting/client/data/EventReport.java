@@ -2,6 +2,7 @@ package org.usfirst.frc.team25.scouting.client.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,6 +164,8 @@ public class EventReport {
 	public EventReport(ArrayList<ScoutEntry> entries, String event){
 		scoutEntries = entries;
 		for(ScoutEntry entry : scoutEntries){
+			
+			
 			entry.calculateDerivedStats();
 			
 			int teamNum = entry.getPreMatch().getTeamNum();
@@ -172,6 +175,10 @@ public class EventReport {
 			teamReports.get(teamNum).addEntry(entry);
 		}
 		this.event = event;
+		
+	}
+	
+	public void fixInaccuraciesTBA() throws IOException{
 		
 		
 	}
@@ -232,7 +239,7 @@ public class EventReport {
 				+ "Auto Switch Adj Pickup,"
 				+ "Auto Cubes Dropped,Auto Line Cross,Auto Null Territory Foul,"
 				+ "Auto Drop Opponent Switch,Auto Drop Opponent Scale,"
-				+ "Tele First Cube Time,Cycle Time,Tele Own Switch Cubes,Tele Scale Cubes,"
+				+ "Tele First Cube Time,Tele Own Switch Cubes,Tele Scale Cubes,"
 				+ "Tele Opponent Switch Cubes,Tele Exchange Cubes,Tele Cubes Dropped,"
 				+ "Climbs Assisted,Parked,Attempt Rung Climb,Success Rung Climb,"
 				+ "Climb on Other Robot,Other Robot Climb Type,"
@@ -261,7 +268,7 @@ public class EventReport {
 					+COMMA+auto.isAutoLineCross()+COMMA+auto.isNullTerritoryFoul()+COMMA+auto.isCubeDropOpponentSwitchPlate()
 					+COMMA+auto.isCubeDropOpponentScalePlate()+COMMA;
 					
-			fileContents+=tele.getFirstCubeTime()+COMMA+tele.getCycleTime()+COMMA+tele.getOwnSwitchCubes()
+			fileContents+=tele.getFirstCubeTime()+COMMA+tele.getOwnSwitchCubes()
 				+COMMA+tele.getScaleCubes()+COMMA+tele.getOpponentSwitchCubes()+COMMA+tele.getExchangeCubes()
 				+COMMA+tele.getCubesDropped()+COMMA+tele.getClimbsAssisted()+COMMA+tele.isParked()+COMMA+
 				tele.isAttemptRungClimb()+COMMA+tele.isSuccessfulRungClimb()+COMMA+tele.isOtherRobotClimb()

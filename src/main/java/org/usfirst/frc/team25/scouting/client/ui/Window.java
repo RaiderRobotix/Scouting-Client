@@ -42,7 +42,7 @@ public class Window {
 	
 	static TBA tba;
 	
-	public static final double VERSION = 2.0;
+	public static final double VERSION = 2.1;
 	
 
 	/** When processing data, dataDirectory must have the qualified <code>short_name</code> for the event.
@@ -300,7 +300,7 @@ public class Window {
 					
 				}
 				
-				else if(!BlueAlliance.downloadEventData(outputDirectory, userInput, tba)) //Invalid event code
+				else if(!BlueAlliance.downloadEventTeamData(outputDirectory, userInput, tba)) //Invalid event code
 					JOptionPane.showMessageDialog(eventCodePrompt, "Invalid event code. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
 				
 	

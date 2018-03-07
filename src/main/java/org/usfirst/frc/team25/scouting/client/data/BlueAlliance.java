@@ -88,7 +88,7 @@ public class BlueAlliance {
 	public static void downloadRaiderEvents(File outputFolder, TBA tba){
 		
 		for(Event event : tba.teamRequest.getEvents(25, Calendar.getInstance().get(Calendar.YEAR)))
-			downloadEventData(outputFolder, event.getKey(), tba);
+			downloadEventTeamData(outputFolder, event.getKey(), tba);
 		
 	}
 	
@@ -98,7 +98,7 @@ public class BlueAlliance {
 	public static void downloadRaiderEvents(File outputFolder, int year, TBA tba){
 		
 		for(Event event : tba.teamRequest.getEvents(25, year))
-			downloadEventData(outputFolder, event.getKey(), tba);
+			downloadEventTeamData(outputFolder, event.getKey(), tba);
 		
 	}
 	
@@ -108,7 +108,7 @@ public class BlueAlliance {
 	 * @param eventCode Fully qualified event key
 	 * @return True if download of team list is successful, false otherwise
 	 */
-	public static boolean downloadEventData(File outputFolder, String eventCode, TBA tba){
+	public static boolean downloadEventTeamData(File outputFolder, String eventCode, TBA tba){
 		try{
 			String eventShortName = tba.eventRequest.getEvent(eventCode).getKey();
 			exportSimpleTeamList(eventCode, outputFolder.getAbsolutePath()+"\\Teams - " + eventShortName, tba);
@@ -118,6 +118,11 @@ public class BlueAlliance {
 			return false;
 		}
 		
+		return true;
+	}
+	
+	//TODO implement this
+	public static boolean downloadEventMatchData(File outputFolder, String eventCode, TBA tba){
 		return true;
 	}
 	
