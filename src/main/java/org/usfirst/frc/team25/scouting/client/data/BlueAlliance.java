@@ -32,7 +32,13 @@ public class BlueAlliance {
 		
 		
 			String teamList = "";
-			ArrayList<Team> teams = Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(tba.eventRequest.getTeams(eventCode))));
+			ArrayList<Team> teams;
+			try {
+				teams = Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(tba.eventRequest.getTeams(eventCode))));
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
 			for(Team team : teams)
 	    		teamList+=team.getTeamNumber() + ",";
 			StringBuilder output = new StringBuilder(teamList);
@@ -53,8 +59,13 @@ public class BlueAlliance {
 		
 		String teamList = "";
 			
-			for(Team team : Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(tba.eventRequest.getTeams(eventCode)))))
-	    		teamList+=team.getTeamNumber() + ","+team.getNickname()+",\n";
+			try {
+				for(Team team : Sorters.sortByTeamNum(new ArrayList<Team>(Arrays.asList(tba.eventRequest.getTeams(eventCode)))))
+					teamList+=team.getTeamNumber() + ","+team.getNickname()+",\n";
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
 		FileManager.outputFile(fileName, "csv", teamList);
 		
 	}
@@ -66,18 +77,24 @@ public class BlueAlliance {
 	 */
 	 static void exportMatchList(String eventCode, String fileName, TBA tba) throws FileNotFoundException{
 		String matchList = "";
-		for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(tba.eventRequest.getMatches(eventCode)))))){
-			
-				matchList+=match.getMatchNumber()+",";
-				for(int i = 0; i < 2; i++) //iterate through two alliances
-					for(int j = 0; j < 3; j++){ //iterate through teams in alliance
-						if(i==0) 
-							matchList+=match.getRedAlliance().getTeamKeys()[j].split("frc")[1]+",";
-						else matchList+=match.getBlueAlliance().getTeamKeys()[j].split("frc")[1]+",";
-					}
-				matchList+=",\n";
-			
-			
+		try {
+			for(Match match : Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(tba.eventRequest.getMatches(eventCode)))))){
+				
+					matchList+=match.getMatchNumber()+",";
+					for(int i = 0; i < 2; i++) //iterate through two alliances
+						for(int j = 0; j < 3; j++){ //iterate through teams in alliance
+							if(i==0) 
+								matchList+=match.getRedAlliance().getTeamKeys()[j].split("frc")[1]+",";
+							else matchList+=match.getBlueAlliance().getTeamKeys()[j].split("frc")[1]+",";
+						}
+					matchList+=",\n";
+				
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
 		}
 		FileManager.outputFile(fileName, "csv", matchList);
 		
@@ -130,7 +147,7 @@ public class BlueAlliance {
 		return true;
 	}
 	
-	public static ArrayList<Match> downloadEventMatchData( String eventCode, TBA tba){
+	public static ArrayList<Match> downloadEventMatchData( String eventCode, TBA tba) throws IOException{
 		return Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(tba.eventRequest.getMatches(eventCode)))));
 	}
 	
