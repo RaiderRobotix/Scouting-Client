@@ -23,6 +23,7 @@ import org.usfirst.frc.team25.scouting.client.ui.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.thebluealliance.api.v3.TBA;
 import com.thebluealliance.api.v3.models.Match;
 import com.thebluealliance.api.v3.models.MatchScoreBreakdown2018Alliance;
@@ -168,10 +169,13 @@ public class EventReport {
 	ArrayList<ScoutEntry> scoutEntries;
 	File teamNameList;
 	String event;
+	File directory;
 	HashMap<Integer, TeamReport> teamReports = new HashMap<Integer, TeamReport>(); 
 	
-	public EventReport(ArrayList<ScoutEntry> entries, String event){
+	public EventReport(ArrayList<ScoutEntry> entries, String event, File directory){
 		scoutEntries = entries;
+		this.event = event;
+		this.directory = directory;
 		fixInaccuraciesTBA();
 		for(ScoutEntry entry : scoutEntries){
 			
@@ -184,7 +188,6 @@ public class EventReport {
 			
 			teamReports.get(teamNum).addEntry(entry);
 		}
-		this.event = event;
 		
 	}
 	
@@ -195,13 +198,20 @@ public class EventReport {
 		
 		String apiKey = Window.apiKeyFetch();
 		
-		if(apiKey.isEmpty())
-			return;
-		else tba = new TBA(apiKey);
-		
+		if(!apiKey.isEmpty()){
+			tba = new TBA(apiKey);
+			try {
+				BlueAlliance.downloadEventMatchData("2018"+event, tba, directory);
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+		}
 	
 		try {
-			ArrayList<Match> matchData = BlueAlliance.downloadEventMatchData(event, tba);
+			
+			ArrayList<Match> matchData = FileManager.deserializeScoreBreakdown(
+					new File(directory.getAbsoluteFile()+"\\ScoreBreakdown - 2018" + event+".json"));
+
 	
 			for(ScoutEntry entry : scoutEntries){
 				try{
@@ -210,68 +220,83 @@ public class EventReport {
 					String inaccuracies = "";
 					Match match = matchData.get(entry.getPreMatch().getMatchNum()-1);
 					MatchScoreBreakdown2018Alliance sb;
-					if(entry.getPreMatch().getScoutPos().contains("Red"))
-						sb = match.getScoreBreakdown().getRed();
-					else sb = match.getScoreBreakdown().getBlue();
-					
-					if(!entry.getTeleOp().getFieldLayout().equals(sb.getTba_gameData())){
-						inaccuracies+="plate lighting, ";
-						entry.getTeleOp().setFieldLayout(sb.getTba_gameData());
+					boolean correctTeamRed = entry.getPreMatch().getScoutPos().contains("Red")&&match.getRedAlliance()
+							.getTeamKeys()[Integer.parseInt(entry.getPreMatch().getScoutPos().split(" ")[1])-1].equals("frc"+entry.getPreMatch().getTeamNum());
+					boolean correctTeamBlue = entry.getPreMatch().getScoutPos().contains("Blue")&&match.getBlueAlliance()
+							.getTeamKeys()[Integer.parseInt(entry.getPreMatch().getScoutPos().split(" ")[1])-1].equals("frc"+entry.getPreMatch().getTeamNum());
+					if(correctTeamBlue||correctTeamRed){
+							
+						if(entry.getPreMatch().getScoutPos().contains("Red"))
+							sb = match.getScoreBreakdown().getRed();
+						else sb = match.getScoreBreakdown().getBlue();
+						
+						if(!entry.getTeleOp().getFieldLayout().equals(sb.getTba_gameData())){
+							inaccuracies+="plate lighting, ";
+							entry.getTeleOp().setFieldLayout(sb.getTba_gameData());
+						}
+						
+						boolean actualAutoRun = false;
+						boolean actualClimb = false;
+						boolean actualLevitate = false;
+						boolean actualPark = false;
+						boolean partnersClimb = false;
+						
+						
+						if(entry.getPreMatch().getScoutPos().contains("1")){
+							actualAutoRun = sb.getAutoRobot1().equals("AutoRun");
+							actualClimb = sb.getEndgameRobot1().equals("Climbing");
+							actualLevitate = sb.getEndgameRobot1().equals("Levitate");
+							actualPark = sb.getEndgameRobot1().equals("Parking");
+							partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
+						}
+						else if(entry.getPreMatch().getScoutPos().contains("2")){
+							actualAutoRun = sb.getAutoRobot2().equals("AutoRun");
+							actualClimb = sb.getEndgameRobot2().equals("Climbing");
+							actualLevitate = sb.getEndgameRobot2().equals("Levitate");
+							actualPark = sb.getEndgameRobot2().equals("Parking");
+							partnersClimb = sb.getEndgameRobot1().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
+						}
+						else if(entry.getPreMatch().getScoutPos().contains("3")){
+							actualAutoRun = sb.getAutoRobot3().equals("AutoRun");
+							actualClimb = sb.getEndgameRobot3().equals("Climbing");
+							actualLevitate = sb.getEndgameRobot3().equals("Levitate");
+							actualPark = sb.getEndgameRobot3().equals("Parking");
+							partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot1().equals("Climbing");
+						}
+						
+						if(actualAutoRun!=entry.getAuto().isAutoLineCross()){
+							inaccuracies += "auto run, ";
+							entry.getAuto().setAutoLineCross(actualAutoRun);
+						}
+						
+						if(actualClimb!=entry.getTeleOp().isSuccessfulRungClimb()&&actualClimb!=entry.getTeleOp().isOtherRobotClimb()){
+							inaccuracies += "is actually climbing (manually check), ";
+						}
+						//not completely accurate due to random nature of levitate
+						if(actualPark!=entry.getTeleOp().isParked()&& !actualLevitate){ 
+							inaccuracies +="parking, ";
+							entry.getTeleOp().setParked(actualPark);
+						}
+						if(actualLevitate&&partnersClimb&&!entry.getPostMatch().robotQuickCommentSelections.get("Climb/park unneeded (levitate used and others climbed)")){
+							entry.getPostMatch().robotQuickCommentSelections.put("Climb/park unneeded (levitate used and others climbed)", true);
+							inaccuracies+="climb/park unneeded, ";
+						}
+						if(!actualClimb&&(entry.getTeleOp().isSuccessfulRungClimb()||entry.getTeleOp().isOtherRobotClimb())){
+							entry.getTeleOp().setOtherRobotClimb(false);
+							entry.getTeleOp().setOtherRobotClimbType("");
+							entry.getTeleOp().setSuccessfulRungClimb(false);
+							inaccuracies+="not actually climbing, ";
+						}
+						
+						if(!inaccuracies.isEmpty())
+							inaccuracyList += prefix + inaccuracies + "\n";
 					}
-					
-					boolean actualAutoRun = false;
-					boolean actualClimb = false;
-					boolean actualLevitate = false;
-					boolean actualPark = false;
-					boolean partnersClimb = false;
-					
-					
-					if(entry.getPreMatch().getScoutPos().contains("1")){
-						actualAutoRun = sb.getAutoRobot1().equals("AutoRun");
-						actualClimb = sb.getEndgameRobot1().equals("Climbing");
-						actualLevitate = sb.getEndgameRobot1().equals("Levitate");
-						actualPark = sb.getEndgameRobot1().equals("Parking");
-						partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
-					}
-					else if(entry.getPreMatch().getScoutPos().contains("2")){
-						actualAutoRun = sb.getAutoRobot2().equals("AutoRun");
-						actualClimb = sb.getEndgameRobot2().equals("Climbing");
-						actualLevitate = sb.getEndgameRobot2().equals("Levitate");
-						actualPark = sb.getEndgameRobot2().equals("Parking");
-						partnersClimb = sb.getEndgameRobot1().equals("Climbing") && sb.getEndgameRobot3().equals("Climbing");
-					}
-					else if(entry.getPreMatch().getScoutPos().contains("3")){
-						actualAutoRun = sb.getAutoRobot3().equals("AutoRun");
-						actualClimb = sb.getEndgameRobot3().equals("Climbing");
-						actualLevitate = sb.getEndgameRobot3().equals("Levitate");
-						actualPark = sb.getEndgameRobot3().equals("Parking");
-						partnersClimb = sb.getEndgameRobot2().equals("Climbing") && sb.getEndgameRobot1().equals("Climbing");
-					}
-					
-					if(actualAutoRun!=entry.getAuto().isAutoLineCross()){
-						inaccuracies += "auto run, ";
-						entry.getAuto().setAutoLineCross(actualAutoRun);
-					}
-					
-					if(actualClimb!=entry.getTeleOp().isSuccessfulRungClimb()&&actualClimb!=entry.getTeleOp().isOtherRobotClimb()){
-						inaccuracies += "climbing (manually check), ";
-					}
-					//not completely accurate due to random nature of levitate
-					if(actualPark!=entry.getTeleOp().isParked()&& !actualLevitate){ 
-						inaccuracies +="parking, ";
-						entry.getTeleOp().setParked(actualPark);
-					}
-					if(actualLevitate&&partnersClimb)
-						entry.getPostMatch().robotQuickCommentSelections.put("Climb/park unneeded (levitate used and others climbed)", true);
-					
-					if(!inaccuracies.isEmpty())
-						inaccuracyList += prefix + inaccuracies + "\n";
 				}catch(ArrayIndexOutOfBoundsException e){
 					
 				}
 				
 			}
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -360,7 +385,7 @@ public class EventReport {
 			fileContents+=pre.getScoutName()+COMMA + pre.getMatchNum()+COMMA+pre.getScoutPos()+COMMA+
 					pre.getTeamNum()+COMMA+pre.getStartingPos()+COMMA+tele.getFieldLayout()+COMMA+
 					entry.isNearSwitchAuto()+COMMA+entry.isFarSwitchAuto()+COMMA+entry.isNearScaleAuto()+COMMA+entry.isFarScaleAuto()
-					+COMMA+entry.isCenterSwitchAuto()+COMMA+entry.isCenterScaleAuto();
+					+COMMA+entry.isCenterSwitchAuto()+COMMA+entry.isCenterScaleAuto()+COMMA;
 			fileContents+=auto.getSwitchCubes()+COMMA+auto.getScaleCubes()+COMMA+auto.getExchangeCubes()+COMMA+
 					auto.getPowerCubePilePickup()+COMMA+auto.getSwitchAdjacentPickup()+COMMA+auto.getCubesDropped()
 					+COMMA+auto.isAutoLineCross()+COMMA+auto.isNullTerritoryFoul()+COMMA+auto.isCubeDropOpponentSwitchPlate()
@@ -408,6 +433,8 @@ public class EventReport {
 		return true;
 	}
 	
+	
+	
 	/** Serializes the HashMap of all TeamReports
 	 * @param outputDirectory
 	 */
@@ -433,6 +460,7 @@ public class EventReport {
 		HashMap<Integer, Integer> pickNumList = new HashMap<>();
 		
 		for(ScoutEntry entry : scoutEntries){
+			try{
 			Integer teamNum = entry.getPreMatch().getTeamNum();
 			
 			if(!compareList.containsKey(teamNum)){
@@ -450,6 +478,9 @@ public class EventReport {
 			else if(comparisonChar.equals(">")){
 				compareList.put(t1, compareList.get(t1)+1);
 				compareList.put(t2, compareList.get(t2)-1);
+			}
+			}catch(NullPointerException e){
+				
 			}
 		}
 		

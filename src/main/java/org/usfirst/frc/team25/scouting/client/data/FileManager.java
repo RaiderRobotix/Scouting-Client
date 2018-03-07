@@ -16,6 +16,7 @@ import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.thebluealliance.api.v3.models.Match;
 
 /** Class of static methods used for file I/O
  * 
@@ -154,5 +155,11 @@ public class FileManager {
 		
 		return allEntries;
 		
+	}
+	
+	public static ArrayList<Match> deserializeScoreBreakdown(File fileName){
+		Gson gson = new Gson();
+		return gson.fromJson(FileManager.getFileString(fileName), 
+				new TypeToken<ArrayList<Match>>(){}.getType());
 	}
 }

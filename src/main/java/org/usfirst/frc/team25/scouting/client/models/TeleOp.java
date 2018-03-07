@@ -90,6 +90,18 @@ public class TeleOp {
         this.fieldLayout = fieldLayout;
     }
 
+	public void setSuccessfulRungClimb(boolean successfulRungClimb) {
+		this.successfulRungClimb = successfulRungClimb;
+	}
+
+	public void setOtherRobotClimb(boolean otherRobotClimb) {
+		this.otherRobotClimb = otherRobotClimb;
+	}
+
+	public void setOtherRobotClimbType(String otherRobotClimbType) {
+		this.otherRobotClimbType = otherRobotClimbType;
+	}
+
     
 
 }

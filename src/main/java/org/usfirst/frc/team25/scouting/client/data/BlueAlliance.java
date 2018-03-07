@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.google.gson.Gson;
 import com.thebluealliance.api.v3.TBA;
 import com.thebluealliance.api.v3.models.Event;
 import com.thebluealliance.api.v3.models.Match;
@@ -147,8 +148,11 @@ public class BlueAlliance {
 		return true;
 	}
 	
-	public static ArrayList<Match> downloadEventMatchData( String eventCode, TBA tba) throws IOException{
-		return Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(tba.eventRequest.getMatches(eventCode)))));
+	public static void downloadEventMatchData(String eventCode, TBA tba, File outputDirectory) throws IOException{
+		ArrayList<Match> matches = Sorters.sortByMatchNum(Sorters.filterQualification(new ArrayList<Match>(Arrays.asList(tba.eventRequest.getMatches(eventCode)))));
+		Gson gson = new Gson();
+		String jsonString = gson.toJson(matches);
+		FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\ScoreBreakdown - " + eventCode , "json", jsonString);
 	}
 	
 	

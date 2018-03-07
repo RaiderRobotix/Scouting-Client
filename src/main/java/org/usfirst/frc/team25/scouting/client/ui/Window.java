@@ -100,7 +100,7 @@ public class Window {
 			return;
 		}
 		
-		EventReport report = new EventReport(scoutEntries, eventName);
+		EventReport report = new EventReport(scoutEntries, eventName, dataDirectory);
 		
 		if(teamNameList!=null)
 			report.setTeamNameList(teamNameList);
@@ -321,9 +321,10 @@ public class Window {
 				JOptionPane.showMessageDialog(apiKeyPrompt, "Invalid API key. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
 				return "";
 			}
-		} catch (HeadlessException | IOException e1) {
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return "";
 		}
 		return apiKey;
 	}
