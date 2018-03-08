@@ -18,24 +18,14 @@ public class TeamReport {
     final int teamNum; //transient because it's the key of the HashMap in EventReport
     final String autoGearPegLoc = "";
     final transient String frequentPilotCommentStr = "";
-    final ArrayList<Integer> teleOpGears = new ArrayList<>();
-    private final ArrayList<Integer> totalHoppers = new ArrayList<>();
-    private final ArrayList<Integer> totalFuel = new ArrayList<>();
-    private final ArrayList<Integer> autoScores = new ArrayList<>();
-    private final ArrayList<Integer> teleOpScores = new ArrayList<>();
-    private final ArrayList<Integer> matchScores = new ArrayList<>();
-    private final ArrayList<Integer> totalCycles = new ArrayList<>();
-    private final ArrayList<Integer> totalHighGoals = new ArrayList<>();
-    private final ArrayList<Integer> totalLowGoals = new ArrayList<>();
-    private final ArrayList<Integer> autoGears = new ArrayList<>();
-    private final ArrayList<Integer> totalDroppedGears = new ArrayList<>();
-    private final ArrayList<Integer> totalTeleOpGearsGearFocus = new ArrayList<>();
-    private final ArrayList<Double> totalPointsPerCycle = new ArrayList<>();
-    private final ArrayList<Double> autoKpas = new ArrayList<>();
-    private final ArrayList<Double> teleOpKpa = new ArrayList<>();
-    private final ArrayList<Double> totalTeleOpKpaFuelFocus = new ArrayList<>();
+    final ArrayList<Integer> teleOpCubes = new ArrayList<>();
+    private final ArrayList<Integer> totalSwitchCubes = new ArrayList<>();
+    private final ArrayList<Integer> totalScaleCubes = new ArrayList<>();
+    private final ArrayList<Integer> totalCubes = new ArrayList<>();
+    private final ArrayList<Integer> totalDroppedCubes = new ArrayList<>();
+    private final ArrayList<Double> firstCubeTimes = new ArrayList<>();
     String teamName;
-    double avgPointsPerCycle, avgCycles, sdCycles, reachBaselinePercentage,
+    double avgPointsPerCycle, avgCycles, sdCycles, reachBaseliPercentage,
             avgHighGoals, avgLowGoals, sdHighGoals, sdLowGoals, sdPointsPerCycle;
     double avgAutoScore;
     double avgTeleOpScore;
@@ -56,7 +46,6 @@ public class TeamReport {
     double sdTeleOpGears;
     double takeoffAttemptPercentage, takeoffAttemptSuccessPercentage, takeoffPercentage;// attempt is out of all matches; success is for each attempt
     double pilotPlayPercentage;
-    ArrayList<String> frequentPilotComment;
     double autoGearAttemptSuccessPercent, leftPegPercent, centerPegPercent, rightPegPercent, avgDroppedGears;
     boolean hasPickup, hasIntake, isActive, doNotPick;
     double avgTeleOpKpaFuelFocus, avgTeleOpGearsGearFocus, fuelFocusPercent, gearFocusPercent;
@@ -138,12 +127,12 @@ public class TeamReport {
 			}
 			
 			
-			totalHoppers.add((entry.auto.isUseHoppers() ? 1 : 0) 
+			totalSwitchCubes.add((entry.auto.isUseHoppers() ? 1 : 0)
 					+ entry.teleOp.getHopppersUsed());
-			totalFuel.add(entry.auto.getHighGoals()+entry.auto.getLowGoals()
+			totalScaleCubes.add(entry.auto.getHighGoals()+entry.auto.getLowGoals()
 					+entry.teleOp.getHighGoals()+entry.teleOp.getLowGoals());
 			autoGears.add(entry.getAuto().isSuccessGear()? 1 : 0);
-			teleOpGears.add(entry.getTeleOp().getGearsDelivered());
+			teleOpCubes.add(entry.getTeleOp().getGearsDelivered());
 			teleOpKpa.add(entry.teleOpKpa);
 			autoKpas.add(entry.autoKpa);
 			autoScores.add(entry.autoScore);
@@ -151,7 +140,7 @@ public class TeamReport {
 			matchScores.add(entry.totalScore);
 			totalPointsPerCycle.add(entry.pointsPerCycle);
 			totalCycles.add(entry.teleOp.getNumCycles());
-			totalDroppedGears.add(entry.teleOp.getGearsDropped());
+			totalDroppedCubes.add(entry.teleOp.getGearsDropped());
 			
 			totalHighGoals.add( entry.getAuto().getHighGoals()+entry.getTeleOp().getHighGoals());
 			totalLowGoals.add(entry.getAuto().getLowGoals()+entry.getTeleOp().getLowGoals());
@@ -159,7 +148,7 @@ public class TeamReport {
 			if(entry.postMatch.getFocus().equals("Gears"))
 				totalTeleOpGearsGearFocus.add(entry.teleOp.getGearsDelivered());
 			if(entry.postMatch.getFocus().equals("Fuel"))
-				totalTeleOpKpaFuelFocus.add(entry.teleOpKpa);
+				firstCubeTimes.add(entry.teleOpKpa);
 		}*/
 
 
@@ -179,27 +168,21 @@ public class TeamReport {
         takeoffPercentage = ((double) totalTakeoffSuccesses) / entries.size() * 100; //percentage for all matches
 
 
-        avgHoppers = Statistics.average(Statistics.toDoubleArrayList(totalHoppers));
+        avgHoppers = Statistics.average(Statistics.toDoubleArrayList(totalSwitchCubes));
 
 
-        double avgTotalFuel = Statistics.average(Statistics.toDoubleArrayList(totalFuel));
-        double sdTotalFuel = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalFuel));
+        double avgTotalFuel = Statistics.average(Statistics.toDoubleArrayList(totalScaleCubes));
+        double sdTotalFuel = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalScaleCubes));
 
 
-        avgTeleOpGears = Statistics.average(Statistics.toDoubleArrayList(teleOpGears));
-        sdTeleOpGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpGears));
+        avgTeleOpGears = Statistics.average(Statistics.toDoubleArrayList(teleOpCubes));
+        sdTeleOpGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpCubes));
 
-        avgDroppedGears = Statistics.average(Statistics.toDoubleArrayList(totalDroppedGears));
+        avgDroppedGears = Statistics.average(Statistics.toDoubleArrayList(totalDroppedCubes));
 
 
-        avgAutoKpa = Statistics.average(autoKpas);
-        sdAutoKpa = Statistics.popStandardDeviation(autoKpas);
-
-        avgTeleOpKpa = Statistics.average(teleOpKpa);
-        sdTeleOpKpa = Statistics.popStandardDeviation(teleOpKpa);
-
-        avgAutoGears = Statistics.average(Statistics.toDoubleArrayList(autoGears));
-        sdAutoGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoGears));
+        avgAutoGears = Statistics.average(Statistics.toDoubleArrayList(totalCubes));
+        sdAutoGears = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalCubes));
 
 
         autoGearAttemptSuccessPercent = totalAutoGearAttempt != 0 ? (double) totalAutoGearSuccess / totalAutoGearAttempt * 100 : 0;
@@ -207,38 +190,16 @@ public class TeamReport {
         rightPegPercent = totalRightPegAttempt != 0 ? (double) totalRightPegSuccess / totalRightPegAttempt * 100 : 0;
         centerPegPercent = totalCenterPegAttempt != 0 ? (double) totalCenterPegSuccess / totalCenterPegAttempt * 100 : 0;
 
-        avgAutoScore = Statistics.average(Statistics.toDoubleArrayList(autoScores));
-        sdAutoScore = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(autoScores));
-
-
-        avgTeleOpScore = Statistics.average(Statistics.toDoubleArrayList(teleOpScores));
-        sdTeleOpScore = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(teleOpScores));
-
-
-        avgMatchScore = Statistics.average(Statistics.toDoubleArrayList(matchScores));
-        sdMatchScore = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(matchScores));
-
         pilotPlayPercentage = ((double) totalPilotPlaying) / entries.size() * 100;
 
-        avgPointsPerCycle = Statistics.average(totalPointsPerCycle);
-        sdPointsPerCycle = Statistics.popStandardDeviation(totalPointsPerCycle);
 
-        avgCycles = Statistics.average(Statistics.toDoubleArrayList(totalCycles));
-        sdCycles = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalCycles));
 
-        reachBaselinePercentage = totalReachBaseline / ((double) entries.size()) * 100;
+        reachBaseliPercentage = totalReachBaseline / ((double) entries.size()) * 100;
 
-        avgHighGoals = Statistics.average(Statistics.toDoubleArrayList(totalHighGoals));
-        sdHighGoals = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalHighGoals));
 
-        avgLowGoals = Statistics.average(Statistics.toDoubleArrayList(totalLowGoals));
-        sdLowGoals = Statistics.popStandardDeviation(Statistics.toDoubleArrayList(totalLowGoals));
+        avgTeleOpKpaFuelFocus = Statistics.average(firstCubeTimes);
 
-        avgTeleOpKpaFuelFocus = Statistics.average(totalTeleOpKpaFuelFocus);
-        avgTeleOpGearsGearFocus = Statistics.average(Statistics.toDoubleArrayList(totalTeleOpGearsGearFocus));
-
-        fuelFocusPercent = (double) totalTeleOpKpaFuelFocus.size() / entries.size() * 100;
-        gearFocusPercent = (double) totalTeleOpGearsGearFocus.size() / entries.size() * 100;
+        fuelFocusPercent = (double) firstCubeTimes.size() / entries.size() * 100;
 		
 		/*if(totalAutoShootsKey/((double)entries.size())>=0.50)
 			autoShootsKey = true;

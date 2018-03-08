@@ -93,7 +93,7 @@ public class EventReport {
         formatString.append("<h3>Tele-Op</h3>");
         formatString.append("Avg. gears: ").append(Statistics.round(report.avgTeleOpGears, 2)).append("<br>");
         formatString.append("Gear counts: ");
-        for (int i : report.teleOpGears)
+        for (int i : report.teleOpCubes)
             formatString.append(i).append(", ");
         formatString.append("<br>");
         formatString.append("Avg. kPa: ").append(Statistics.round(report.avgTeleOpKpa, 2)).append("<br>");
