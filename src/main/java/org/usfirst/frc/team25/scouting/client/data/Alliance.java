@@ -30,12 +30,12 @@ class Alliance {
 
 
     public void calculateStats() {
-        atLeastOneBaselinePercent = Statistics.percentAtLeastOne(teamOne.reachBaselinePercentage / 100,
-                teamTwo.reachBaselinePercentage / 100, teamThree.reachBaselinePercentage / 100);
-        atLeastTwoBaselinePercent = Statistics.percentAtLeastTwo(teamOne.reachBaselinePercentage / 100,
-                teamTwo.reachBaselinePercentage / 100, teamThree.reachBaselinePercentage / 100);
-        allBaselinePercent = Statistics.percentAll(teamOne.reachBaselinePercentage / 100,
-                teamTwo.reachBaselinePercentage / 100, teamThree.reachBaselinePercentage / 100);
+        atLeastOneBaselinePercent = Statistics.percentAtLeastOne(teamOne.autoRunPercentage / 100,
+                teamTwo.autoRunPercentage / 100, teamThree.autoRunPercentage / 100);
+        atLeastTwoBaselinePercent = Statistics.percentAtLeastTwo(teamOne.autoRunPercentage / 100,
+                teamTwo.autoRunPercentage / 100, teamThree.autoRunPercentage / 100);
+        allBaselinePercent = Statistics.percentAll(teamOne.autoRunPercentage / 100,
+                teamTwo.autoRunPercentage / 100, teamThree.autoRunPercentage / 100);
         autoGearPercent = Statistics.percentAtLeastOne(teamOne.avgAutoGears,
                 teamTwo.avgAutoGears, teamThree.avgAutoGears);
         autoKpa = teamOne.avgAutoKpa + teamTwo.avgAutoKpa + teamThree.avgAutoKpa;
@@ -60,7 +60,7 @@ class Alliance {
         predictedScore += 60 * (autoGearPercent / 100);
         if (60 * (autoGearPercent / 100) < 40) //automatic 40 points
             predictedScore += 40 - 60 * (autoGearPercent / 100);
-        predictedScore += 5 * (teamOne.reachBaselinePercentage / 100 + teamTwo.reachBaselinePercentage / 100 + teamThree.reachBaselinePercentage / 100);
+        predictedScore += 5 * (teamOne.autoRunPercentage / 100 + teamTwo.autoRunPercentage / 100 + teamThree.autoRunPercentage / 100);
         predictedScore += 50 * (teamOne.takeoffPercentage / 100 + teamTwo.takeoffPercentage / 100 + teamThree.takeoffPercentage / 100);
         if (totalGears >= 11.8) // four rotors
             predictedScore += 220;

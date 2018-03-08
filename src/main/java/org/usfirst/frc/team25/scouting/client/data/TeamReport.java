@@ -25,7 +25,7 @@ public class TeamReport {
     private final ArrayList<Integer> totalDroppedCubes = new ArrayList<>();
     private final ArrayList<Double> firstCubeTimes = new ArrayList<>();
     String teamName;
-    double avgPointsPerCycle, avgCycles, sdCycles, reachBaseliPercentage,
+    double avgPointsPerCycle, avgCycles, sdCycles, autoRunPercentage,
             avgHighGoals, avgLowGoals, sdHighGoals, sdLowGoals, sdPointsPerCycle;
     double avgAutoScore;
     double avgTeleOpScore;
@@ -194,7 +194,7 @@ public class TeamReport {
 
 
 
-        reachBaseliPercentage = totalReachBaseline / ((double) entries.size()) * 100;
+        autoRunPercentage = totalReachBaseline / ((double) entries.size()) * 100;
 
 
         avgTeleOpKpaFuelFocus = Statistics.average(firstCubeTimes);
