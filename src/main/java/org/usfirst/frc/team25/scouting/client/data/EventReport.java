@@ -52,8 +52,8 @@ public class EventReport {
      * Helper method to prevent manual comments with commas
      * from changing CSV format
      *
-     * @param s
-     * @return
+     * @param s String to be processed
+     * @return String without commas
      */
     private String removeCommas(String s) {
         StringBuilder newString = new StringBuilder();
@@ -72,94 +72,95 @@ public class EventReport {
         return false;
     }
 
-    //TODO update this
+
     public String quickTeamReport(int teamNum) {
-        StringBuilder formatString = new StringBuilder("<html>");
-        TeamReport report = teamReports.get(teamNum);
-
-        formatString.append("<h2>Team ").append(teamNum);
-        if (report.teamName != null)
-            formatString.append(" - ").append(report.teamName);
-        formatString.append("</h2><h3>Auto</h3>");
-
-        formatString.append("Cross baseline: ").append(Statistics.round(report.autoRunPercentage, 2)).append("% (").append(report.totalReachBaseline).append("/").append(report.entries.size()).append(")").append("<br>");
-        formatString.append("Place gear: ").append(Statistics.round(report.avgAutoGears * 100, 2)).append("% (").append(report.totalAutoGearSuccess).append("/").append(report.entries.size()).append(")").append("<br>");
-        formatString.append("Avg. kPa: ").append(Statistics.round(report.avgAutoKpa, 2)).append("<br>");
-        formatString.append("Gear attempt success: ").append(Statistics.round(report.avgAutoKpa, 2)).append("% (").append(report.totalAutoGearSuccess).append("/").append(report.totalAutoGearAttempt).append(")<br>");
-        formatString.append("Left peg: ").append(Statistics.round(report.leftPegPercent, 2)).append("% (").append(report.totalLeftPegSuccess).append("/").append(report.totalLeftPegAttempt).append(")<br>");
-        formatString.append("Center peg: ").append(Statistics.round(report.centerPegPercent, 2)).append("% (").append(report.totalCenterPegSuccess).append("/").append(report.totalCenterPegAttempt).append(")<br>");
-        formatString.append("Right peg: ").append(Statistics.round(report.rightPegPercent, 2)).append("% (").append(report.totalRightPegSuccess).append("/").append(report.totalRightPegAttempt).append(")<br>");
-
-        formatString.append("<h3>Tele-Op</h3>");
-        formatString.append("Avg. gears: ").append(Statistics.round(report.avgTeleOpGears, 2)).append("<br>");
-        formatString.append("Gear counts: ");
-        for (int i : report.teleOpCubes)
-            formatString.append(i).append(", ");
-        formatString.append("<br>");
-        formatString.append("Avg. kPa: ").append(Statistics.round(report.avgTeleOpKpa, 2)).append("<br>");
-        formatString.append("Avg. dropped gears: ").append(Statistics.round(report.avgDroppedGears, 2)).append("<br>");
-        formatString.append("Gear focus: ").append(Statistics.round(report.gearFocusPercent, 2)).append("%<br>");
-        formatString.append("Avg. gear focus gears: ").append(Statistics.round(report.avgTeleOpGearsGearFocus, 2)).append("<br>");
-        formatString.append("Fuel focus: ").append(Statistics.round(report.fuelFocusPercent, 2)).append("%<br>");
-        formatString.append("Avg. kPa fuel focus: ").append(Statistics.round(report.avgTeleOpKpaFuelFocus, 2)).append("<br>");
-        formatString.append("Takeoff success: ").append(Statistics.round(report.takeoffPercentage, 2)).append("% (").append(report.totalTakeoffSuccesses).append("/").append(report.entries.size()).append(")<br>");
-        formatString.append("Takeoff attempt: ").append(Statistics.round(report.takeoffAttemptPercentage, 2)).append("% (").append(report.totalTakeoffAttempts).append("/").append(report.entries.size()).append(")<br>");
-        formatString.append("<h3>Overall</h3>");
-        formatString.append("Avg. score (modified OPR): ").append(Statistics.round(report.avgMatchScore, 2)).append("<br>");
-        formatString.append("Total gears: ").append(Statistics.round(report.avgAutoGears + report.avgTeleOpGears, 2)).append("<br>");
-        formatString.append("Total kPa: ").append(Statistics.round(report.avgAutoKpa + report.avgTeleOpKpa, 2)).append("<br>");
-        formatString.append("Pilot play: ").append(Statistics.round(report.pilotPlayPercentage, 2)).append("%<br>");
-        formatString.append("Do not pick: ").append(report.doNotPick ? "Yes" : "No").append("<br>");
-        formatString.append("Gear floor pickup: ").append(report.hasPickup ? "Yes" : "No").append("<br>");
-        formatString.append("Active gear: ").append(report.isActive ? "Yes" : "No").append("<br>");
-        formatString.append("Fuel intake: ").append(report.hasIntake ? "Yes" : "No").append("<br>");
-        formatString.append("Frequent comments: ").append(report.frequentRobotCommentStr).append(" ").append(report.frequentPilotCommentStr);
-        formatString.append("</html>");
-        return formatString.toString();
+//        StringBuilder formatString = new StringBuilder("<html>");
+//        TeamReport report = teamReports.get(teamNum);
+//
+//        formatString.append("<h2>Team ").append(teamNum);
+//        if (report.teamName != null)
+//            formatString.append(" - ").append(report.teamName);
+//        formatString.append("</h2><h3>Auto</h3>");
+//
+//        formatString.append("Cross baseline: ").append(Statistics.round(report.autoRunPercentage, 2)).append("% (").append(report.totalReachBaseline).append("/").append(report.entries.size()).append(")").append("<br>");
+//        formatString.append("Place gear: ").append(Statistics.round(report.avgAutoGears * 100, 2)).append("% (").append(report.totalAutoGearSuccess).append("/").append(report.entries.size()).append(")").append("<br>");
+//        formatString.append("Avg. kPa: ").append(Statistics.round(report.avgAutoKpa, 2)).append("<br>");
+//        formatString.append("Gear attempt success: ").append(Statistics.round(report.avgAutoKpa, 2)).append("% (").append(report.totalAutoGearSuccess).append("/").append(report.totalAutoGearAttempt).append(")<br>");
+//        formatString.append("Left peg: ").append(Statistics.round(report.leftPegPercent, 2)).append("% (").append(report.totalLeftPegSuccess).append("/").append(report.totalLeftPegAttempt).append(")<br>");
+//        formatString.append("Center peg: ").append(Statistics.round(report.centerPegPercent, 2)).append("% (").append(report.totalCenterPegSuccess).append("/").append(report.totalCenterPegAttempt).append(")<br>");
+//        formatString.append("Right peg: ").append(Statistics.round(report.rightPegPercent, 2)).append("% (").append(report.totalRightPegSuccess).append("/").append(report.totalRightPegAttempt).append(")<br>");
+//
+//        formatString.append("<h3>Tele-Op</h3>");
+//        formatString.append("Avg. gears: ").append(Statistics.round(report.avgTeleOpGears, 2)).append("<br>");
+//        formatString.append("Gear counts: ");
+//        for (int i : report.teleOpCubes)
+//            formatString.append(i).append(", ");
+//        formatString.append("<br>");
+//        formatString.append("Avg. kPa: ").append(Statistics.round(report.avgTeleOpKpa, 2)).append("<br>");
+//        formatString.append("Avg. dropped gears: ").append(Statistics.round(report.avgDroppedGears, 2)).append("<br>");
+//        formatString.append("Gear focus: ").append(Statistics.round(report.gearFocusPercent, 2)).append("%<br>");
+//        formatString.append("Avg. gear focus gears: ").append(Statistics.round(report.avgTeleOpGearsGearFocus, 2)).append("<br>");
+//        formatString.append("Fuel focus: ").append(Statistics.round(report.fuelFocusPercent, 2)).append("%<br>");
+//        formatString.append("Avg. kPa fuel focus: ").append(Statistics.round(report.avgTeleOpKpaFuelFocus, 2)).append("<br>");
+//        formatString.append("Takeoff success: ").append(Statistics.round(report.takeoffPercentage, 2)).append("% (").append(report.totalTakeoffSuccesses).append("/").append(report.entries.size()).append(")<br>");
+//        formatString.append("Takeoff attempt: ").append(Statistics.round(report.takeoffAttemptPercentage, 2)).append("% (").append(report.totalTakeoffAttempts).append("/").append(report.entries.size()).append(")<br>");
+//        formatString.append("<h3>Overall</h3>");
+//        formatString.append("Avg. score (modified OPR): ").append(Statistics.round(report.avgMatchScore, 2)).append("<br>");
+//        formatString.append("Total gears: ").append(Statistics.round(report.avgAutoGears + report.avgTeleOpGears, 2)).append("<br>");
+//        formatString.append("Total kPa: ").append(Statistics.round(report.avgAutoKpa + report.avgTeleOpKpa, 2)).append("<br>");
+//        formatString.append("Pilot play: ").append(Statistics.round(report.pilotPlayPercentage, 2)).append("%<br>");
+//        formatString.append("Do not pick: ").append(report.doNotPick ? "Yes" : "No").append("<br>");
+//        formatString.append("Gear floor pickup: ").append(report.hasPickup ? "Yes" : "No").append("<br>");
+//        formatString.append("Active gear: ").append(report.isActive ? "Yes" : "No").append("<br>");
+//        formatString.append("Fuel intake: ").append(report.hasIntake ? "Yes" : "No").append("<br>");
+//        formatString.append("Frequent comments: ").append(report.frequentRobotCommentStr).append(" ").append(report.frequentPilotCommentStr);
+//        formatString.append("</html>");
+//        return formatString.toString();
+        return null;
     }
 
-    //TODO update this
+
     public String allianceReport(int t1, int t2, int t3) {
-        String formatString = "<html>";
-        TeamReport r1 = teamReports.get(t1), r2 = teamReports.get(t2), r3 = teamReports.get(t3);
-
-        Alliance a = new Alliance(r1, r2, r3);
-        a.calculateStats();
-
-        formatString += "<h2>" + t1 + ", " + t2 + ", " + t3 + "</h2><h3>Auto</h3>";
-
-        formatString += "1+ BL cross: "
-                + Statistics.round(a.atLeastOneBaselinePercent, 2)
-                + "%<br>";
-        formatString += "2+ BL cross: "
-                + Statistics.round(a.atLeastTwoBaselinePercent, 2)
-                + "%<br>";
-        formatString += "3 BL cross: "
-                + Statistics.round(a.allBaselinePercent, 2)
-                + "%<br>";
-        formatString += "Place gear: "
-                + Statistics.round(a.autoGearPercent, 2)
-                + "%<br>";
-        formatString += "Avg. kPa: " + Statistics.round(a.autoKpa, 2) + "<br>";
-
-        formatString += "<h3>Tele-Op</h3>";
-        formatString += "Avg. kPa: " + Statistics.round(a.teleopKpa, 2) + "<br>";
-        formatString += "1+ takeoff: "
-                + Statistics.round(a.atLeastOneTakeoffPercent, 2)
-                + "%<br>";
-        formatString += "2+ takeoff: "
-                + Statistics.round(a.atLeastTwoTakeoffPercent, 2)
-                + "%<br>";
-        formatString += "3 takeoff: "
-                + Statistics.round(a.allTakeoffPercent, 2)
-                + "%<br>";
-        formatString += "<h3>Overall</h3>";
-        formatString += "Total gears: " + Statistics.round(a.totalGears, 2) + "<br>";
-        formatString += "Total kPa: " + Statistics.round(a.totalKpa, 2) + "<br>";
-        formatString += "Avg. score (predicted): " + Statistics.round(a.predictedScore, 2) + "<br>";
-        formatString += "</html>";
-        return formatString;
-
+//        String formatString = "<html>";
+//        TeamReport r1 = teamReports.get(t1), r2 = teamReports.get(t2), r3 = teamReports.get(t3);
+//
+//        Alliance a = new Alliance(r1, r2, r3);
+//        a.calculateStats();
+//
+//        formatString += "<h2>" + t1 + ", " + t2 + ", " + t3 + "</h2><h3>Auto</h3>";
+//
+//        formatString += "1+ BL cross: "
+//                + Statistics.round(a.atLeastOneBaselinePercent, 2)
+//                + "%<br>";
+//        formatString += "2+ BL cross: "
+//                + Statistics.round(a.atLeastTwoBaselinePercent, 2)
+//                + "%<br>";
+//        formatString += "3 BL cross: "
+//                + Statistics.round(a.allBaselinePercent, 2)
+//                + "%<br>";
+//        formatString += "Place gear: "
+//                + Statistics.round(a.autoGearPercent, 2)
+//                + "%<br>";
+//        formatString += "Avg. kPa: " + Statistics.round(a.autoKpa, 2) + "<br>";
+//
+//        formatString += "<h3>Tele-Op</h3>";
+//        formatString += "Avg. kPa: " + Statistics.round(a.teleopKpa, 2) + "<br>";
+//        formatString += "1+ takeoff: "
+//                + Statistics.round(a.atLeastOneTakeoffPercent, 2)
+//                + "%<br>";
+//        formatString += "2+ takeoff: "
+//                + Statistics.round(a.atLeastTwoTakeoffPercent, 2)
+//                + "%<br>";
+//        formatString += "3 takeoff: "
+//                + Statistics.round(a.allTakeoffPercent, 2)
+//                + "%<br>";
+//        formatString += "<h3>Overall</h3>";
+//        formatString += "Total gears: " + Statistics.round(a.totalGears, 2) + "<br>";
+//        formatString += "Total kPa: " + Statistics.round(a.totalKpa, 2) + "<br>";
+//        formatString += "Avg. score (predicted): " + Statistics.round(a.predictedScore, 2) + "<br>";
+//        formatString += "</html>";
+//        return formatString;
+        return null;
     }
 
     private void fixInaccuraciesTBA() {
@@ -299,20 +300,20 @@ public class EventReport {
     public void generateTeamReportSpreadsheet(File outputDirectory) {
         final String COMMA = ",";
 
-        StringBuilder fileContents = new StringBuilder("teamNum,teamName,avgAutoScore,sdAutoScore,avgTeleOpScore,sdTeleOpScore,avgMatchScore,sdMatchScore,reachBaselinePercentage,avgAutoKpa,sdAutoKpa,avgTeleOpKpa,sdTeleOpKpa,avgAutoGears,sdAutoGears,autoGearAttemptSuccessPercent,autoGearPegLoc,leftPegPercent,rightPegPercent,centerPegPercent,totalLeftPegSuccess,totalRightPegSuccess,totalCenterPegSuccess,avgTeleOpGears,sdTeleOpGears,avgDroppedGears,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,avgHoppers,avgPointsPerCycle,sdPointsPerCycle,avgCycles,sdCycles,takeoffPercentage,takeoffAttemptPercentage,takeoffAttemptSuccessPercentage,pilotPlayPercentage,avgTeleOpKpaFuelFocus,avgTeleOpGearsGearFocus,fuelFocusPercent,gearFocusPercent,hasPickup,hasIntake,isActive,doNotPick,frequentRobotCommentStr,frequentPilotCommentStr,allComments,\n");
-        for (int key : teamReports.keySet()) {
-            TeamReport report = teamReports.get(key);
-            fileContents.append(report.teamNum).append(COMMA).append(report.teamName).append(COMMA).append(report.avgAutoScore).append(COMMA).append(report.sdAutoScore).append(COMMA).append(report.avgTeleOpScore).append(COMMA).append(report.sdTeleOpScore).append(COMMA).append(report.avgMatchScore).append(COMMA).append(report.sdMatchScore).append(COMMA).append(report.autoRunPercentage).append(COMMA).append(report.avgAutoKpa).append(COMMA).append(report.sdAutoKpa).append(COMMA).append(report.avgTeleOpKpa).append(COMMA).append(report.sdTeleOpKpa).append(COMMA).append(report.avgAutoGears).append(COMMA).append(report.sdAutoGears).append(COMMA).append(report.autoGearAttemptSuccessPercent).append(COMMA).append(report.autoGearPegLoc).append(COMMA).append(report.leftPegPercent).append(COMMA).append(report.rightPegPercent).append(COMMA).append(report.centerPegPercent).append(COMMA).append(report.totalLeftPegSuccess).append(COMMA).append(report.totalRightPegSuccess).append(COMMA).append(report.totalCenterPegSuccess).append(COMMA).append(report.avgTeleOpGears).append(COMMA).append(report.sdTeleOpGears).append(COMMA).append(report.avgDroppedGears).append(COMMA).append(report.avgHighGoals).append(COMMA).append(report.sdHighGoals).append(COMMA).append(report.avgLowGoals).append(COMMA).append(report.sdLowGoals).append(COMMA).append(report.avgHoppers).append(COMMA).append(report.avgPointsPerCycle).append(COMMA).append(report.sdPointsPerCycle).append(COMMA).append(report.avgCycles).append(COMMA).append(report.sdCycles).append(COMMA).append(report.takeoffPercentage).append(COMMA).append(report.takeoffAttemptPercentage).append(COMMA).append(report.takeoffAttemptSuccessPercentage).append(COMMA).append(report.pilotPlayPercentage).append(COMMA).append(report.avgTeleOpKpaFuelFocus).append(COMMA).append(report.avgTeleOpGearsGearFocus).append(COMMA).append(report.fuelFocusPercent).append(COMMA).append(report.gearFocusPercent).append(COMMA).append(report.hasPickup).append(COMMA).append(report.hasIntake).append(COMMA).append(report.isActive).append(COMMA).append(report.doNotPick).append(COMMA).append(report.frequentRobotCommentStr).append(COMMA).append(report.frequentPilotCommentStr).append(COMMA).append(report.allComments).append(COMMA).append('\n');
-
-        }
-
-
-        try {
-            FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\TeamReports - " + event, "csv", fileContents.toString());
-        } catch (FileNotFoundException e) {
-            //
-            e.printStackTrace();
-        }
+//        StringBuilder fileContents = new StringBuilder("teamNum,teamName,avgAutoScore,sdAutoScore,avgTeleOpScore,sdTeleOpScore,avgMatchScore,sdMatchScore,reachBaselinePercentage,avgAutoKpa,sdAutoKpa,avgTeleOpKpa,sdTeleOpKpa,avgAutoGears,sdAutoGears,autoGearAttemptSuccessPercent,autoGearPegLoc,leftPegPercent,rightPegPercent,centerPegPercent,totalLeftPegSuccess,totalRightPegSuccess,totalCenterPegSuccess,avgTeleOpGears,sdTeleOpGears,avgDroppedGears,avgHighGoals,sdHighGoals,avgLowGoals,sdLowGoals,avgHoppers,avgPointsPerCycle,sdPointsPerCycle,avgCycles,sdCycles,takeoffPercentage,takeoffAttemptPercentage,takeoffAttemptSuccessPercentage,pilotPlayPercentage,avgTeleOpKpaFuelFocus,avgTeleOpGearsGearFocus,fuelFocusPercent,gearFocusPercent,hasPickup,hasIntake,isActive,doNotPick,frequentRobotCommentStr,frequentPilotCommentStr,allComments,\n");
+//        for (int key : teamReports.keySet()) {
+//            TeamReport report = teamReports.get(key);
+//            fileContents.append(report.teamNum).append(COMMA).append(report.teamName).append(COMMA).append(report.avgAutoScore).append(COMMA).append(report.sdAutoScore).append(COMMA).append(report.avgTeleOpScore).append(COMMA).append(report.sdTeleOpScore).append(COMMA).append(report.avgMatchScore).append(COMMA).append(report.sdMatchScore).append(COMMA).append(report.autoRunPercentage).append(COMMA).append(report.avgAutoKpa).append(COMMA).append(report.sdAutoKpa).append(COMMA).append(report.avgTeleOpKpa).append(COMMA).append(report.sdTeleOpKpa).append(COMMA).append(report.avgAutoGears).append(COMMA).append(report.sdAutoGears).append(COMMA).append(report.autoGearAttemptSuccessPercent).append(COMMA).append(report.autoGearPegLoc).append(COMMA).append(report.leftPegPercent).append(COMMA).append(report.rightPegPercent).append(COMMA).append(report.centerPegPercent).append(COMMA).append(report.totalLeftPegSuccess).append(COMMA).append(report.totalRightPegSuccess).append(COMMA).append(report.totalCenterPegSuccess).append(COMMA).append(report.avgTeleOpGears).append(COMMA).append(report.sdTeleOpGears).append(COMMA).append(report.avgDroppedGears).append(COMMA).append(report.avgHighGoals).append(COMMA).append(report.sdHighGoals).append(COMMA).append(report.avgLowGoals).append(COMMA).append(report.sdLowGoals).append(COMMA).append(report.avgHoppers).append(COMMA).append(report.avgPointsPerCycle).append(COMMA).append(report.sdPointsPerCycle).append(COMMA).append(report.avgCycles).append(COMMA).append(report.sdCycles).append(COMMA).append(report.takeoffPercentage).append(COMMA).append(report.takeoffAttemptPercentage).append(COMMA).append(report.takeoffAttemptSuccessPercentage).append(COMMA).append(report.pilotPlayPercentage).append(COMMA).append(report.avgTeleOpKpaFuelFocus).append(COMMA).append(report.avgTeleOpGearsGearFocus).append(COMMA).append(report.fuelFocusPercent).append(COMMA).append(report.gearFocusPercent).append(COMMA).append(report.hasPickup).append(COMMA).append(report.hasIntake).append(COMMA).append(report.isActive).append(COMMA).append(report.doNotPick).append(COMMA).append(report.frequentRobotCommentStr).append(COMMA).append(report.frequentPilotCommentStr).append(COMMA).append(report.allComments).append(COMMA).append('\n');
+//
+//        }
+//
+//
+//        try {
+//            FileManager.outputFile(outputDirectory.getAbsolutePath() + "\\TeamReports - " + event, "csv", fileContents.toString());
+//        } catch (FileNotFoundException e) {
+//            //
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -413,47 +414,98 @@ public class EventReport {
         }
     }
 
+    private String getTeamTupleString(int team1, int team2){
+        if(team1 > team2)
+            return "(" + team2 + ", " + team1 + ")";
+        return "(" + team1 + ", " + team2 + ")";
+    }
+
     public void generatePicklists(File outputDirectory) {
-        HashMap<Integer, Integer> compareList = new HashMap<>();
         HashMap<Integer, Integer> pickNumList = new HashMap<>();
+
+        HashMap<String, Integer> comparisonTable = new HashMap<>();
 
         for (ScoutEntry entry : scoutEntries) {
             try {
                 Integer teamNum = entry.getPreMatch().getTeamNum();
 
-                if (!compareList.containsKey(teamNum)) {
-                    compareList.put(teamNum, 0);
+                if (!pickNumList.containsKey(teamNum)) {
                     pickNumList.put(teamNum, 0);
                 }
 
                 pickNumList.put(teamNum, pickNumList.get(teamNum) + entry.getPostMatch().getPickNumber());
                 String comparisonChar = entry.getPostMatch().getComparison();
-                Integer t1 = entry.getPostMatch().getTeamOneCompare(), t2 = entry.getPostMatch().getTeamTwoCompare();
+                int t1 = entry.getPostMatch().getTeamOneCompare(), t2 = entry.getPostMatch().getTeamTwoCompare();
+
+                String teamCompareKey = getTeamTupleString(t1, t2);
+
+                if(!comparisonTable.containsKey(teamCompareKey)){
+                    comparisonTable.put(teamCompareKey, 0); //0 is the default value
+                }
+
                 if (comparisonChar.equals("<")) {
-                    compareList.put(t1, compareList.get(t1) - 1);
-                    compareList.put(t2, compareList.get(t2) + 1);
+                    //Positive value in comparison means higher number is a better team
+                    comparisonTable.put(teamCompareKey, comparisonTable.get(teamCompareKey)+1);
                 } else if (comparisonChar.equals(">")) {
-                    compareList.put(t1, compareList.get(t1) + 1);
-                    compareList.put(t2, compareList.get(t2) - 1);
+                    comparisonTable.put(teamCompareKey, comparisonTable.get(teamCompareKey)-1);
                 }
             } catch (NullPointerException e) {
 
             }
         }
 
-        compareList = sortByComparator(compareList, false);
         pickNumList = sortByComparator(pickNumList, false);
 
-        StringBuilder compareListOut = new StringBuilder();
+        ArrayList<Integer> compareList = new ArrayList<>();
+
         StringBuilder pickNumListOut = new StringBuilder();
 
+
         int rankNum = 1;
-        for (Map.Entry<Integer, Integer> entry : compareList.entrySet()) {
-            compareListOut.append(rankNum++).append(". ").append(entry.getKey()).append(" - ").append(entry.getValue()).append(" pts\n");
-        }
-        rankNum = 1;
         for (Map.Entry<Integer, Integer> entry : pickNumList.entrySet()) {
             pickNumListOut.append(rankNum++).append(". ").append(entry.getKey()).append(" - ").append(entry.getValue()).append(" pts\n");
+            compareList.add(entry.getKey());
+        }
+
+        Collections.sort(compareList);
+        boolean swapsNeeded = false;
+        do {
+            swapsNeeded = false;
+            for (int i = 0; i < compareList.size() - 1; i++) {
+                int leftTeam = compareList.get(i);
+                int rightTeam = compareList.get(i+1);
+
+                String teamCompareKey = getTeamTupleString(compareList.get(i), compareList.get(i + 1));
+                String currentOrder = "(" + leftTeam + ", " + rightTeam + ")";
+                if(comparisonTable.containsKey(teamCompareKey)) {
+                    System.out.println("Key found: " + teamCompareKey + comparisonTable.get(teamCompareKey));
+                    if ((comparisonTable.get(teamCompareKey) > 0 && currentOrder.equals(teamCompareKey)) ||
+                            comparisonTable.get(teamCompareKey) < 0 && !currentOrder.equals(teamCompareKey)) { //team 2 is better than team 1
+                        //Swap values in array
+                        swapsNeeded = true;
+                        Collections.swap(compareList, i, i + 1);
+                        System.out.println("Comparison swap made");
+                    }
+                    else if(comparisonTable.get(teamCompareKey)==0 && !pickNumList.get(leftTeam).equals(pickNumList.get(rightTeam))){
+                        if(pickNumList.get(leftTeam)<pickNumList.get(rightTeam)){ //right team has higher rating than left
+                            swapsNeeded = true;
+                            Collections.swap(compareList, i, i+1);
+                        }
+                    }
+                }
+                else if(pickNumList.get(leftTeam)<pickNumList.get(rightTeam)){
+                    System.out.println("Key not found: " + teamCompareKey);
+
+                    swapsNeeded = true;
+                    Collections.swap(compareList, i, i+1);
+                }
+            }
+        }while(swapsNeeded);
+
+        StringBuilder compareListOut = new StringBuilder();
+
+        for(int i = 0; i < compareList.size(); i++){
+            compareListOut.append(i+1).append(". ").append(compareList.get(i)).append('\n');
         }
 
         FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\compare_list.txt"), compareListOut.toString());

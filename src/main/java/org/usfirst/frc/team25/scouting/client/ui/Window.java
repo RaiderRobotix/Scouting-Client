@@ -2,6 +2,7 @@ package org.usfirst.frc.team25.scouting.client.ui;
 
 import com.thebluealliance.api.v3.TBA;
 import org.usfirst.frc.team25.scouting.client.data.BlueAlliance;
+import org.usfirst.frc.team25.scouting.client.data.Constants;
 import org.usfirst.frc.team25.scouting.client.data.EventReport;
 import org.usfirst.frc.team25.scouting.client.data.FileManager;
 import org.usfirst.frc.team25.scouting.client.models.ScoutEntry;
@@ -76,6 +77,7 @@ public class Window {
         if (scoutEntries.size() == 0) {
             JOptionPane.showMessageDialog(addIcon(new JFrame()), "No JSON data files found or root folder not named after event", "Error", JOptionPane.PLAIN_MESSAGE);
             introText.setText("<html><h1>Processing data</h1><br>Error!</html>");
+            initializeGUI();
             return;
         }
 
@@ -274,27 +276,28 @@ public class Window {
     }
 
     public static String apiKeyFetch() {
-        JFrame apiKeyPrompt = addIcon(new JFrame());
-
-        String apiKey = FileManager.getFileString(new File("apikey.txt"));
-        System.out.println(apiKey);
-        if (apiKey == null)
-            apiKey = JOptionPane.showInputDialog(apiKeyPrompt,
-                    "Enter The Blue Alliance API key", "Enter API key", JOptionPane.PLAIN_MESSAGE);
-        //test if API key is valid
-        tba = new TBA(apiKey);
-
-
-        try {
-            if (tba.dataRequest.getDataTBA("/status").getResponseCode() == 401) {
-                JOptionPane.showMessageDialog(apiKeyPrompt, "Invalid API key. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
-                return "";
-            }
-        } catch (Exception e1) {
-            e1.printStackTrace();
-            return "";
-        }
-        return apiKey;
+//        JFrame apiKeyPrompt = addIcon(new JFrame());
+//
+//        String apiKey = FileManager.getFileString(new File("apikey.txt"));
+//        System.out.println(apiKey);
+//        if (apiKey == null)
+//            apiKey = JOptionPane.showInputDialog(apiKeyPrompt,
+//                    "Enter The Blue Alliance API key", "Enter API key", JOptionPane.PLAIN_MESSAGE);
+//        //test if API key is valid
+//        tba = new TBA(apiKey);
+//
+//
+//        try {
+//            if (tba.dataRequest.getDataTBA("/status").getResponseCode() == 401) {
+//                JOptionPane.showMessageDialog(apiKeyPrompt, "Invalid API key. Please try again", "Error", JOptionPane.PLAIN_MESSAGE);
+//                return "";
+//            }
+//        } catch (Exception e1) {
+//            e1.printStackTrace();
+//            return "";
+//        }
+//        return apiKey;
+        return Constants.API_KEY;
     }
 
     public static void main(String[] args) {
