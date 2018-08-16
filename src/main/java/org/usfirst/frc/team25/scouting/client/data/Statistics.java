@@ -67,7 +67,7 @@ class Statistics {
      * @param dataset Array of numbers
      * @return Average of entries in array, 0 if dataset.size() is 0
      */
-    public static double average(ArrayList<Double> dataset) {
+    private static double average(ArrayList<Double> dataset) {
         if (dataset.size() == 0)
             return 0;
         return sum(dataset) / dataset.size();
