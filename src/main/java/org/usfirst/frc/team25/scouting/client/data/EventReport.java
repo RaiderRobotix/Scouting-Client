@@ -419,6 +419,7 @@ public class EventReport {
             return "(" + team2 + ", " + team1 + ")";
         return "(" + team1 + ", " + team2 + ")";
     }
+
     
     public String generateComparisonMatrix(ArrayList<Integer> teamList, HashMap<String, Integer> comparisonTable){
         Collections.sort(teamList);
@@ -437,10 +438,12 @@ public class EventReport {
         return compareMatrix;
     }
 
+
     public void generatePicklists(File outputDirectory) {
         HashMap<Integer, Integer> pickNumList = new HashMap<>();
         HashMap<Integer, Integer> oldCompareList = new HashMap<>();
         HashMap<String, Integer> comparisonTable = new HashMap<>();
+
 
         for (ScoutEntry entry : scoutEntries) {
             try {
@@ -456,7 +459,9 @@ public class EventReport {
                 int t1 = entry.getPostMatch().getTeamOneCompare(), t2 = entry.getPostMatch().getTeamTwoCompare();
 
                 String teamCompareKey = getTeamTupleString(t1, t2);
+
                 //System.out.println(t1 + ","+comparisonChar+","+t2+","+entry.getPreMatch().getScoutName());
+
                 if(!comparisonTable.containsKey(teamCompareKey)){
                     comparisonTable.put(teamCompareKey, 0); //0 is the default value
                 }
@@ -474,6 +479,7 @@ public class EventReport {
                 	else comparisonTable.put(teamCompareKey, comparisonTable.get(teamCompareKey)+1);
                     oldCompareList.put(t1, oldCompareList.get(t1) + 1);
                     oldCompareList.put(t2, oldCompareList.get(t2) - 1);
+
                 }
             } catch (NullPointerException e) {
 
@@ -481,12 +487,14 @@ public class EventReport {
         }
 
         oldCompareList = sortByComparator(oldCompareList, false);
+
         pickNumList = sortByComparator(pickNumList, false);
 
         ArrayList<Integer> compareList = new ArrayList<>();
 
         StringBuilder pickNumListOut = new StringBuilder();
         StringBuilder oldCompareListOut = new StringBuilder();
+
 
         int rankNum = 1;
         for (Map.Entry<Integer, Integer> entry : oldCompareList.entrySet()) {
@@ -499,7 +507,14 @@ public class EventReport {
         }
         
         
-        System.out.println(generateComparisonMatrix((ArrayList<Integer>) compareList.clone(), comparisonTable));
+        //System.out.println(generateComparisonMatrix((ArrayList<Integer>) compareList.clone(), comparisonTable));
+        for (Map.Entry<Integer, Integer> entry : pickNumList.entrySet()) {
+            pickNumListOut.append(rankNum++).append(". ").append(entry.getKey()).append(" - ").append(entry.getValue()).append(" pts\n");
+            compareList.add(entry.getKey());
+        }
+
+        Collections.sort(compareList);
+
         boolean swapsNeeded = false;
         do {
             swapsNeeded = false;
