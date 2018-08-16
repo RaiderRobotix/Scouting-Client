@@ -74,6 +74,8 @@ public class Window {
 
 
         if (scoutEntries.size() == 0) {
+        	frame.setVisible(false);
+            initializeGUI();
             JOptionPane.showMessageDialog(addIcon(new JFrame()), "No JSON data files found or root folder not named after event", "Error", JOptionPane.PLAIN_MESSAGE);
             introText.setText("<html><h1>Processing data</h1><br>Error!</html>");
             return;
