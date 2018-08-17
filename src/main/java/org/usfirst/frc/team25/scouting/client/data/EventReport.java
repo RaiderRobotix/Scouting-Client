@@ -29,6 +29,7 @@ public class EventReport {
     private final HashMap<Integer, TeamReport> teamReports = new HashMap<>();
     private String inaccuracyList = "";
     private File teamNameList;
+    private HashMap<Integer, Integer> pickPoints;
     public EventReport(ArrayList<ScoutEntry> entries, String event, File directory) {
         scoutEntries = entries;
         this.event = event;
@@ -437,24 +438,214 @@ public class EventReport {
         }
         return compareMatrix;
     }
+    
+    
+    
+    public void generateCompareList(File outputDirectory){
+    	
+    	ArrayList<Comparison> comparisons = new ArrayList<Comparison>();
+    	ArrayList<Integer> teamNums = new ArrayList<Integer>();
+    	HashMap<Integer, ArrayList<Comparison>> compLookup = new HashMap<>();
+    	for (ScoutEntry entry : scoutEntries) {
+    		int t1 = entry.getPostMatch().getTeamOneCompare(), t2 = entry.getPostMatch().getTeamTwoCompare();
+    		String comparison = entry.getPostMatch().getComparison();
+    		if(t1!=0 && t2!=0 && t1!=t2){
+    			Comparison currentComp = new Comparison(t1, t2, comparison);
+    			comparisons.add(currentComp);
+    			if(!compLookup.containsKey(t1))
+    				compLookup.put(t1, new ArrayList<>());
+    			if(!compLookup.containsKey(t2))
+    				compLookup.put(t2, new ArrayList<>());
+    			
+    			compLookup.get(t1).add(currentComp);
+    			compLookup.get(t2).add(currentComp);
+    		}
+    		if(!teamNums.contains(t1)&& t1!=0)
+    			teamNums.add(t1);
+    	}
+    	
+    	RankingTree tree = new RankingTree();
+    	
+    	
+		int targetTeam = teamNums.get(0);
+		tree.addNode(targetTeam);
+		comparisons = new ArrayList<Comparison>();
+		for(int i = 0; i < teamNums.size(); i++){
+			targetTeam = teamNums.get(i);
+			if(!tree.containsNode(targetTeam))
+				continue;
+			for(Comparison comp : compLookup.get(targetTeam)){
+				if(!comparisons.contains(comp))
+					comparisons.add(comp);
+				comp.printString();
+					try{
+						if(targetTeam==comp.getBetterTeam()){
+							if(!tree.containsNode(comp.getWorseTeam())){
+								tree.addNodeBelow(comp.getWorseTeam(), targetTeam);
+								i = 0;
+							}
+							//if the comparison is compliant, don't modify the tree
+							else if(!tree.isComparisonCompliant(comp)){ 
+								HashMap<Integer, Integer> originalTree = tree.getTreeHashMap();
+								double bestCompliancePercent = tree.getCompliancePercent(comparisons);
+								RankingTree bestTree = new RankingTree(originalTree);
+								
+								//try to demote worse team first
+								while(!tree.isComparisonCompliant(comp)||tree.getLevel(comp.getWorseTeam())>0){
+									tree.demote(comp.getWorseTeam());
+									double currentCompPer = tree.getCompliancePercent(comparisons);
+									if(currentCompPer>bestCompliancePercent){
+										bestCompliancePercent = currentCompPer;
+										bestTree = new RankingTree(bestTree.getTreeHashMap());
+									}
+								}
+								
+								tree = new RankingTree(originalTree);
+								
+								//try to promote better team afterward
+								while(!tree.isComparisonCompliant(comp)||tree.getLevel(comp.getBetterTeam())<tree.getMaxRank()){
+									tree.promote(comp.getBetterTeam());
+									double currentCompPer = tree.getCompliancePercent(comparisons);
+									if(currentCompPer>bestCompliancePercent){
+										bestCompliancePercent = currentCompPer;
+										bestTree = new RankingTree(bestTree.getTreeHashMap());
+									}
+								}
+								
+								tree = new RankingTree(bestTree.getTreeHashMap());
+								
+							}
+						}
+						else if(targetTeam==comp.getWorseTeam()){
+							if(!tree.containsNode(comp.getBetterTeam())){
+								tree.addNodeAbove(comp.getBetterTeam(), targetTeam);
+								i = 0;
+							}
+
+							
+							//if the comparison is compliant, don't modify the tree
+							else if(!tree.isComparisonCompliant(comp)){ 
+								HashMap<Integer, Integer> originalTree = tree.getTreeHashMap();
+								double bestCompliancePercent = tree.getCompliancePercent(comparisons);
+								RankingTree bestTree = new RankingTree(originalTree);
+								
+								//try to demote worse team first
+								while(!tree.isComparisonCompliant(comp)||tree.getLevel(comp.getWorseTeam())>0){
+									tree.demote(comp.getWorseTeam());
+									double currentCompPer = tree.getCompliancePercent(comparisons);
+									if(currentCompPer>bestCompliancePercent){
+										bestCompliancePercent = currentCompPer;
+										bestTree = new RankingTree(bestTree.getTreeHashMap());
+									}
+								}
+								
+								tree = new RankingTree(originalTree);
+								
+								//try to promote better team afterward
+								while(!tree.isComparisonCompliant(comp)||tree.getLevel(comp.getBetterTeam())<tree.getMaxRank()){
+									tree.promote(comp.getBetterTeam());
+									double currentCompPer = tree.getCompliancePercent(comparisons);
+									if(currentCompPer>bestCompliancePercent){
+										bestCompliancePercent = currentCompPer;
+										bestTree = new RankingTree(bestTree.getTreeHashMap());
+									}
+								}
+								
+								tree = new RankingTree(bestTree.getTreeHashMap());
+							}
+							
+						}
+						else{
+							int secondTeam = comp.getHigherTeam(); 
+							if(comp.getLowerTeam()!=targetTeam)
+								secondTeam = comp.getLowerTeam();
+							
+							if(!tree.containsNode(secondTeam)){
+								tree.addNodeAlongside(secondTeam, targetTeam);
+								i = 0;
+							}
+							
+							else if(!tree.isComparisonCompliant(comp)){ 
+								HashMap<Integer, Integer> originalTree = tree.getTreeHashMap();
+								double bestCompliancePercent = tree.getCompliancePercent(comparisons);
+								RankingTree bestTree = new RankingTree(originalTree);
+								
+								int higherLevelTeam, lowerLevelTeam;
+								
+								if(tree.getLevel(secondTeam) > tree.getLevel(targetTeam)){
+									higherLevelTeam = secondTeam;
+									lowerLevelTeam = targetTeam;
+								}
+								else{
+									lowerLevelTeam = secondTeam;
+									higherLevelTeam = targetTeam;
+								}
+								//try to demote worse team first
+								while(tree.getLevel(higherLevelTeam)>0){
+									tree.demote(higherLevelTeam);
+									double currentCompPer = tree.getCompliancePercent(comparisons);
+									if(currentCompPer>bestCompliancePercent){
+										bestCompliancePercent = currentCompPer;
+										bestTree = new RankingTree(bestTree.getTreeHashMap());
+									}
+								}
+								
+								tree = new RankingTree(originalTree);
+								
+								//try to promote better team afterward
+								while(lowerLevelTeam<tree.getMaxRank()){
+									tree.promote(lowerLevelTeam);
+									double currentCompPer = tree.getCompliancePercent(comparisons);
+									if(currentCompPer>bestCompliancePercent){
+										bestCompliancePercent = currentCompPer;
+										bestTree = new RankingTree(bestTree.getTreeHashMap());
+									}
+								}
+								
+								tree = new RankingTree(bestTree.getTreeHashMap());
+							}
+						}
+						System.out.println("Printing new tree");
+						tree.printTree();
+						System.out.println("Compliance: " + tree.getCompliancePercent(comparisons));
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					
+				
+			}
+		}
+		
+		
+		
+//		int maxNodes = 100;
+//		while(teamsProcessed.size()<maxNodes){
+//			teamsProcessed.add(targetTeam);
+//			
+//		}
+		
+    	
+    	//FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\compare_list.txt"), compareListOut.toString());
+    }
 
 
     public void generatePicklists(File outputDirectory) {
-        HashMap<Integer, Integer> pickNumList = new HashMap<>();
+        pickPoints = new HashMap<>();
         HashMap<Integer, Integer> oldCompareList = new HashMap<>();
         HashMap<String, Integer> comparisonTable = new HashMap<>();
 
+        generateCompareList(outputDirectory);
 
         for (ScoutEntry entry : scoutEntries) {
             try {
                 Integer teamNum = entry.getPreMatch().getTeamNum();
 
-                if (!pickNumList.containsKey(teamNum)) {
-                    pickNumList.put(teamNum, 0);
+                if (!pickPoints.containsKey(teamNum)) {
+                    pickPoints.put(teamNum, 0);
                     oldCompareList.put(teamNum, 0);
                 }
 
-                pickNumList.put(teamNum, pickNumList.get(teamNum) + entry.getPostMatch().getPickNumber());
+                pickPoints.put(teamNum, pickPoints.get(teamNum) + entry.getPostMatch().getPickNumber());
                 String comparisonChar = entry.getPostMatch().getComparison();
                 int t1 = entry.getPostMatch().getTeamOneCompare(), t2 = entry.getPostMatch().getTeamTwoCompare();
 
@@ -488,7 +679,7 @@ public class EventReport {
 
         oldCompareList = sortByComparator(oldCompareList, false);
 
-        pickNumList = sortByComparator(pickNumList, false);
+        pickPoints = sortByComparator(pickPoints, false);
 
         ArrayList<Integer> compareList = new ArrayList<>();
 
@@ -501,14 +692,14 @@ public class EventReport {
             oldCompareListOut.append(rankNum++).append(". ").append(entry.getKey()).append(" - ").append(entry.getValue()).append(" pts\n");
         }
         rankNum=1;
-        for (Map.Entry<Integer, Integer> entry : pickNumList.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : pickPoints.entrySet()) {
             pickNumListOut.append(rankNum++).append(". ").append(entry.getKey()).append(" - ").append(entry.getValue()).append(" pts\n");
             compareList.add(entry.getKey()); //use the pick number list as the basis for comparison
         }
         
         
         //System.out.println(generateComparisonMatrix((ArrayList<Integer>) compareList.clone(), comparisonTable));
-        for (Map.Entry<Integer, Integer> entry : pickNumList.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : pickPoints.entrySet()) {
             pickNumListOut.append(rankNum++).append(". ").append(entry.getKey()).append(" - ").append(entry.getValue()).append(" pts\n");
             compareList.add(entry.getKey());
         }
@@ -525,23 +716,23 @@ public class EventReport {
                 String teamCompareKey = getTeamTupleString(compareList.get(i), compareList.get(i + 1));
                 String currentOrder = "(" + leftTeam + ", " + rightTeam + ")";
                 if(comparisonTable.containsKey(teamCompareKey)) {
-                    System.out.println("Key found: " + teamCompareKey + comparisonTable.get(teamCompareKey));
+                    //System.out.println("Key found: " + teamCompareKey + comparisonTable.get(teamCompareKey));
                     if ((comparisonTable.get(teamCompareKey) > 0 && currentOrder.equals(teamCompareKey)) ||
                             comparisonTable.get(teamCompareKey) < 0 && !currentOrder.equals(teamCompareKey)) { //team 2 is better than team 1
                         //Swap values in array
                         swapsNeeded = true;
                         Collections.swap(compareList, i, i + 1);
-                        System.out.println("Comparison swap made");
+                        //System.out.println("Comparison swap made");
                     }
-                    else if(comparisonTable.get(teamCompareKey)==0 && !pickNumList.get(leftTeam).equals(pickNumList.get(rightTeam))){
-                        if(pickNumList.get(leftTeam)<pickNumList.get(rightTeam)){ //right team has higher rating than left
+                    else if(comparisonTable.get(teamCompareKey)==0 && !pickPoints.get(leftTeam).equals(pickPoints.get(rightTeam))){
+                        if(pickPoints.get(leftTeam)<pickPoints.get(rightTeam)){ //right team has higher rating than left
                             swapsNeeded = true;
                             Collections.swap(compareList, i, i+1);
                         }
                     }
                 }
-                else if(pickNumList.get(leftTeam)<pickNumList.get(rightTeam)){
-                    System.out.println("Key not found: " + teamCompareKey);
+                else if(pickPoints.get(leftTeam)<pickPoints.get(rightTeam)){
+                   // System.out.println("Key not found: " + teamCompareKey);
 
                     swapsNeeded = true;
                     Collections.swap(compareList, i, i+1);
