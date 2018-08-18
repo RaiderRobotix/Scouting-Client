@@ -7,13 +7,18 @@ import com.thebluealliance.api.v3.models.Team;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Collection of static methods to sort and filter ArrayLists of object models
  *
  * @author sng
  */
-class Sorters {
+public class Sorters {
 
     /**
      * Method implementing a Comparator to sort Matches
@@ -55,5 +60,33 @@ class Sorters {
             }
         }
         return matches;
+    }
+    
+   
+    /** Sorts the keys of a HashMap in ascending or descending order, based on their values
+     * @param unsortMap Unsorted HashMap
+     * @param order true to sort the values of the HashMap in ascending order, false for descending order
+     * @return A sorted version of unsortMap
+     */
+    public static HashMap<Integer, Integer> sortByComparator(HashMap<Integer, Integer> unsortMap, final boolean order) {
+
+        List<Map.Entry<Integer, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        list.sort((o1, o2) -> {
+            if (order) {
+                return o1.getValue().compareTo(o2.getValue());
+            } else {
+                return o2.getValue().compareTo(o1.getValue());
+
+            }
+        });
+
+        // Maintaining insertion order with the help of LinkedList
+        HashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<Integer, Integer> entry : list)
+            sortedMap.put(entry.getKey(), entry.getValue());
+
+        return sortedMap;
     }
 }

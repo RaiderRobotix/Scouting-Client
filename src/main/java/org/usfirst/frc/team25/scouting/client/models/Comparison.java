@@ -1,5 +1,10 @@
 package org.usfirst.frc.team25.scouting.client.models;
 
+/** Class that holds a comparison between two teams
+ * 
+ * @author sng
+ *
+ */
 public class Comparison {
 	
 	private int lowerTeam, higherTeam;
@@ -22,10 +27,19 @@ public class Comparison {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param teamNum The team number that you're querying
+	 * @return True if the team is involved in the comparison, false otherwise
+	 */
 	public boolean contains(int teamNum){
 		return lowerTeam == teamNum || higherTeam == teamNum;
 	}
 	
+	/**
+	 * 
+	 * @return The team number of the better team in the comparison; 0 if both teams are equal
+	 */
 	public int getBetterTeam(){
 		if(compareChar.equals("<"))
 			return higherTeam;
@@ -34,6 +48,11 @@ public class Comparison {
 		return 0;
 	}
 	
+	
+	/**
+	 * 
+	 * @return The team number of the worse team in the comparison; 0 if both teams are equal
+	 */
 	public int getWorseTeam(){
 		if(compareChar.equals("<"))
 			return lowerTeam;
@@ -42,16 +61,46 @@ public class Comparison {
 		return 0;
 	}
 	
+	/**
+	 * 
+	 * @return The team number that's lower of the two teams in the comparison
+	 */
 	public int getLowerTeam(){
 		return lowerTeam;
 	}
 	
+	/**
+	 * 
+	 * @return The team number that's higher of the two teams in the comparison
+	 */
 	public int getHigherTeam(){
 		return higherTeam;
 	}
 	
-	public void printString(){
-		System.out.println(lowerTeam + compareChar + higherTeam);
+	/**
+	 * 
+	 * @return The string "A?B", where A is the lower team, ? is the comparator, and B is the higher team
+	 */
+	public String toString(){
+		return lowerTeam + compareChar + higherTeam;
+	}
+	
+	/** Compares two comparisons and sees if they contradict each other in a partially ordered list.
+	 *  e.g. A<B would contradict B>A, but it would not contradict A=B
+	 * @param secondComp The second comparison that you want to compare with this one
+	 * @return true if secondComp contradicts this one logically, false otherwise
+	 */
+	public boolean contradicts(Comparison secondComp){
+		return this.getBetterTeam()==secondComp.getWorseTeam()&&this.getWorseTeam()==secondComp.getBetterTeam()&& !this.compareChar.equals("=");
+	}
+	
+	/** Compares two comparisons and sees if they are identical
+	 * 
+	 * @param secondComp The second comparison that you want to compare with this one
+	 * @return true if secondComp is equal, false otherwise
+	 */
+	public boolean equals(Comparison secondComp){
+		return this.toString().equals(secondComp.toString());
 	}
 
 }

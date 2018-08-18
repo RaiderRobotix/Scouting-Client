@@ -91,21 +91,22 @@ public class Window {
         if (teamNameList != null)
             report.setTeamNameList(teamNameList);
 
-
+        introText.setText("<html><h1>Processing data</h1><br>Done!</html>");
+        
         report.generateRawSpreadsheet(dataDirectory);
-        report.processTeamReports();
+      //  report.processTeamReports();
 
         if (report.generateCombineJson(dataDirectory)) //combined JSON file successfully generated
             for (File file : jsonFileList)
                 if (!file.getName().contains("All"))
                     file.delete();
-
+        
         //report.generateTeamReportJson(dataDirectory);
         //report.generateTeamReportSpreadsheet(dataDirectory);
         report.generatePicklists(dataDirectory);
         report.generateInaccuracyList(dataDirectory);
 
-        introText.setText("<html><h1>Processing data</h1><br>Done!</html>");
+
 
         frame.setVisible(false);
         initializeAnalyzer(report);
