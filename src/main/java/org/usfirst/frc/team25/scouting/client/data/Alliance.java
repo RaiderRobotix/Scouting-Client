@@ -1,7 +1,8 @@
 package org.usfirst.frc.team25.scouting.client.data;
 
-/** Class for alliance-based calculations and stats
- *  Not used during the 2018 season
+/**
+ * Class for alliance-based calculations and stats
+ * Not used during the 2018 season
  */
 class Alliance {
 

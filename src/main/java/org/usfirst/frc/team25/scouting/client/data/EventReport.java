@@ -30,6 +30,7 @@ public class EventReport {
     private String inaccuracyList = "";
     private File teamNameList;
     private HashMap<Integer, Integer> pickPoints;
+
     public EventReport(ArrayList<ScoutEntry> entries, String event, File directory) {
         scoutEntries = entries;
         this.event = event;
@@ -74,51 +75,39 @@ public class EventReport {
     }
 
 
+    // TODO Update this
     public String quickTeamReport(int teamNum) {
-//        StringBuilder formatString = new StringBuilder("<html>");
-//        TeamReport report = teamReports.get(teamNum);
-//
-//        formatString.append("<h2>Team ").append(teamNum);
-//        if (report.teamName != null)
-//            formatString.append(" - ").append(report.teamName);
-//        formatString.append("</h2><h3>Auto</h3>");
-//
+        StringBuilder formatString = new StringBuilder("<html>");
+        TeamReport report = teamReports.get(teamNum);
+
+        formatString.append("<h2>Team ").append(teamNum);
+        if (report.getTeamName() != null)
+            formatString.append(" - ").append(report.getTeamName());
+        formatString.append("</h2><h3>Auto</h3>");
+
+
 //        formatString.append("Cross baseline: ").append(Statistics.round(report.autoRunPercentage, 2)).append("% (").append(report.totalReachBaseline).append("/").append(report.entries.size()).append(")").append("<br>");
-//        formatString.append("<h3>Tele-Op</h3>");
+        formatString.append("<h3>Tele-Op</h3>");
+
 //        formatString.append("Avg. gears: ").append(Statistics.round(report.avgTeleOpGears, 2)).append("<br>");
 //        formatString.append("Gear counts: ");
-//        for (int i : report.teleOpCubes)
-//            formatString.append(i).append(", ");
-//        formatString.append("<br>");
-//        formatString.append("Avg. kPa: ").append(Statistics.round(report.avgTeleOpKpa, 2)).append("<br>");
-//        formatString.append("Avg. dropped gears: ").append(Statistics.round(report.avgDroppedGears, 2)).append("<br>");
-//        formatString.append("Gear focus: ").append(Statistics.round(report.gearFocusPercent, 2)).append("%<br>");
-//        formatString.append("Avg. gear focus gears: ").append(Statistics.round(report.avgTeleOpGearsGearFocus, 2)).append("<br>");
-//        formatString.append("Fuel focus: ").append(Statistics.round(report.fuelFocusPercent, 2)).append("%<br>");
-//        formatString.append("Avg. kPa fuel focus: ").append(Statistics.round(report.avgTeleOpKpaFuelFocus, 2)).append("<br>");
-//        formatString.append("Takeoff success: ").append(Statistics.round(report.takeoffPercentage, 2)).append("% (").append(report.totalTakeoffSuccesses).append("/").append(report.entries.size()).append(")<br>");
-//        formatString.append("Takeoff attempt: ").append(Statistics.round(report.takeoffAttemptPercentage, 2)).append("% (").append(report.totalTakeoffAttempts).append("/").append(report.entries.size()).append(")<br>");
-//        formatString.append("<h3>Overall</h3>");
-//        formatString.append("Avg. score (modified OPR): ").append(Statistics.round(report.avgMatchScore, 2)).append("<br>");
-//        formatString.append("Total gears: ").append(Statistics.round(report.avgAutoGears + report.avgTeleOpGears, 2)).append("<br>");
-//        formatString.append("Total kPa: ").append(Statistics.round(report.avgAutoKpa + report.avgTeleOpKpa, 2)).append("<br>");
-//        formatString.append("Do not pick: ").append(report.doNotPick ? "Yes" : "No").append("<br>");
-//        formatString.append("Frequent comments: ").append(report.frequentRobotCommentStr).append(" ").append(report.frequentPilotCommentStr);
-//        formatString.append("</html>");
-//        return formatString.toString();
-        return null;
+//
+
+        formatString.append("</html>");
+        return formatString.toString();
+
     }
 
-
+    //TODO update this
     public String allianceReport(int t1, int t2, int t3) {
-//        String formatString = "<html>";
-//        TeamReport r1 = teamReports.get(t1), r2 = teamReports.get(t2), r3 = teamReports.get(t3);
-//
-//        Alliance a = new Alliance(r1, r2, r3);
-//        a.calculateStats();
-//
-//        formatString += "<h2>" + t1 + ", " + t2 + ", " + t3 + "</h2><h3>Auto</h3>";
-//
+        String formatString = "<html>";
+        TeamReport r1 = teamReports.get(t1), r2 = teamReports.get(t2), r3 = teamReports.get(t3);
+
+        Alliance a = new Alliance(r1, r2, r3);
+        a.calculateStats();
+
+        formatString += "<h2>" + t1 + ", " + t2 + ", " + t3 + "</h2><h3>Auto</h3>";
+
 //        formatString += "1+ BL cross: "
 //                + Statistics.round(a.atLeastOneBaselinePercent, 2)
 //                + "%<br>";
@@ -132,8 +121,8 @@ public class EventReport {
 //                + Statistics.round(a.autoGearPercent, 2)
 //                + "%<br>";
 //        formatString += "Avg. kPa: " + Statistics.round(a.autoKpa, 2) + "<br>";
-//
-//        formatString += "<h3>Tele-Op</h3>";
+
+        formatString += "<h3>Tele-Op</h3>";
 //        formatString += "Avg. kPa: " + Statistics.round(a.teleopKpa, 2) + "<br>";
 //        formatString += "1+ takeoff: "
 //                + Statistics.round(a.atLeastOneTakeoffPercent, 2)
@@ -148,14 +137,13 @@ public class EventReport {
 //        formatString += "Total gears: " + Statistics.round(a.totalGears, 2) + "<br>";
 //        formatString += "Total kPa: " + Statistics.round(a.totalKpa, 2) + "<br>";
 //        formatString += "Avg. score (predicted): " + Statistics.round(a.predictedScore, 2) + "<br>";
-//        formatString += "</html>";
-//        return formatString;
-        return null;
+
+        formatString += "</html>";
+        return formatString;
+
     }
 
     private void fixInaccuraciesTBA() {
-
-
         TBA tba;
 
         String apiKey = Window.apiKeyFetch();
@@ -409,12 +397,12 @@ public class EventReport {
         if (!inaccuracyList.isEmpty())
             FileManager.outputFile(new File(outputDirectory.getAbsolutePath() + "\\inaccuracies.txt"), inaccuracyList);
     }
-    
-    public void generatePicklists(File outputDirectory){
-    	PicklistGenerator pg = new PicklistGenerator(scoutEntries, outputDirectory);
-    	pg.generateBogoCompareList();
-    	pg.generateComparePointList();
-    	pg.generatePickPointList();
+
+    public void generatePicklists(File outputDirectory) {
+        PicklistGenerator pg = new PicklistGenerator(scoutEntries, outputDirectory);
+        pg.generateBogoCompareList();
+        pg.generateComparePointList();
+        pg.generatePickPointList();
     }
 
     public TeamReport getTeamReport(int teamNum) {

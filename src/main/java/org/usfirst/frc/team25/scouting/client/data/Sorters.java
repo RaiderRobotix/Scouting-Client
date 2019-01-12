@@ -61,11 +61,13 @@ public class Sorters {
         }
         return matches;
     }
-    
-   
-    /** Sorts the keys of a HashMap in ascending or descending order, based on their values
+
+
+    /**
+     * Sorts the keys of a HashMap in ascending or descending order, based on their values
+     *
      * @param unsortMap Unsorted HashMap
-     * @param order true to sort the values of the HashMap in ascending order, false for descending order
+     * @param order     true to sort the values of the HashMap in ascending order, false for descending order
      * @return A sorted version of unsortMap
      */
     public static HashMap<Integer, Integer> sortByComparator(HashMap<Integer, Integer> unsortMap, final boolean order) {

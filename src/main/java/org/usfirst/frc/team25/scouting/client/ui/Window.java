@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class Window {
 
 
-    private static final double VERSION = 2.11;
     //Regular expression to split filename into name and extension
     private static final String FILE_EXTENSION_REGEX = "\\.";
     private static TBA tba;
@@ -47,8 +46,6 @@ public class Window {
         frame.setContentPane(introText);
         frame.setVisible(true);
 
-        
-
 
         ArrayList<File> jsonFileList = new ArrayList<>();
         File teamNameList = null;
@@ -60,14 +57,14 @@ public class Window {
 
 
             try {
-                if (fileName.split(FILE_EXTENSION_REGEX)[1].equals("json")  && fileName.contains("Data")) {
+                if (fileName.split(FILE_EXTENSION_REGEX)[1].equals("json") && fileName.contains("Data")) {
                     jsonFileList.add(file);
 
                 }
                 if (fileName.split(FILE_EXTENSION_REGEX)[1].equals("csv") && fileName.contains("TeamNames"))
                     teamNameList = file;
-                if(jsonFileList.size()!=0){
-                	eventName = jsonFileList.get(0).getName().split(FILE_EXTENSION_REGEX)[0].split(" - ")[2];
+                if (jsonFileList.size() != 0) {
+                    eventName = jsonFileList.get(0).getName().split(FILE_EXTENSION_REGEX)[0].split(" - ")[2];
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
 
@@ -78,7 +75,7 @@ public class Window {
 
 
         if (scoutEntries.size() == 0) {
-        	frame.setVisible(false);
+            frame.setVisible(false);
             initializeGUI();
             JOptionPane.showMessageDialog(addIcon(new JFrame()), "No JSON data files found or root folder not named after event", "Error", JOptionPane.PLAIN_MESSAGE);
             introText.setText("<html><h1>Processing data</h1><br>Error!</html>");
@@ -92,20 +89,19 @@ public class Window {
             report.setTeamNameList(teamNameList);
 
         introText.setText("<html><h1>Processing data</h1><br>Done!</html>");
-        
+
         report.generateRawSpreadsheet(dataDirectory);
-      //  report.processTeamReports();
+        //  report.processTeamReports();
 
         if (report.generateCombineJson(dataDirectory)) //combined JSON file successfully generated
             for (File file : jsonFileList)
                 if (!file.getName().contains("All"))
                     file.delete();
-        
+
         //report.generateTeamReportJson(dataDirectory);
         //report.generateTeamReportSpreadsheet(dataDirectory);
         report.generatePicklists(dataDirectory);
         report.generateInaccuracyList(dataDirectory);
-
 
 
         frame.setVisible(false);
@@ -211,7 +207,8 @@ public class Window {
 
     private static void initializeGUI() {
 
-        JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v" + VERSION + "</h1><br>Press start to select data folder</html>");
+        JLabel introText = new JLabel("<html><h1>Team 25 Scouting Client - v" + Constants.VERSION + "<br>" +
+                 Constants.GAME_NAME + "</h1>Press start to select data folder</html>");
 
         introText.setHorizontalAlignment(JLabel.CENTER);
         introText.setFont(new Font("Arial", Font.PLAIN, 16));

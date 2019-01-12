@@ -9,6 +9,7 @@ import java.util.HashMap;
 /**
  * Object model containing individual reports of teams in events and methods to process data
  * Not used during the 2018 season
+ *
  * @author sng
  */
 public class TeamReport {
@@ -24,6 +25,11 @@ public class TeamReport {
     private final ArrayList<Integer> totalCubes = new ArrayList<>();
     private final ArrayList<Integer> totalDroppedCubes = new ArrayList<>();
     private final ArrayList<Double> firstCubeTimes = new ArrayList<>();
+
+    public String getTeamName() {
+        return teamName;
+    }
+
     private String teamName;
 
     //Instance variables below should not be serialized but may be accessed by EventReports for analysis

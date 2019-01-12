@@ -1,4 +1,4 @@
-## FRC Scouting Client [![Build Status](https://travis-ci.org/spencerng/Scouting-Client.svg?branch=master)](https://travis-ci.org/spencerng/Scouting-Client)
+## FRC Scouting Client [![Build Status](https://travis-ci.org/RaiderRobotix/Scouting-Client.svg?branch=master)](https://travis-ci.org/RaiderRobotix/Scouting-Client)
 
 A Java-based desktop client that processes scouting data from JSON files and pulls data from The Blue Alliance. To be used with the [Android scouting app](https://github.com/spencerng/Scouting-App) for FIRST Steamworks (2017 season).
 
@@ -9,9 +9,11 @@ Features:
    * Generates a human-readable CSV spreadsheet for backup
  * Analyzes the performance, consistency, and other metrics for each team
    * Exports results as a CSV spreadsheet and JSON for visualization in Tableau
+ * Generates picklists based on scout ranking and pre-determined metrics
  * Downloads a spreadsheet of teams and matches for any FRC event from The Blue Alliance
    * Files used for verification in the scouting app
  * Downloads all files for Team 25's events for the current season
+
  
 ## Usage
 
